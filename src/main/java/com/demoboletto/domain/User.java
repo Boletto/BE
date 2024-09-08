@@ -61,6 +61,9 @@ public class User {
     @Column(name = "is_location")
     private boolean isLocation;
 
+    @Column(name = "is_login")
+    private boolean isLogin;
+
     @Column(name = "friend_profile")
     @Enumerated(EnumType.STRING)
     private EProfile userProfile;
@@ -79,6 +82,7 @@ public class User {
         this.isFrame=true;
         this.isFriendApply=true;
         this.isLocation=true;
+        this.isLogin=true;
         this.userProfile = EProfile.Blue;
     }
 
