@@ -1,6 +1,6 @@
 package com.demoboletto.dto.global;
 
-import com.beotkkotthon.areyousleeping.exception.ErrorCode;
+import com.demoboletto.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
