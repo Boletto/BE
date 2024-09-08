@@ -8,17 +8,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "친구")
-@NoArgsConstructor
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@Getter
+@Table(name = "friend")
 public class Friend {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "friend_id")
-    private int friendId;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "friend_user_id", referencedColumnName = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "friend_type")
@@ -31,4 +32,12 @@ public class Friend {
     @Column(name = "friend_profile")
     @Enumerated(EnumType.STRING)
     private EProfile friendProfile;
+
+    @Builder
+    public Friend(User user, EFriendType friendType, String friendName, EProfile friendProfile) {
+        this.user = user;
+        this.friendType = friendType;
+        this.friendProfile = friendProfile;
+        this.friendName = friendName;
+    }
 }

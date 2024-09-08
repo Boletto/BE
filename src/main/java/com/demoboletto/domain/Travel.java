@@ -1,18 +1,21 @@
 package com.demoboletto.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "여행")
+@Table(name = "travel")
+@Getter
 @NoArgsConstructor
 public class Travel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "travel_id")
-    private int travelId;
+    private Long travelId;
 
     @Column(name = "departure")
     private String departure;
@@ -31,4 +34,14 @@ public class Travel {
 
     @Column(name = "status")
     private String status;
+
+    @Builder
+    public Travel(String departure, String arrive, String keyword, String startDate, String endDate, String status) {
+        this.departure = departure;
+        this.arrive = arrive;
+        this.keyword = keyword;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
+    }
 }
