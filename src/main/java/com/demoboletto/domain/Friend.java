@@ -1,5 +1,6 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.type.EFriendType;
 import com.demoboletto.type.EProfile;
 import jakarta.persistence.*;
 import lombok.Builder;
