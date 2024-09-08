@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "여행")
+@Table(name = "travel")
 @NoArgsConstructor
 public class Travel {
 

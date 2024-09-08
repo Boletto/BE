@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "User Travel")
+@Table(name = "user_travel")
 @NoArgsConstructor
 @Getter
 public class UserTravel {

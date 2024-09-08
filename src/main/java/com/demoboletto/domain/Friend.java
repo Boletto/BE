@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "친구")
+@Table(name = "friend")
 @NoArgsConstructor
 public class Friend {
 
