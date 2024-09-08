@@ -1,5 +1,6 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.type.ECategory;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -23,7 +24,7 @@ public class Picture {
 
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private ECategory category;
 
     @Column(name = "picture_url")
     private String pictureUrl;
