@@ -6,4 +6,5 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum EFriendType {
+    ACTIVATE, NOT_ACTIVATE;
 }
