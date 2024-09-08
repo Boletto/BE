@@ -2,24 +2,27 @@ package com.demoboletto.domain;
 
 import com.demoboletto.type.ECategory;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
 @Entity
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@Getter
 @Table(name = "picture")
-@NoArgsConstructor
 public class Picture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+    @Column(name = "picture_id")
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "travel_id", referencedColumnName = "travel_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "travel_id", nullable = true)
     private Travel travel;
 
     @Column(name = "category")
@@ -28,4 +31,12 @@ public class Picture {
 
     @Column(name = "picture_url")
     private String pictureUrl;
+
+    @Builder
+    public Picture(User user, Travel travel, ECategory category, String pictureUrl) {
+        this.user = user;
+        this.travel = travel;
+        this.category = category;
+        this.pictureUrl = pictureUrl;
+    }
 }
