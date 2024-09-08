@@ -3,6 +3,7 @@ package com.demoboletto.domain;
 import com.demoboletto.type.EProfile;
 import com.demoboletto.type.EProvider;
 import com.demoboletto.type.ERole;
+import com.demoboletto.dto.request.AuthSignUpDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -90,6 +91,15 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
+
+    public static User signUp(AuthSignUpDto authSignUpDto, String encodedPassword) {
+        return User.builder()
+                .serialId(authSignUpDto.serialId())
+                .password(encodedPassword)
+                .provider(EProvider.DEFAULT)
+                .role(ERole.USER)
+                .build();
+    }
 
     public static User signUp(String serialId, EProvider provider) {
         return User.builder()
