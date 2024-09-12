@@ -6,10 +6,7 @@ import com.demoboletto.service.TravelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +19,11 @@ public class TravelController {
     @Operation(summary = "create new travel list", description = "Create new travel list if there are enough data to create travel data.")
     public ResponseDto<?> createTravelList(@RequestBody CreateTravelDto travelDto) {
         return ResponseDto.ok(travelService.createTravelList(travelDto));
+    }
+    @GetMapping("/")
+    @Operation(summary = "get all travel list", description = "Get all travel list.")
+    public ResponseDto<?> getAllTravelList(@RequestParam(value = "id") Long id) {
+        return ResponseDto.ok(travelService.getAllTravelList(id));
     }
 
 }
