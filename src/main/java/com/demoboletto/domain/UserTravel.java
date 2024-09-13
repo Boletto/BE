@@ -28,4 +28,10 @@ public class UserTravel {
         this.user = user;
         this.travel = travel;
     }
+    public static UserTravel create(User user, Travel travel) {
+        return UserTravel.builder()
+                .travel(travel)
+                .user(user)
+                .build();
+    }
 }
