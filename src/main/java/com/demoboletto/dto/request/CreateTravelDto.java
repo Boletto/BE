@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
+import java.util.List;
+
 @Builder
 @Schema(name = "CreateTravelDto", description = "request for creating new travel list")
 public record CreateTravelDto(
@@ -27,7 +29,10 @@ public record CreateTravelDto(
         @JsonProperty("status") @Schema(description = "travel status", example = "process")
         String status,
         @NotNull(message = "owner can not be null")
-        @JsonProperty("owner") @Schema(description = "travel owner", example = "홍길동")
-        String owner
+        @JsonProperty("owner") @Schema(description = "travel owner", example = "12312323")
+        Long owner,
+        @NotNull(message = "friends can not be null")
+        @JsonProperty("friends") @Schema(description = "travel friends list", example = "[12323,24234234]")
+        List<Long> friends
 ) {
 }

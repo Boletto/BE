@@ -38,10 +38,10 @@ public class Travel {
     // need travel owner
     // ++
     @Column(name = "owner")
-    private String owner;
+    private Long owner;
 
     @Builder
-    public Travel(String departure, String arrive, String keyword, String startDate, String endDate, String status, String owner) {
+    public Travel(String departure, String arrive, String keyword, String startDate, String endDate, String status, Long owner) {
         this.departure = departure;
         this.arrive = arrive;
         this.keyword = keyword;
