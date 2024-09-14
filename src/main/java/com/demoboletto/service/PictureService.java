@@ -6,23 +6,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PictureService {
     private final PictureRepository pictureRepository;
 
-    public List<GetPictureDto> getPicturesByTravelId(Long travelId) {
-        List<GetPictureDto> pictureList = new ArrayList<>();
+    public GetPictureDto getPicturesByTravelId(Long travelId) {
+        GetPictureDto getPictureDto = GetPictureDto.builder()
+                .travelId(travelId)
+                .pictureIdx(new ArrayList<>())
+                .pictureUrl(new ArrayList<>())
+                .build();
         pictureRepository.findAllByTraveld(travelId).forEach(picture -> {
-            pictureList.add(
-                    GetPictureDto.builder()
-                            .travelId(travelId)
-                            .pictureIdx(picture.getPictureIdx())
-                            .pictureUrl(picture.getPictureUrl())
-                            .build());
+            getPictureDto.pictureIdx().add(picture.getPictureIdx());
+            getPictureDto.pictureUrl().add(picture.getPictureUrl());
         });
-        return pictureList;
+        return getPictureDto;
     }
 }
