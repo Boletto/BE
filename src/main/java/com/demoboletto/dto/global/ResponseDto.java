@@ -42,4 +42,7 @@ public record ResponseDto<T>(@JsonIgnore HttpStatus httpStatus,
     public static ResponseDto<Object> fail(final CommonException e) {
         return new ResponseDto<>(e.getErrorCode().getHttpStatus(), false, null, ExceptionDto.of(e.getErrorCode()));
     }
+    public static <T> ResponseDto<T> fail(@Nullable final T data) {
+        return new ResponseDto<>(HttpStatus.BAD_REQUEST, false, data, ExceptionDto.of(ErrorCode.BAD_REQUEST_JSON));
+    }
 }

@@ -1,11 +1,8 @@
 package com.demoboletto.dto.response;
 
 import com.demoboletto.domain.User;
-import com.demoboletto.type.ETravelStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -32,16 +29,9 @@ public record GetTravelDto(
         @NotNull(message = "endDate can not be null")
         @JsonProperty("endDate") @Schema(description = "travel end date", example = "2024-09-13 20:00:00")
         String endDate,
-        @NotNull(message = "status can not be null")
-        @JsonProperty("status") @Schema(description = "travel status", example = "PROCESS")
-        @Enumerated(EnumType.STRING)
-        ETravelStatus status,
-        @NotNull(message = "owner can not be null")
-        @JsonProperty("owner") @Schema(description = "travel owner", example = "12312323")
-        Long owner,
-        @NotNull(message = "friends can not be null")
-        @JsonProperty("friends") @Schema(description = "travel friends list", example = "[user1,user2]")
-        List<User> friends,
+        @NotNull(message = "members can not be null")
+        @JsonProperty("members") @Schema(description = "travel members list", example = "[user1,user2]")
+        List<User> members,
         @NotNull(message = "color can not be null")
         @JsonProperty("color") @Schema(description = "travel list color", example = "#FF0000")
         String color
