@@ -4,6 +4,7 @@ import com.demoboletto.domain.Travel;
 import com.demoboletto.domain.User;
 import com.demoboletto.domain.UserTravel;
 import com.demoboletto.dto.request.CreateTravelDto;
+import com.demoboletto.dto.response.GetTravelDto;
 import com.demoboletto.repository.TravelRepository;
 import com.demoboletto.repository.UserRepository;
 import com.demoboletto.repository.UserTravelRepository;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -37,12 +40,45 @@ public class TravelService {
         return travel;
     }
 
-    public Travel getAllTravelList(Long id) {
+    public GetTravelDto getTravelList(Long id) {
         Optional<Travel> travel = travelRepository.findById(id);
         if (travel.isPresent()) {
-            return travel.get();
+            return GetTravelDto.builder()
+                    .travelId(travel.get().getTravelId())
+                    .departure(travel.get().getDeparture())
+                    .arrive(travel.get().getArrive())
+                    .keyword(travel.get().getKeyword())
+                    .startDate(travel.get().getStartDate())
+                    .endDate(travel.get().getEndDate())
+                    .status(travel.get().getStatus())
+                    .owner(travel.get().getOwner())
+                    .friends(userTravelRepository.findAllByTravelId(travel.get().getTravelId()))
+                    .color(travel.get().getColor())
+                    .build();
         } else {
             return null;    // return empty object
         }
+    }
+    public List<GetTravelDto> getAllTravelList() {
+        List<Travel> travel = travelRepository.findAll();
+        List<GetTravelDto> travelList = new ArrayList<>();
+        for (Travel t : travel) {
+            t.getTravelId();
+            travelList.add(
+                    GetTravelDto.builder()
+                            .travelId(t.getTravelId())
+                            .departure(t.getDeparture())
+                            .arrive(t.getArrive())
+                            .keyword(t.getKeyword())
+                            .startDate(t.getStartDate())
+                            .endDate(t.getEndDate())
+                            .status(t.getStatus())
+                            .owner(t.getOwner())
+                            .friends(userTravelRepository.findAllByTravelId(t.getTravelId()))
+                            .color(t.getColor())
+                            .build()
+            );
+        }
+        return travelList;
     }
 }
