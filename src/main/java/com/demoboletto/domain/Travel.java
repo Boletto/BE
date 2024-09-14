@@ -1,6 +1,7 @@
 package com.demoboletto.domain;
 
 import com.demoboletto.dto.request.CreateTravelDto;
+import com.demoboletto.type.ETravelStatus;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,7 +35,8 @@ public class Travel {
     private String endDate;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ETravelStatus status;
 
     @Column(name = "owner")
     private Long owner;
@@ -43,7 +45,7 @@ public class Travel {
     private String color;
 
     @Builder
-    public Travel(String departure, String arrive, String keyword, String startDate, String endDate, String status, Long owner, String color) {
+    public Travel(String departure, String arrive, String keyword, String startDate, String endDate, ETravelStatus status, Long owner, String color) {
         this.departure = departure;
         this.arrive = arrive;
         this.keyword = keyword;

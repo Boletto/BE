@@ -1,8 +1,11 @@
 package com.demoboletto.dto.response;
 
 import com.demoboletto.domain.User;
+import com.demoboletto.type.ETravelStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -30,8 +33,9 @@ public record GetTravelDto(
         @JsonProperty("endDate") @Schema(description = "travel end date", example = "2024-09-13 20:00:00")
         String endDate,
         @NotNull(message = "status can not be null")
-        @JsonProperty("status") @Schema(description = "travel status", example = "process")
-        String status,
+        @JsonProperty("status") @Schema(description = "travel status", example = "PROCESS")
+        @Enumerated(EnumType.STRING)
+        ETravelStatus status,
         @NotNull(message = "owner can not be null")
         @JsonProperty("owner") @Schema(description = "travel owner", example = "12312323")
         Long owner,

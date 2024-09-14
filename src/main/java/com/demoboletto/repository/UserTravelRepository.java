@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import .util.Optional;
 
 @Repository
 public interface UserTravelRepository extends JpaRepository<UserTravel, Long> {
