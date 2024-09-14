@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -36,7 +34,7 @@ public class TravelService {
         // check if travel data exists
         for (Long memberId : travelDto.members()) {
             for (Travel travel : userTravelRepository.findAllByUserId(memberId)) {
-                if (IsTravelCurrent(travel)) {
+                if (isTravelCurrent(travel)) {
                     return false;
                 }
             }
@@ -63,15 +61,15 @@ public class TravelService {
             return null;    // return empty object
         }
     }
-    public List<GetTravelDto> getAllTravelList() {
-        List<Travel> travel = travelRepository.findAll();
+    public List<GetTravelDto> getAllTravelList(Long userId) {
+        List<Travel> travel = userTravelRepository.findAllByUserId(userId);
         List<GetTravelDto> travelList = new ArrayList<>();
         for (Travel t : travel) {
             travelList.add(convertToGetTravelDto(t));
         }
         return travelList;
     }
-    private boolean IsTravelCurrent(Travel travel) {
+    private boolean isTravelCurrent(Travel travel) {
         if (LocalDateTime
                 .parse(travel.getStartDate(), formatter)
                 .atZone(ZoneId.of("Asia/Seoul")).isBefore(nowKorea)) {

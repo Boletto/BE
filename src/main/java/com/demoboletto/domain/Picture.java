@@ -32,11 +32,15 @@ public class Picture {
     @Column(name = "picture_url")
     private String pictureUrl;
 
+    @Column(name = "picture_idx")
+    private int pictureIdx;
+
     @Builder
-    public Picture(User user, Travel travel, ECategory category, String pictureUrl) {
+    public Picture(User user, Travel travel, ECategory category, String pictureUrl, int pictureIdx) {
         this.user = user;
         this.travel = travel;
         this.category = category;
         this.pictureUrl = pictureUrl;
+        this.pictureIdx = pictureIdx;
     }
 }
