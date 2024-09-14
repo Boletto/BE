@@ -25,7 +25,7 @@ public class TravelController {
     public ResponseDto<?> getAllTravelList() {
         return ResponseDto.ok(travelService.getAllTravelList());
     }
-    @GetMapping("/")
+    @GetMapping(value = "/", params = "id")
     @Operation(summary = "get one travel list", description = "Get one travel list.")
     public ResponseDto<?> getTravelList(@RequestParam(value = "id") Long id) {
         return ResponseDto.ok(travelService.getTravelList(id));
