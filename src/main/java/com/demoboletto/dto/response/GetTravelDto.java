@@ -1,5 +1,6 @@
 package com.demoboletto.dto.response;
 
+import com.demoboletto.domain.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -35,8 +36,8 @@ public record GetTravelDto(
         @JsonProperty("owner") @Schema(description = "travel owner", example = "12312323")
         Long owner,
         @NotNull(message = "friends can not be null")
-        @JsonProperty("friends") @Schema(description = "travel friends list", example = "[12323,24234234]")
-        List<Long> friends,
+        @JsonProperty("friends") @Schema(description = "travel friends list", example = "[user1,user2]")
+        List<User> friends,
         @NotNull(message = "color can not be null")
         @JsonProperty("color") @Schema(description = "travel list color", example = "#FF0000")
         String color

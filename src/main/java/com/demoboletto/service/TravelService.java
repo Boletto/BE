@@ -52,6 +52,7 @@ public class TravelService {
                     .endDate(travel.get().getEndDate())
                     .status(travel.get().getStatus())
                     .owner(travel.get().getOwner())
+                    .friends(userTravelRepository.findAllByTravelId(travel.get().getTravelId()))
                     .color(travel.get().getColor())
                     .build();
         } else {
@@ -62,6 +63,7 @@ public class TravelService {
         List<Travel> travel = travelRepository.findAll();
         List<GetTravelDto> travelList = new ArrayList<>();
         for (Travel t : travel) {
+            t.getTravelId();
             travelList.add(
                     GetTravelDto.builder()
                             .travelId(t.getTravelId())
@@ -72,6 +74,7 @@ public class TravelService {
                             .endDate(t.getEndDate())
                             .status(t.getStatus())
                             .owner(t.getOwner())
+                            .friends(userTravelRepository.findAllByTravelId(t.getTravelId()))
                             .color(t.getColor())
                             .build()
             );
