@@ -36,6 +36,9 @@ public record GetTravelDto(
         Long owner,
         @NotNull(message = "friends can not be null")
         @JsonProperty("friends") @Schema(description = "travel friends list", example = "[12323,24234234]")
-        List<Long> friends
+        List<Long> friends,
+        @NotNull(message = "color can not be null")
+        @JsonProperty("color") @Schema(description = "travel list color", example = "#FF0000")
+        String color
 ) {
 }

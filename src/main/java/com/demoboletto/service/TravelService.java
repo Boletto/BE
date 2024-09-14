@@ -52,6 +52,7 @@ public class TravelService {
                     .endDate(travel.get().getEndDate())
                     .status(travel.get().getStatus())
                     .owner(travel.get().getOwner())
+                    .color(travel.get().getColor())
                     .build();
         } else {
             return null;    // return empty object
@@ -71,6 +72,7 @@ public class TravelService {
                             .endDate(t.getEndDate())
                             .status(t.getStatus())
                             .owner(t.getOwner())
+                            .color(t.getColor())
                             .build()
             );
         }
