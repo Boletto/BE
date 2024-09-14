@@ -18,7 +18,7 @@ public class TravelController {
     @PostMapping("/")
     @Operation(summary = "create new travel list", description = "Create new travel list if there are enough data to create travel data.")
     public ResponseDto<?> createTravelList(@RequestBody CreateTravelDto travelDto) {
-        return ResponseDto.ok(travelService.createTravelList(travelDto));
+        return travelService.createTravelList(travelDto) ? ResponseDto.ok("success") : ResponseDto.fail("existing data");
     }
     @GetMapping("/")
     @Operation(summary = "get all travel list", description = "Get all travel list.")
