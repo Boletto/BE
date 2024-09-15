@@ -2,7 +2,6 @@ package com.demoboletto.controller;
 
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.CreateTravelDto;
-import com.demoboletto.service.PictureService;
 import com.demoboletto.service.TravelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/travel")
 public class TravelController {
     private final TravelService travelService;
-    private final PictureService pictureService;
 
     @PostMapping("/")
     @Operation(summary = "create new travel list", description = "Create new travel list if there are enough data to create travel data.")
@@ -31,10 +29,5 @@ public class TravelController {
     @Operation(summary = "get one travel list", description = "Get one travel list.")
     public ResponseDto<?> getTravelList(@RequestParam(value = "travel_id") Long id) {
         return ResponseDto.ok(travelService.getTravelList(id));
-    }
-    @GetMapping("/photo")
-    @Operation(summary = "get picture list", description = "Get all picture list in the travel.")
-    public ResponseDto<?> getPictureList(@RequestParam(value = "travel_id") Long id) {
-        return ResponseDto.ok(pictureService.getPicturesByTravelId(id));
     }
 }
