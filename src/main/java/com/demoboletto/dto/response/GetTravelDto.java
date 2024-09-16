@@ -1,8 +1,11 @@
 package com.demoboletto.dto.response;
 
 import com.demoboletto.domain.User;
+import com.demoboletto.type.EStatusType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -34,6 +37,11 @@ public record GetTravelDto(
         List<User> members,
         @NotNull(message = "color can not be null")
         @JsonProperty("color") @Schema(description = "travel list color", example = "#FF0000")
-        String color
+        String color,
+
+        @NotNull(message = "status can not be null")
+        @Enumerated(EnumType.STRING)
+        @JsonProperty("status") @Schema(description = "travel status", example = "UNLOCK")
+        EStatusType status
 ) {
 }
