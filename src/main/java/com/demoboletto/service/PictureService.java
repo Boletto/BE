@@ -51,4 +51,20 @@ public class PictureService {
         }
         return true;
     }
+    public boolean deletePicture(Long pictureId) {
+        try {
+            // remove file from s3
+            String[] split = pictureRepository.findById(pictureId)
+                    .orElseThrow(() -> new IllegalArgumentException("picture not found"))
+                    .getPictureUrl()
+                    .split("/");
+            awsS3Service.deleteFile(split[split.length - 1]);
+            // remove picture object from db
+            pictureRepository.deleteById(pictureId);
+
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 }

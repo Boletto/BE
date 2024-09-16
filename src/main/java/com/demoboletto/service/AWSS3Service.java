@@ -1,7 +1,6 @@
 package com.demoboletto.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +19,9 @@ public class AWSS3Service {
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
+    @Value("${spring.cloud.aws.region.static}")
+    private String region;
+
     public String uploadFile(MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();
         Path tempFile = Files.createTempFile("", fileName);
@@ -32,6 +34,10 @@ public class AWSS3Service {
                         .acl("public-read")
                         .build(),
                 tempFile);
-        return "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
+        return "https://" + bucketName + ".s3."+region+".amazonaws.com/" + fileName;
+    }
+    // delete image from s3
+    public void deleteFile(String fileName) {
+        s3Client.deleteObject(builder -> builder.bucket(bucketName).key(fileName));
     }
 }
