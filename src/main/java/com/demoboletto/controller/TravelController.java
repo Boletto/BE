@@ -39,6 +39,6 @@ public class TravelController {
     @DeleteMapping("/delete")
     @Operation(summary = "delete travel list", description = "Delete travel list.")
     public ResponseDto<?> deleteTravelList(@RequestParam(value = "travel_id") Long id) {
-        return ResponseDto.ok(travelService.deleteTravelList(id));
+        return travelService.deleteTravelList(id) ? ResponseDto.ok("success") : ResponseDto.fail("fail");
     }
 }

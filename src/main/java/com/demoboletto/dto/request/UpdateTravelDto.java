@@ -19,9 +19,9 @@ public record UpdateTravelDto(
         String arrive,
         @JsonProperty("keyword") @Schema(description = "travel types", example = "쇼핑, 관광")
         String keyword,
-        @JsonProperty("startDate") @Schema(description = "travel start date", example = "2024-09-09 10:30:00")
+        @JsonProperty("start_date") @Schema(description = "travel start date", example = "2024-09-09 10:30:00")
         String startDate,
-        @JsonProperty("endDate") @Schema(description = "travel end date", example = "2024-09-13 20:00:00")
+        @JsonProperty("end_date") @Schema(description = "travel end date", example = "2024-09-13 20:00:00")
         String endDate,
         @JsonProperty("members") @Schema(description = "travel members list", example = "[12323,24234234]")
         List<Long> members,

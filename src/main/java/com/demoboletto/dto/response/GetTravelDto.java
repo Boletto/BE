@@ -12,7 +12,7 @@ import java.util.List;
 @Schema(name = "GetTravelDto", description = "request for getting travel list")
 public record GetTravelDto(
         @NotNull(message = "travelId can not be null")
-        @JsonProperty("travelId") @Schema(description = "travel unique id", example = "1234")
+        @JsonProperty("travel_id") @Schema(description = "travel unique id", example = "1234")
         Long travelId,
         @NotNull(message = "departure can not be null")
         @JsonProperty("departure") @Schema(description = "location where to departure", example = "서울")
@@ -24,10 +24,10 @@ public record GetTravelDto(
         @JsonProperty("keyword") @Schema(description = "travel types", example = "쇼핑, 관광")
         String keyword,
         @NotNull(message = "startDate can not be null")
-        @JsonProperty("startDate") @Schema(description = "travel start date", example = "2024-09-09 10:30:00")
+        @JsonProperty("start_date") @Schema(description = "travel start date", example = "2024-09-09 10:30:00")
         String startDate,
         @NotNull(message = "endDate can not be null")
-        @JsonProperty("endDate") @Schema(description = "travel end date", example = "2024-09-13 20:00:00")
+        @JsonProperty("end_date") @Schema(description = "travel end date", example = "2024-09-13 20:00:00")
         String endDate,
         @NotNull(message = "members can not be null")
         @JsonProperty("members") @Schema(description = "travel members list", example = "[user1,user2]")
