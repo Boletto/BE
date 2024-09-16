@@ -2,6 +2,7 @@ package com.demoboletto.controller;
 
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.CreatePictureDto;
+import com.demoboletto.dto.request.EditPictureDto;
 import com.demoboletto.service.PictureService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,5 +29,10 @@ public class PictureController {
     @Operation(summary = "delete picture", description = "delete picture in the travel.")
     public ResponseDto<?> deletePictureList(@RequestParam(value = "picture_id") Long pictureId) {
         return pictureService.deletePicture(pictureId) ? ResponseDto.ok("success") : ResponseDto.fail("fail");
+    }
+    @PatchMapping("/edit")
+    @Operation(summary = "edit picture mode", description = "edit picture mode")
+    public ResponseDto<?> editPictureMode(@RequestBody EditPictureDto pictureDto) {
+        return pictureService.editPictureMode(pictureDto) ? ResponseDto.ok("success") : ResponseDto.fail("fail");
     }
 }

@@ -73,4 +73,8 @@ public class Travel {
         this.color = travelDto.color() != null ? travelDto.color() : this.color;
         return this;
     }
+    public Travel setStatus(EStatusType status) {
+        this.status = status;
+        return this;
+    }
 }
