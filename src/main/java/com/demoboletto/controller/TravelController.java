@@ -2,6 +2,7 @@ package com.demoboletto.controller;
 
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.CreateTravelDto;
+import com.demoboletto.dto.request.UpdateTravelDto;
 import com.demoboletto.service.TravelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,5 +30,10 @@ public class TravelController {
     @Operation(summary = "get one travel list", description = "Get one travel list.")
     public ResponseDto<?> getTravelList(@RequestParam(value = "travel_id") Long id) {
         return ResponseDto.ok(travelService.getTravelList(id));
+    }
+    @PatchMapping("/")
+    @Operation(summary = "update travel list", description = "Update travel list.")
+    public ResponseDto<?> updateTravelList(@RequestBody UpdateTravelDto travelDto) {
+        return ResponseDto.ok(travelService.updateTravelList(travelDto));
     }
 }

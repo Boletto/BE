@@ -4,10 +4,12 @@ import com.demoboletto.domain.Travel;
 import com.demoboletto.domain.User;
 import com.demoboletto.domain.UserTravel;
 import com.demoboletto.dto.request.CreateTravelDto;
+import com.demoboletto.dto.request.UpdateTravelDto;
 import com.demoboletto.dto.response.GetTravelDto;
 import com.demoboletto.repository.TravelRepository;
 import com.demoboletto.repository.UserRepository;
 import com.demoboletto.repository.UserTravelRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +36,7 @@ public class TravelService {
         // check if travel data exists
         for (Long memberId : travelDto.members()) {
             for (Travel travel : userTravelRepository.findAllByUserId(memberId)) {
-                if (isTravelCurrent(travel)) {
+                if (isOverlapping(travel.getStartDate(),travel.getEndDate(),travelDto.startDate(),travelDto.endDate())) {
                     return false;
                 }
             }
@@ -52,7 +54,6 @@ public class TravelService {
         });
         return true;
     }
-
     public GetTravelDto getTravelList(Long id) {
         Optional<Travel> travel = travelRepository.findById(id);
         if (travel.isPresent()) {
@@ -69,15 +70,12 @@ public class TravelService {
         }
         return travelList;
     }
-    private boolean isTravelCurrent(Travel travel) {
-        if (LocalDateTime
-                .parse(travel.getStartDate(), formatter)
-                .atZone(ZoneId.of("Asia/Seoul")).isBefore(nowKorea)) {
-            return LocalDateTime
-                    .parse(travel.getEndDate(), formatter)
-                    .atZone(ZoneId.of("Asia/Seoul")).isAfter(nowKorea);
-        }
-        return false;
+    private boolean isOverlapping(String preStart, String preEnd, String start, String end) {
+        LocalDateTime preStartDate = LocalDateTime.parse(preStart, formatter);
+        LocalDateTime preEndDate = LocalDateTime.parse(preEnd, formatter);
+        LocalDateTime startDate = LocalDateTime.parse(start, formatter);
+        LocalDateTime endDate = LocalDateTime.parse(end, formatter);
+        return (startDate.isBefore(preEndDate) && endDate.isAfter(preStartDate));
     }
     private GetTravelDto convertToGetTravelDto(Travel travel) {
         return GetTravelDto.builder()
@@ -90,5 +88,45 @@ public class TravelService {
                 .members(userTravelRepository.findAllByTravelId(travel.getTravelId()))
                 .color(travel.getColor())
                 .build();
+    }
+    @Transactional
+    public GetTravelDto updateTravelList(UpdateTravelDto travelDto) {
+        // get travel data from db
+        Travel preTravel = travelRepository.findById(travelDto.travelId())
+                .orElseThrow(() -> new EntityNotFoundException("travel data not found"));
+
+        // check if travel data exists
+        for (Long memberId : travelDto.members()) {
+            for (Travel travel : userTravelRepository.findAllByUserId(memberId)) {
+                if (isOverlapping(travel.getStartDate(),travel.getEndDate(),travelDto.startDate(),travelDto.endDate())) {
+                    if (!travel.getTravelId().equals(travelDto.travelId())) return null;
+                }
+            }
+        }
+        // update travel data
+        Travel postTravel = travelRepository.save(preTravel.update(travelDto));
+
+        // if member list is changed, update UserTravel table
+
+        //get user list in UserTravel table
+        userTravelRepository.findAllByTravelId(travelDto.travelId()).forEach(member -> {
+            // if member is not in the new member list, delete the member from UserTravel table
+            if (!travelDto.members().contains(member.getId())) {
+                userTravelRepository.delete(userTravelRepository.findByUserIdAndTravelId(member.getId(), travelDto.travelId()));
+            } else {
+            // if member is in the new member list, delete the member from the new member list
+                travelDto.members().remove(member.getId());
+            }
+        });
+        // insert new member list into UserTravel table
+        travelDto.members().forEach(memberId -> {
+            Optional<User> user = userRepository.findById(memberId);
+            if (!user.isPresent()) {
+                return;
+            }
+            // insert user object into UserTravel table
+            userTravelRepository.save(UserTravel.create(user.get(), postTravel));
+        });
+        return convertToGetTravelDto(postTravel);
     }
 }

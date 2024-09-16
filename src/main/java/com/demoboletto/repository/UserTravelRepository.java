@@ -15,4 +15,7 @@ public interface UserTravelRepository extends JpaRepository<UserTravel, Long> {
     List<User> findAllByTravelId(Long id);
     @Query("select ut.travel from UserTravel ut where ut.user.id = :id")
     List<Travel> findAllByUserId(Long id);
+
+    @Query("select ut from UserTravel ut where ut.user.id = :userId and ut.travel.travelId = :travelId")
+    UserTravel findByUserIdAndTravelId(Long userId, Long travelId);
 }

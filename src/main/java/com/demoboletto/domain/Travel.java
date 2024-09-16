@@ -1,6 +1,7 @@
 package com.demoboletto.domain;
 
 import com.demoboletto.dto.request.CreateTravelDto;
+import com.demoboletto.dto.request.UpdateTravelDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -55,5 +56,14 @@ public class Travel {
                 .keyword(travelDto.keyword())
                 .color(travelDto.color())
                 .build();
+    }
+    public Travel update(UpdateTravelDto travelDto) {
+        this.departure = travelDto.departure() != null ? travelDto.departure() : this.departure;
+        this.arrive = travelDto.arrive() != null ? travelDto.arrive() : this.arrive;
+        this.keyword = travelDto.keyword() != null ? travelDto.keyword() : this.keyword;
+        this.startDate = travelDto.startDate() != null ? travelDto.startDate() : this.startDate;
+        this.endDate = travelDto.endDate() != null ? travelDto.endDate() : this.endDate;
+        this.color = travelDto.color() != null ? travelDto.color() : this.color;
+        return this;
     }
 }
