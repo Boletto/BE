@@ -1,5 +1,6 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.dto.request.CreatePictureDto;
 import com.demoboletto.type.ECategory;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -25,10 +26,6 @@ public class Picture {
     @JoinColumn(name = "travel_id", nullable = true)
     private Travel travel;
 
-    @Column(name = "category")
-    @Enumerated(EnumType.STRING)
-    private ECategory category;
-
     @Column(name = "picture_url")
     private String pictureUrl;
 
@@ -39,8 +36,15 @@ public class Picture {
     public Picture(User user, Travel travel, ECategory category, String pictureUrl, int pictureIdx) {
         this.user = user;
         this.travel = travel;
-        this.category = category;
         this.pictureUrl = pictureUrl;
         this.pictureIdx = pictureIdx;
+    }
+    public static Picture create(String url, int i, Travel travel, User user) {
+        return Picture.builder()
+                .user(user)
+                .travel(travel)
+                .pictureUrl(url)
+                .pictureIdx(i)
+                .build();
     }
 }

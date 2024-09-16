@@ -16,7 +16,7 @@ public record GetPictureDto(
         @NotNull(message = "pictureUrl can not be null")
         @JsonProperty("picture_url") @Schema(description = "picture location url", example = "['http://www.boletto.com/picture.jpg']")
         List<String> pictureUrl,
-        @NotNull(message = "arrive can not be null")
+        @NotNull(message = "picture index can not be null")
         @JsonProperty("picture_idx") @Schema(description = "picture location index", example = "[0]")
         List<Integer> pictureIdx
 ) {
