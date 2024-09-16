@@ -11,13 +11,13 @@ import java.util.List;
 @Schema(name = "GetPictureDto", description = "request for getting pictures list")
 public record GetPictureDto(
         @NotNull(message = "travelId can not be null")
-        @JsonProperty("travelId") @Schema(description = "travel unique id", example = "1234")
+        @JsonProperty("travel_id") @Schema(description = "travel unique id", example = "1234")
         Long travelId,
         @NotNull(message = "pictureUrl can not be null")
-        @JsonProperty("pictureUrl") @Schema(description = "picture location url", example = "['http://www.boletto.com/picture.jpg']")
+        @JsonProperty("picture_url") @Schema(description = "picture location url", example = "['http://www.boletto.com/picture.jpg']")
         List<String> pictureUrl,
-        @NotNull(message = "arrive can not be null")
-        @JsonProperty("pictureIdx") @Schema(description = "picture location index", example = "[0]")
+        @NotNull(message = "picture index can not be null")
+        @JsonProperty("picture_idx") @Schema(description = "picture location index", example = "[0]")
         List<Integer> pictureIdx
 ) {
 }

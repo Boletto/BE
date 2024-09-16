@@ -129,13 +129,16 @@ public class TravelService {
         });
         return convertToGetTravelDto(postTravel);
     }
-
+    @Transactional
     public boolean deleteTravelList(Long travelId) {
         // delete travel data
-        travelRepository.deleteById(travelId);
-        // delete user data in UserTravel table
-        userTravelRepository.deleteAllByTravelId(travelId);
-
-        return false;
+        try {
+            travelRepository.deleteById(travelId);
+            // delete user data in UserTravel table
+            userTravelRepository.deleteAllByTravelId(travelId);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }
