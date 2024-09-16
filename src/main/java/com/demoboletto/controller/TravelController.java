@@ -16,24 +16,29 @@ import org.springframework.web.bind.annotation.*;
 public class TravelController {
     private final TravelService travelService;
 
-    @PostMapping("/")
+    @PostMapping("/create")
     @Operation(summary = "create new travel list", description = "Create new travel list if there are enough data to create travel data.")
     public ResponseDto<?> createTravelList(@RequestBody CreateTravelDto travelDto) {
         return travelService.createTravelList(travelDto) ? ResponseDto.ok("success") : ResponseDto.fail("existing data");
     }
-    @GetMapping(value = "/", params = "user_id")
+    @GetMapping(value = "/get/all", params = "user_id")
     @Operation(summary = "get all travel list", description = "Get all travel list.")
     public ResponseDto<?> getAllTravelList(@RequestParam(value = "user_id") Long userId) {
         return ResponseDto.ok(travelService.getAllTravelList(userId));
     }
-    @GetMapping(value = "/", params = "travel_id")
+    @GetMapping(value = "/get", params = "travel_id")
     @Operation(summary = "get one travel list", description = "Get one travel list.")
     public ResponseDto<?> getTravelList(@RequestParam(value = "travel_id") Long id) {
         return ResponseDto.ok(travelService.getTravelList(id));
     }
-    @PatchMapping("/")
+    @PatchMapping("/update")
     @Operation(summary = "update travel list", description = "Update travel list.")
     public ResponseDto<?> updateTravelList(@RequestBody UpdateTravelDto travelDto) {
         return ResponseDto.ok(travelService.updateTravelList(travelDto));
+    }
+    @DeleteMapping("/delete")
+    @Operation(summary = "delete travel list", description = "Delete travel list.")
+    public ResponseDto<?> deleteTravelList(@RequestParam(value = "travel_id") Long id) {
+        return ResponseDto.ok(travelService.deleteTravelList(id));
     }
 }

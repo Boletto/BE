@@ -35,7 +35,7 @@ public class TravelService {
     public boolean createTravelList(CreateTravelDto travelDto) {
         // check if travel data exists
         for (Long memberId : travelDto.members()) {
-            for (Travel travel : userTravelRepository.findAllByUserId(memberId)) {
+            for (Travel travel : userTravelRepository.findTravelsByUserId(memberId)) {
                 if (isOverlapping(travel.getStartDate(),travel.getEndDate(),travelDto.startDate(),travelDto.endDate())) {
                     return false;
                 }
@@ -63,7 +63,7 @@ public class TravelService {
         }
     }
     public List<GetTravelDto> getAllTravelList(Long userId) {
-        List<Travel> travel = userTravelRepository.findAllByUserId(userId);
+        List<Travel> travel = userTravelRepository.findTravelsByUserId(userId);
         List<GetTravelDto> travelList = new ArrayList<>();
         for (Travel t : travel) {
             travelList.add(convertToGetTravelDto(t));
@@ -85,7 +85,7 @@ public class TravelService {
                 .keyword(travel.getKeyword())
                 .startDate(travel.getStartDate())
                 .endDate(travel.getEndDate())
-                .members(userTravelRepository.findAllByTravelId(travel.getTravelId()))
+                .members(userTravelRepository.findUsersByTravelId(travel.getTravelId()))
                 .color(travel.getColor())
                 .build();
     }
@@ -97,7 +97,7 @@ public class TravelService {
 
         // check if travel data exists
         for (Long memberId : travelDto.members()) {
-            for (Travel travel : userTravelRepository.findAllByUserId(memberId)) {
+            for (Travel travel : userTravelRepository.findTravelsByUserId(memberId)) {
                 if (isOverlapping(travel.getStartDate(),travel.getEndDate(),travelDto.startDate(),travelDto.endDate())) {
                     if (!travel.getTravelId().equals(travelDto.travelId())) return null;
                 }
@@ -128,5 +128,14 @@ public class TravelService {
             userTravelRepository.save(UserTravel.create(user.get(), postTravel));
         });
         return convertToGetTravelDto(postTravel);
+    }
+
+    public boolean deleteTravelList(Long travelId) {
+        // delete travel data
+        travelRepository.deleteById(travelId);
+        // delete user data in UserTravel table
+        userTravelRepository.deleteAllByTravelId(travelId);
+
+        return false;
     }
 }
