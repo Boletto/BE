@@ -71,4 +71,10 @@ public class PictureService {
                 ));
         return pictureDtoList;
     }
+    @Transactional
+    public void deleteAllByTravelId(Long travelId) {
+        pictureRepository.findAllByTravelId(travelId).forEach(picture -> {
+            deletePicture(picture.getId());
+        });
+    }
 }

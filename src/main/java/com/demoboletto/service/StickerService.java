@@ -61,4 +61,8 @@ public class StickerService {
         }
         return newStickerList;
     }
+    @Transactional
+    public void deleteAllByTravelId(Long travelId) {
+        stickerRepository.deleteAllByTravelId(travelId);
+    }
 }

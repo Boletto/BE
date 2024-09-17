@@ -61,4 +61,8 @@ public class SpeechService {
         }
         return newSpeechList;
     }
+
+    public void deleteAllByTravelId(Long travelId) {
+        speechRepository.deleteAllByTravelId(travelId);
+    }
 }

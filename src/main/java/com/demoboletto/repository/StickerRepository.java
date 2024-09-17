@@ -11,4 +11,6 @@ import java.util.List;
 public interface StickerRepository extends JpaRepository<Sticker, Long> {
     @Query("select s from Sticker s where s.travel.travelId = :id")
     List<Sticker> findAllByTravelId(Long id);
+    @Query("delete from Sticker s where s.travel.travelId = :travelId")
+    void deleteAllByTravelId(Long travelId);
 }
