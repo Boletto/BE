@@ -29,12 +29,20 @@ public class MemoryService {
         return getMemoryDto;
     }
     @Transactional
-    public boolean memoryEditMode(MemoryEditDto pictureDto) {
-        Travel travel = travelRepository.findById(pictureDto.travelId())
+    public boolean memoryEditMode(MemoryEditDto memoryEditDto) {
+        // mode 변경시 unlock이 될때 스티커랑 말풍선 데이터도 넘어오고 같이 저장. 벌크 형식으로 다 삭제하고 다시 넣는 구조로//
+
+        Travel travel = travelRepository.findById(memoryEditDto.travelId())
                 .orElseThrow(() -> new IllegalArgumentException("travel not found"));
-        switch (pictureDto.status()) {
+        switch (memoryEditDto.status()) {
             case LOCK:
                 if (travel.getStatus() == EStatusType.LOCK) {
+                    return false;
+                }
+                // save sticker data to db & save speech data to db
+                boolean sticker = stickerService.createSticker(memoryEditDto.stickerList(), memoryEditDto.travelId());
+                boolean speech = speechService.createSpeech(memoryEditDto.speechList(), memoryEditDto.travelId());
+                if (!sticker || !speech) {
                     return false;
                 }
                 travel.setStatus(EStatusType.LOCK);

@@ -1,5 +1,6 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.dto.request.CreateStickerDto;
 import com.demoboletto.type.ESticker;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -44,5 +45,16 @@ public class Sticker {
         this.travel = travel;
         this.rotation = rotation;
         this.scale = scale;
+    }
+
+    public static Sticker create(CreateStickerDto stickerDto, Travel travel) {
+        return Sticker.builder()
+                .field(stickerDto.field())
+                .locX(stickerDto.locX())
+                .locY(stickerDto.locY())
+                .rotation(stickerDto.rotation())
+                .scale(stickerDto.scale())
+                .travel(travel)
+                .build();
     }
 }

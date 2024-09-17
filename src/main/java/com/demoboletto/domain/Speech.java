@@ -1,5 +1,6 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.dto.request.CreateSpeechDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,5 +43,15 @@ public class Speech {
         this.travel = travel;
         this.rotation = rotation;
         this.scale = scale;
+    }
+    public static Speech create(CreateSpeechDto speechDto, Travel travel) {
+        return Speech.builder()
+                .text(speechDto.text())
+                .locX(speechDto.locX())
+                .locY(speechDto.locY())
+                .rotation(speechDto.rotation())
+                .scale(speechDto.scale())
+                .travel(travel)
+                .build();
     }
 }
