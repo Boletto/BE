@@ -5,6 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ETravelStatus {
-    PROCESS, COMPLETED;
+public enum EStatusType {
+    LOCK, UNLOCK;
 }

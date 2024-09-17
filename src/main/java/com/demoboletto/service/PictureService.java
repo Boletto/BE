@@ -1,10 +1,17 @@
 package com.demoboletto.service;
 
+import com.demoboletto.domain.Picture;
+import com.demoboletto.dto.request.CreatePictureDto;
 import com.demoboletto.dto.response.GetPictureDto;
+import com.demoboletto.dto.response.GetStickerDto;
 import com.demoboletto.repository.PictureRepository;
+import com.demoboletto.repository.TravelRepository;
+import com.demoboletto.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,17 +19,62 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PictureService {
     private final PictureRepository pictureRepository;
+    private final TravelRepository travelRepository;
+    private final UserRepository userRepository;
+    private final AWSS3Service awsS3Service;
 
-    public List<GetPictureDto> getPicturesByTravelId(Long travelId) {
-        List<GetPictureDto> pictureList = new ArrayList<>();
-        pictureRepository.findAllByTraveld(travelId).forEach(picture -> {
-            pictureList.add(
-                    GetPictureDto.builder()
-                            .travelId(travelId)
-                            .pictureIdx(picture.getPictureIdx())
-                            .pictureUrl(picture.getPictureUrl())
-                            .build());
+    @Transactional
+    public boolean createPicture(CreatePictureDto createPictureDto) {
+        //save image to s3, create picture object && save picture object to db
+        try {
+            pictureRepository.save(
+                    Picture.create(awsS3Service.uploadFile(createPictureDto.pictureFile()),
+                            createPictureDto.pictureIdx(),
+                            travelRepository.findById(createPictureDto.travelId())
+                                    .orElseThrow(() -> new IllegalArgumentException("travel not found")),
+                            userRepository.findById(createPictureDto.userId())
+                                    .orElseThrow(() -> new IllegalArgumentException("user not found"))
+                    )
+            );
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+    @Transactional
+    public boolean deletePicture(Long pictureId) {
+        try {
+            // remove file from s3
+            String[] split = pictureRepository.findById(pictureId)
+                    .orElseThrow(() -> new IllegalArgumentException("picture not found"))
+                    .getPictureUrl()
+                    .split("/");
+            awsS3Service.deleteFile(split[split.length - 1]);
+            // remove picture object from db
+            pictureRepository.deleteById(pictureId);
+
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public List<GetPictureDto> getPictureList(Long travelId) {
+        List<GetPictureDto> pictureDtoList = new ArrayList<>();
+        pictureRepository.findAllByTravelId(travelId).forEach(picture ->
+                pictureDtoList.add(
+                        GetPictureDto.builder()
+                                .pictureId(picture.getId())
+                                .pictureUrl(picture.getPictureUrl())
+                                .pictureIdx(picture.getPictureIdx())
+                                .build()
+                ));
+        return pictureDtoList;
+    }
+    @Transactional
+    public void deleteAllByTravelId(Long travelId) {
+        pictureRepository.findAllByTravelId(travelId).forEach(picture -> {
+            deletePicture(picture.getId());
         });
-        return pictureList;
     }
 }
