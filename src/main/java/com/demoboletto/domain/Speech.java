@@ -1,7 +1,6 @@
 package com.demoboletto.domain;
 
-import com.demoboletto.dto.request.CreateStickerDto;
-import com.demoboletto.type.ESticker;
+import com.demoboletto.dto.request.CreateSpeechDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,18 +8,17 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "sticker")
+@Table(name = "Speech")
 @NoArgsConstructor
 @Getter
-public class Sticker {
+public class Speech {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "sticker_id")
-    private Long stickerId;
+    @Column(name = "speech_id")
+    private Long speechId;
 
-    @Column(name = "field")
-    @Enumerated(EnumType.STRING)
-    private ESticker field;
+    @Column(name = "text")
+    private String text;
 
     @Column(name = "loc_x")
     private float locX;
@@ -38,22 +36,21 @@ public class Sticker {
     @Column(name = "scale")
     private int scale;
     @Builder
-    public Sticker(ESticker field, float locX, float locY, Travel travel, int rotation, int scale) {
-        this.field = field;
+    public Speech(String text, float locX, float locY, Travel travel, int rotation, int scale) {
+        this.text = text;
         this.locX = locX;
         this.locY = locY;
         this.travel = travel;
         this.rotation = rotation;
         this.scale = scale;
     }
-
-    public static Sticker create(CreateStickerDto stickerDto, Travel travel) {
-        return Sticker.builder()
-                .field(stickerDto.field())
-                .locX(stickerDto.locX())
-                .locY(stickerDto.locY())
-                .rotation(stickerDto.rotation())
-                .scale(stickerDto.scale())
+    public static Speech create(CreateSpeechDto speechDto, Travel travel) {
+        return Speech.builder()
+                .text(speechDto.text())
+                .locX(speechDto.locX())
+                .locY(speechDto.locY())
+                .rotation(speechDto.rotation())
+                .scale(speechDto.scale())
                 .travel(travel)
                 .build();
     }
