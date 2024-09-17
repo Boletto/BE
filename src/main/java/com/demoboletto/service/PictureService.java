@@ -3,13 +3,13 @@ package com.demoboletto.service;
 import com.demoboletto.domain.Picture;
 import com.demoboletto.dto.request.CreatePictureDto;
 import com.demoboletto.dto.response.GetPictureDto;
-import com.demoboletto.dto.response.GetStickerDto;
 import com.demoboletto.repository.PictureRepository;
 import com.demoboletto.repository.TravelRepository;
 import com.demoboletto.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,11 +24,11 @@ public class PictureService {
     private final AWSS3Service awsS3Service;
 
     @Transactional
-    public boolean createPicture(CreatePictureDto createPictureDto) {
+    public boolean createPicture(CreatePictureDto createPictureDto, MultipartFile file) {
         //save image to s3, create picture object && save picture object to db
         try {
             pictureRepository.save(
-                    Picture.create(awsS3Service.uploadFile(createPictureDto.pictureFile()),
+                    Picture.create(awsS3Service.uploadFile(file),
                             createPictureDto.pictureIdx(),
                             travelRepository.findById(createPictureDto.travelId())
                                     .orElseThrow(() -> new IllegalArgumentException("travel not found")),
