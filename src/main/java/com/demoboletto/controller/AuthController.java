@@ -3,6 +3,7 @@ package com.demoboletto.controller;
 import com.demoboletto.annotation.UserId;
 import com.demoboletto.constants.Constants;
 import com.demoboletto.dto.global.ResponseDto;
+import com.demoboletto.dto.request.AuthSignUpDto;
 import com.demoboletto.dto.request.OauthLoginDto;
 import com.demoboletto.dto.response.JwtTokenDto;
 import com.demoboletto.exception.CommonException;
@@ -33,12 +34,21 @@ public class AuthController {
         return ResponseDto.ok(authService.checkDuplicate(email));
     }
 
+    @PostMapping("/auth/sign-up")
+    @Operation(summary = "Default 회원가입", description = "Default 회원가입을 진행합니다.")
+    public ResponseDto<?> signUp(
+            @RequestBody @Valid AuthSignUpDto authSignUpDto
+    ) {
+        authService.signUp(authSignUpDto);
+
+        return ResponseDto.ok(null);
+    }
+
     @PostMapping("/oauth/login")
     @Operation(summary = "소셜로그인", description = "클라이언트 사이드 인증을 통한 소셜 로그인")
     @Schema(name = "login", description = "로그인")
     public ResponseDto<?> login(@RequestBody OauthLoginDto userloginDto) {
         return ResponseDto.ok(authService.login(userloginDto));
     }
-
 
 }
