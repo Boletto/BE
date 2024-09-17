@@ -30,7 +30,7 @@ public class TravelService {
     private final PictureService pictureService;
     private final StickerService stickerService;
     private final SpeechService speechService;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final ZonedDateTime nowKorea = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 //    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -114,7 +114,7 @@ public class TravelService {
         //get user list in UserTravel table
         userTravelRepository.findAllByTravelId(travelDto.travelId()).forEach(member -> {
             // if member is not in the new member list, delete the member from UserTravel table
-            if (!travelDto.members().contains(member.getId())) {
+            if (!travelDto.members().contains(member.getUser().getId())) {
                 userTravelRepository.delete(userTravelRepository.findByUserIdAndTravelId(member.getId(), travelDto.travelId()));
             } else {
             // if member is in the new member list, delete the member from the new member list
@@ -136,7 +136,6 @@ public class TravelService {
     public boolean deleteTravelList(Long travelId) {
         // delete travel data
         try {
-            travelRepository.deleteById(travelId);
             // delete user data in UserTravel table
             userTravelRepository.deleteAllByTravelId(travelId);
             // delete picture data in Picture table
@@ -145,6 +144,8 @@ public class TravelService {
             stickerService.deleteAllByTravelId(travelId);
             // delete speech data in Speech table
             speechService.deleteAllByTravelId(travelId);
+
+            travelRepository.deleteById(travelId);
 
         } catch (Exception e) {
             return false;
