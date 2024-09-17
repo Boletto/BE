@@ -19,8 +19,8 @@ public record CreatePictureDto(
         @JsonProperty("travel_id") @Schema(description = "travel unique id", example = "1234")
         Long travelId,
         @NotNull(message = "picture files can not be null")
-        @JsonProperty("picture_files") @Schema(description = "picture files list", example = "files1")
-        MultipartFile pictureFiles,
+        @JsonProperty("picture_file") @Schema(description = "picture files list", example = "files1")
+        MultipartFile pictureFile,
         @NotNull(message = "picture index can not be null")
         @JsonProperty("picture_idx") @Schema(description = "picture location index", example = "0")
         int pictureIdx

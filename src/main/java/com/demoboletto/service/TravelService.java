@@ -27,6 +27,9 @@ public class TravelService {
     private final TravelRepository travelRepository;
     private final UserTravelRepository userTravelRepository;
     private final UserRepository userRepository;
+    private final PictureService pictureService;
+    private final StickerService stickerService;
+    private final SpeechService speechService;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
     private final ZonedDateTime nowKorea = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 //    private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -136,6 +139,13 @@ public class TravelService {
             travelRepository.deleteById(travelId);
             // delete user data in UserTravel table
             userTravelRepository.deleteAllByTravelId(travelId);
+            // delete picture data in Picture table
+            pictureService.deleteAllByTravelId(travelId);
+            // delete sticker data in Sticker table
+            stickerService.deleteAllByTravelId(travelId);
+            // delete speech data in Speech table
+            speechService.deleteAllByTravelId(travelId);
+
         } catch (Exception e) {
             return false;
         }

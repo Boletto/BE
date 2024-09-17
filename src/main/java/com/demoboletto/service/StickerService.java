@@ -1,10 +1,9 @@
 package com.demoboletto.service;
 
-import com.demoboletto.domain.Speech;
 import com.demoboletto.domain.Sticker;
 import com.demoboletto.domain.Travel;
-import com.demoboletto.dto.request.CreateSpeechDto;
 import com.demoboletto.dto.request.CreateStickerDto;
+import com.demoboletto.dto.response.GetStickerDto;
 import com.demoboletto.repository.StickerRepository;
 import com.demoboletto.repository.TravelRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +19,20 @@ public class StickerService {
     private final StickerRepository stickerRepository;
     private final TravelRepository travelRepository;
 
-    public List<Sticker> getStickerList(Long travelId) {
-        return stickerRepository.findAllByTravelId(travelId);
+    public List<GetStickerDto> getStickerList(Long travelId) {
+        List<GetStickerDto> stickerDtoList = new ArrayList<>();
+        stickerRepository.findAllByTravelId(travelId).forEach(sticker ->
+                stickerDtoList.add(
+                        GetStickerDto.builder()
+                                .stickerId(sticker.getStickerId())
+                                .field(sticker.getField())
+                                .locX(sticker.getLocX())
+                                .locY(sticker.getLocY())
+                                .scale(sticker.getScale())
+                                .rotation(sticker.getRotation())
+                                .build()
+                ));
+        return stickerDtoList;
     }
     @Transactional
     public boolean createSticker(List<CreateStickerDto> stickerDtoList, Long travelId) {
@@ -49,5 +60,9 @@ public class StickerService {
             );
         }
         return newStickerList;
+    }
+    @Transactional
+    public void deleteAllByTravelId(Long travelId) {
+        stickerRepository.deleteAllByTravelId(travelId);
     }
 }

@@ -3,13 +3,13 @@ package com.demoboletto.service;
 import com.demoboletto.domain.Speech;
 import com.demoboletto.domain.Travel;
 import com.demoboletto.dto.request.CreateSpeechDto;
+import com.demoboletto.dto.response.GetSpeechDto;
 import com.demoboletto.repository.SpeechRepository;
 import com.demoboletto.repository.TravelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +19,20 @@ public class SpeechService {
     private final SpeechRepository speechRepository;
     private final TravelRepository travelRepository;
 
-    public List<Speech> getSpeechList(Long travelId) {
-        return speechRepository.findAllByTravelId(travelId);
+    public List<GetSpeechDto> getSpeechList(Long travelId) {
+        List<GetSpeechDto> speechDtoList = new ArrayList<>();
+        speechRepository.findAllByTravelId(travelId).forEach(speech ->
+                speechDtoList.add(
+                        GetSpeechDto.builder()
+                                .speechId(speech.getSpeechId())
+                                .text(speech.getText())
+                                .locX(speech.getLocX())
+                                .locY(speech.getLocY())
+                                .scale(speech.getScale())
+                                .rotation(speech.getRotation())
+                                .build()
+                ));
+        return speechDtoList;
     }
     @Transactional
     public boolean createSpeech(List<CreateSpeechDto> speechList, Long travelId) {
@@ -48,5 +60,9 @@ public class SpeechService {
             );
         }
         return newSpeechList;
+    }
+
+    public void deleteAllByTravelId(Long travelId) {
+        speechRepository.deleteAllByTravelId(travelId);
     }
 }

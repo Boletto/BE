@@ -22,9 +22,9 @@ public class MemoryService {
         // get picture data from db & get sticker data from db & get speech data from db
         GetMemoryDto getMemoryDto = GetMemoryDto.builder()
                 .travelId(travelId)
-                .pictures(pictureService.getPictureList(travelId))
-                .stickers(stickerService.getStickerList(travelId))
-                .speeches(speechService.getSpeechList(travelId))
+                .pictureList(pictureService.getPictureList(travelId))
+                .stickerList(stickerService.getStickerList(travelId))
+                .speechList(speechService.getSpeechList(travelId))
                 .build();
         return getMemoryDto;
     }

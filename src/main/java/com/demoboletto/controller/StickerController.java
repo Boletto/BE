@@ -12,5 +12,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/travel/memory/sticker")
 public class StickerController {
     private final StickerService stickerService;
-
 }

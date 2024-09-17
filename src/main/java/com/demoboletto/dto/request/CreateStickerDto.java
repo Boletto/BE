@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-@Schema(name = "CreatePictureDto", description = "request for saving  picture")
+@Schema(name = "CreateStickerDto", description = "request for creating sticker")
 public record CreateStickerDto(
         @NotNull(message = "field can not be null")
         @Enumerated(EnumType.STRING)

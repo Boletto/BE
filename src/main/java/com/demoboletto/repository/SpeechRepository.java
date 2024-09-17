@@ -11,5 +11,7 @@ import java.util.List;
 public interface SpeechRepository extends JpaRepository<Speech, Long> {
     @Query("select s from Speech s where s.travel.travelId = :id")
     List<Speech> findAllByTravelId(Long id);
+    @Query("delete from Speech s where s.travel.travelId = :travelId")
+    void deleteAllByTravelId(Long travelId);
 
 }
