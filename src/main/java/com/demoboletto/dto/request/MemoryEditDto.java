@@ -7,11 +7,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 @Schema(name = "EditPictureDto", description = "request for editing  picture")
-public record EditPictureDto(
+public record MemoryEditDto(
         @NotNull(message = "userId can not be null")
         @JsonProperty("user_id") @Schema(description = "user unique id", example = "1234")
         Long userId,
