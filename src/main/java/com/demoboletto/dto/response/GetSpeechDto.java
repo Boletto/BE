@@ -1,4 +1,4 @@
-package com.demoboletto.dto.request;
+package com.demoboletto.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,8 +6,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-@Schema(name = "CreateSpeechDto", description = "request for creating speech")
-public record CreateSpeechDto(
+@Schema(name = "GetSpeechDto", description = "request for getting speech")
+public record GetSpeechDto(
+        @NotNull(message = "speechId can not be null")
+        @JsonProperty("speech_id") @Schema(description = "speech unique id", example = "1234")
+        Long speechId,
         @NotNull(message = "text can not be null")
         @JsonProperty("text") @Schema(description = "speech text", example = "hello")
         String text,

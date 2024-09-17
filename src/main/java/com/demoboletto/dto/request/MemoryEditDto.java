@@ -1,7 +1,5 @@
 package com.demoboletto.dto.request;
 
-import com.demoboletto.domain.Speech;
-import com.demoboletto.domain.Sticker;
 import com.demoboletto.type.EStatusType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,7 +11,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-@Schema(name = "EditPictureDto", description = "request for editing  picture")
+@Schema(name = "MemoryEditDto", description = "request for editing memory")
 public record MemoryEditDto(
         @NotNull(message = "userId can not be null")
         @JsonProperty("user_id") @Schema(description = "user unique id", example = "1234")

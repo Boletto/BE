@@ -3,7 +3,6 @@ package com.demoboletto.controller;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.CreatePictureDto;
 import com.demoboletto.service.PictureService;
-import com.demoboletto.service.StickerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

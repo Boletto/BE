@@ -2,6 +2,8 @@ package com.demoboletto.service;
 
 import com.demoboletto.domain.Picture;
 import com.demoboletto.dto.request.CreatePictureDto;
+import com.demoboletto.dto.response.GetPictureDto;
+import com.demoboletto.dto.response.GetStickerDto;
 import com.demoboletto.repository.PictureRepository;
 import com.demoboletto.repository.TravelRepository;
 import com.demoboletto.repository.UserRepository;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,7 +28,7 @@ public class PictureService {
         //save image to s3, create picture object && save picture object to db
         try {
             pictureRepository.save(
-                    Picture.create(awsS3Service.uploadFile(createPictureDto.pictureFiles()),
+                    Picture.create(awsS3Service.uploadFile(createPictureDto.pictureFile()),
                             createPictureDto.pictureIdx(),
                             travelRepository.findById(createPictureDto.travelId())
                                     .orElseThrow(() -> new IllegalArgumentException("travel not found")),
@@ -56,7 +59,16 @@ public class PictureService {
         return true;
     }
 
-    public List<Picture> getPictureList(Long travelId) {
-        return pictureRepository.findAllByTraveld(travelId);
+    public List<GetPictureDto> getPictureList(Long travelId) {
+        List<GetPictureDto> pictureDtoList = new ArrayList<>();
+        pictureRepository.findAllByTravelId(travelId).forEach(picture ->
+                pictureDtoList.add(
+                        GetPictureDto.builder()
+                                .pictureId(picture.getId())
+                                .pictureUrl(picture.getPictureUrl())
+                                .pictureIdx(picture.getPictureIdx())
+                                .build()
+                ));
+        return pictureDtoList;
     }
 }
