@@ -14,6 +14,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
@@ -46,7 +47,6 @@ public class AppleService {
     @Value("${apple.login-key}")
     private String APPLE_LOGIN_KEY;
 
-    @Getter
     @Value("${apple.client-id}")
     private String APPLE_CLIENT_ID;
 
@@ -89,8 +89,10 @@ public class AppleService {
 
             if (existingUser.isPresent()) {
                 user = existingUser.get();
+                String refreshToken = jwtUtil.generateRefreshToken(user.getId(), user.getRole());
+
                 // RefreshToken 업데이트
-                userRepository.updateRefreshTokenAndLoginStatus(user.getId(), generateRefreshToken(user), true);
+                userRepository.updateRefreshTokenAndLoginStatus(user.getId(), refreshToken, true);
             } else {
                 // 신규 회원 가입
                 user = userRepository.save(User.builder()

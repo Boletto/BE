@@ -6,6 +6,7 @@ import com.demoboletto.type.ERole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import java.util.Date;
 
 @Component
 public class JwtUtil implements InitializingBean {
+
     @Value("${jwt.secret-key}")
     private String secretKey;
 
@@ -64,6 +66,16 @@ public class JwtUtil implements InitializingBean {
                 generateToken(id, role, accessExpiration),
                 generateToken(id, role, refreshExpiration)
         );
+    }
+
+    public String generateRefreshToken(Long userId, ERole role) {
+        return Jwts.builder()
+                .setSubject(userId.toString())
+                .claim("role", role.name())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
     }
 
     public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
