@@ -24,10 +24,10 @@ public record MemoryEditDto(
         @JsonProperty("status") @Schema(description = "picture edit status", example = "LOCK")
         EStatusType status,
         @NotNull(message = "sticker can not be null")
-        @JsonProperty("sticker") @Schema(description = "sticker list", example = "[sticker1, sticker2]")
+        @JsonProperty("sticker_list") @Schema(description = "sticker list", example = "[sticker1, sticker2]")
         List<CreateStickerDto> stickerList,
         @NotNull(message = "speech can not be null")
-        @JsonProperty("speech") @Schema(description = "speech list", example = "[speech1, speech2]")
+        @JsonProperty("speech_list") @Schema(description = "speech list", example = "[speech1, speech2]")
         List<CreateSpeechDto> speechList
 
 

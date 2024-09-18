@@ -31,7 +31,7 @@ public class AWSS3Service {
                         .bucket(bucketName)
                         .key(fileName)
                         .contentType(file.getContentType())
-                        .acl("public-read")
+//                        .acl("public-read")
                         .build(),
                 tempFile);
         return "https://" + bucketName + ".s3."+region+".amazonaws.com/" + fileName;
