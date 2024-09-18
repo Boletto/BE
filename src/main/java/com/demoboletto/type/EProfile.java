@@ -12,6 +12,7 @@ public enum EProfile {
     Purple("Purple");
 
     private final String color;
+
     @Override
     public String toString() {
         return color;
