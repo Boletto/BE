@@ -21,17 +21,16 @@ import java.util.Optional;
 public class AuthService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public boolean checkDuplicate(String email) {
         return userRepository.existsBySerialId(email);
     }
 
-    public void signUp(AuthSignUpDto authSignUpDto) {
-        userRepository.save(
-                User.signUp(authSignUpDto, bCryptPasswordEncoder.encode(authSignUpDto.password()))
-        );
-    }
+//    public void signUp(AuthSignUpDto authSignUpDto) {
+//        userRepository.save(
+//                User.signUp(authSignUpDto, bCryptPasswordEncoder.encode(authSignUpDto.password()))
+//        );
+//    }
 
     @Transactional
     public JwtTokenDto login(OauthLoginDto userLoginDto) {
@@ -43,12 +42,15 @@ public class AuthService {
         if (existingUser.isPresent()) {
             user = existingUser.get();
         } else {
+            // 새로운 사용자인 경우 회원 정보 저장
             user = userRepository.save(User.signUp(userLoginDto.serialId(), userLoginDto.provider()));
             isNewUser = true;
         }
 
+        //JWT 토큰 생성
         JwtTokenDto jwtTokenDto = jwtUtil.generateTokens(user.getId(), ERole.USER);
 
+        // 신규 사용자이거나 리프레시 토큰이 변경된 경우 갱신
         if (isNewUser || !jwtTokenDto.refreshToken().equals(user.getRefreshToken())) {
             userRepository.updateRefreshTokenAndLoginStatus(user.getId(), jwtTokenDto.refreshToken(), true);
         }

@@ -1,6 +1,7 @@
 package com.demoboletto.repository;
 
 import com.demoboletto.domain.User;
+import com.demoboletto.type.EProvider;
 import com.demoboletto.type.ERole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,6 +16,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findBySerialId(String serialId);
     Boolean existsBySerialId(String serialId);
+
+    Optional<User> findByProviderAndSerialId(EProvider provider, String serialId);
 
     User findByNickname(String nickname);
 
