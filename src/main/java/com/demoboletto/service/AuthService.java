@@ -43,7 +43,7 @@ public class AuthService {
             user = existingUser.get();
         } else {
             // 새로운 사용자인 경우 회원 정보 저장
-            user = userRepository.save(User.signUp(userLoginDto.serialId(), userLoginDto.provider()));
+            user = userRepository.save(User.signUp(userLoginDto.serialId(), userLoginDto.provider(), userLoginDto.nickname()));
             isNewUser = true;
         }
 

@@ -14,6 +14,9 @@ public record OauthLoginDto(
         String serialId,
         @NotNull(message = "provider는 null 값이 될 수 없습니다.")
         @JsonProperty("provider") @Schema(description = "프로바이더(소셜로그인 제공자)", example = "KAKAO")
-        EProvider provider
+        EProvider provider,
+        @NotNull(message = "nickname은 null 값이 될 수 없습니다.")
+        @JsonProperty("nickname") @Schema(description = "유저의 닉네임", example = "leedaeun")
+        String nickname
 ) {
 }
