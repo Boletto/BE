@@ -45,8 +45,8 @@ public class AuthController {
         return ResponseDto.ok(authService.login(userloginDto));
     }
 
-    @PostMapping("/callback/apple")
-    @Operation(summary = "callback", description = "로그인 성공 . authorization code를 service 단에 넘겨줌")
+    @PostMapping("/oauth2/callback/apple")
+    @Operation(summary = "callback", description = "로그인 성공, authorization code를 service 단에 넘겨줌")
     public ResponseDto<?> callback(HttpServletRequest request, HttpServletResponse response) {
 
         // 애플 회원가입 또는 로그인 실패

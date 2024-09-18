@@ -43,10 +43,10 @@ public class User {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "nickname", nullable = false)
+    @Column(name = "nickname")
     private String nickname;
 
     @Column(name = "refresh_token")
@@ -95,24 +95,23 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
-//    public static User signUp(AuthSignUpDto authSignUpDto, String encodedPassword) {
-//        return User.builder()
-//                .serialId(authSignUpDto.serialId())
-//                .password(encodedPassword)
-//                .provider(EProvider.DEFAULT)
-//                .role(ERole.USER)
-//                .build();
-//    }
 
     // 소셜 로그인
-    public static User signUp(String serialId, EProvider provider) {
+    public static User signUp(String serialId, EProvider provider, String nickname) {
         return User.builder()
                 .serialId(serialId)
                 .provider(provider)
                 .password(null)
+                .nickname(nickname)
+                .name("Default_Name")
                 .role(ERole.USER)
                 .build();
     }
 
+    public void updateProfile(String nickname, String name, EProfile userProfile) {
+        this.nickname = nickname;
+        this.name = name;
+        this.userProfile = userProfile;
+    }
 
 }

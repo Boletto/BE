@@ -24,6 +24,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -78,11 +79,17 @@ public class SecurityConfig {
                                 .authenticationEntryPoint(customAuthenticationEntryPointHandler))
 
                 // JWT 필터 추가
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, jwtAuthenticationManager), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class)
-                .addFilterBefore(new GlobalLoggerFilter(), JwtExceptionFilter.class)
+                .addFilterBefore(
+                        new JwtAuthenticationFilter(jwtUtil, jwtAuthenticationManager),
+                        LogoutFilter.class)
+                .addFilterBefore(
+                        new JwtExceptionFilter(),
+                        JwtAuthenticationFilter.class)
+                .addFilterBefore(
+                        new GlobalLoggerFilter(),
+                        JwtExceptionFilter.class)
 
-                .build();
+                .getOrBuild();
     }
 
 

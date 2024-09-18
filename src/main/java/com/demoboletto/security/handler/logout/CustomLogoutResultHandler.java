@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -19,13 +21,20 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class CustomLogoutResultHandler implements LogoutSuccessHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomLogoutResultHandler.class);
+
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         // 애초에 로그인이 안된 경우
         if (authentication == null) {
+            logger.error("로그아웃 실패 - Authentication 객체가 null입니다. 요청 URL: {}", request.getRequestURI());
+
             setFailureResponse(response);
             return;
         }
+
+        logger.info("로그아웃 성공 - 사용자가 로그아웃 했습니다. 요청 URL: {}", request.getRequestURI());
         setSuccessResponse(response);
     }
 
