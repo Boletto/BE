@@ -6,8 +6,10 @@ import com.demoboletto.type.ERole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,7 @@ import java.util.Date;
 
 @Component
 public class JwtUtil implements InitializingBean {
+
     @Value("${jwt.secret-key}")
     private String secretKey;
 
@@ -28,7 +31,9 @@ public class JwtUtil implements InitializingBean {
     @Value("${jwt.refresh-token.expire-period}")
     @Getter
     private Integer refreshExpiration;
+
     private Key key;
+
     @Override
     public void afterPropertiesSet() throws Exception {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -41,6 +46,7 @@ public class JwtUtil implements InitializingBean {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
     public String generateToken(Long id, ERole role, Integer expiration){
         Claims claims = Jwts.claims();
         claims.put(Constants.CLAIM_USER_ID, id);
@@ -61,4 +67,20 @@ public class JwtUtil implements InitializingBean {
                 generateToken(id, role, refreshExpiration)
         );
     }
+
+    public String generateRefreshToken(Long userId, ERole role) {
+        return Jwts.builder()
+                .setSubject(userId.toString())
+                .claim("role", role.name())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
+    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
+        response.setHeader("Authorization", "Bearer " + accessToken);
+        response.setHeader("Refresh-Token", refreshToken);
+    }
+
 }
