@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,8 +18,8 @@ public class PictureController {
 
     @PostMapping("/save")
     @Operation(summary = "save picture", description = "save picture in the travel.")
-    public ResponseDto<?> createPictureList(@RequestBody CreatePictureDto pictureDto) {
-        return pictureService.createPicture(pictureDto) ? ResponseDto.ok("success") : ResponseDto.fail("fail");
+    public ResponseDto<?> createPictureList(@RequestPart(value = "data") CreatePictureDto pictureDto, @RequestPart(required = false, value = "picture_file") MultipartFile picture_file) {
+        return pictureService.createPicture(pictureDto,picture_file) ? ResponseDto.ok("success") : ResponseDto.fail("fail");
     }
     @DeleteMapping("/delete")
     @Operation(summary = "delete picture", description = "delete picture in the travel.")

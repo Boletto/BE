@@ -39,16 +39,16 @@ public class MemoryService {
                 if (travel.getStatus() == EStatusType.LOCK) {
                     return false;
                 }
+                travel.setStatus(EStatusType.LOCK);
+                travelRepository.save(travel);
+                return true;
+            case UNLOCK:
                 // save sticker data to db & save speech data to db
                 boolean sticker = stickerService.createSticker(memoryEditDto.stickerList(), memoryEditDto.travelId());
                 boolean speech = speechService.createSpeech(memoryEditDto.speechList(), memoryEditDto.travelId());
                 if (!sticker || !speech) {
                     return false;
                 }
-                travel.setStatus(EStatusType.LOCK);
-                travelRepository.save(travel);
-                return true;
-            case UNLOCK:
                 travel.setStatus(EStatusType.UNLOCK);
                 travelRepository.save(travel);
                 return true;
