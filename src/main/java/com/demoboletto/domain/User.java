@@ -95,16 +95,16 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
+//    public static User signUp(AuthSignUpDto authSignUpDto, String encodedPassword) {
+//        return User.builder()
+//                .serialId(authSignUpDto.serialId())
+//                .password(encodedPassword)
+//                .provider(EProvider.DEFAULT)
+//                .role(ERole.USER)
+//                .build();
+//    }
 
-    public static User signUp(AuthSignUpDto authSignUpDto, String encodedPassword) {
-        return User.builder()
-                .serialId(authSignUpDto.serialId())
-                .password(encodedPassword)
-                .provider(EProvider.DEFAULT)
-                .role(ERole.USER)
-                .build();
-    }
-
+    // 소셜 로그인
     public static User signUp(String serialId, EProvider provider) {
         return User.builder()
                 .serialId(serialId)
