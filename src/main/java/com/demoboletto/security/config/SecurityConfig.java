@@ -58,12 +58,12 @@ public class SecurityConfig {
                                 .anyRequest().authenticated())
 
                 // 소셜 로그인 설정
-                .oauth2Login(oauth2 -> oauth2
-                        .successHandler(oAuth2LoginSuccessHandler)  // 성공 시 핸들러
-                        .failureHandler(oAuth2LoginFailureHandler)  // 실패 시 핸들러
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService))  // 사용자 정보 처리
-                )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .successHandler(oAuth2LoginSuccessHandler)  // 성공 시 핸들러
+//                        .failureHandler(oAuth2LoginFailureHandler)  // 실패 시 핸들러
+//                        .userInfoEndpoint(userInfo -> userInfo
+//                                .userService(customOAuth2UserService))  // 사용자 정보 처리
+//                )
 
                 // 로그아웃 처리
                 .logout(configurer ->

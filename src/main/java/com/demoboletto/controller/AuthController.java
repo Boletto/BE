@@ -33,6 +33,7 @@ public class AuthController {
 
     // Apple 로그인 요청을 리디렉션
     @GetMapping("/oauth2/login/apple")
+    @Operation(summary = "애플 로그인", description = "애플 로그인")
     public void loginRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         redirectStrategy.sendRedirect(request, response, appleService.getAppleLoginUrl());
     }
