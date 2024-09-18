@@ -95,14 +95,6 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
-//    public static User signUp(AuthSignUpDto authSignUpDto, String encodedPassword) {
-//        return User.builder()
-//                .serialId(authSignUpDto.serialId())
-//                .password(encodedPassword)
-//                .provider(EProvider.DEFAULT)
-//                .role(ERole.USER)
-//                .build();
-//    }
 
     // 소셜 로그인
     public static User signUp(String serialId, EProvider provider, String nickname) {
@@ -116,5 +108,10 @@ public class User {
                 .build();
     }
 
+    public void updateProfile(String nickname, String name, EProfile userProfile) {
+        this.nickname = nickname;
+        this.name = name;
+        this.userProfile = userProfile;
+    }
 
 }
