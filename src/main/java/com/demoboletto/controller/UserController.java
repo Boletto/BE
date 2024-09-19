@@ -41,7 +41,7 @@ public class UserController {
         return ResponseEntity.ok(ResponseDto.ok("프로필이 성공적으로 업데이트되었습니다."));
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/frames")
     @Operation(summary = "Get User collected Frames", description = "유저가 획득한 프레임과 개수를 가져오는 API")
     public ResponseEntity<?> getCollectedFrames(@PathVariable Long userId) {
         List<EFrame> frames = collectService.getCollectedFrames(userId);
