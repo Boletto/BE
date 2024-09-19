@@ -22,9 +22,12 @@ public class Friend {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "friend_type")
-    @Enumerated(EnumType.STRING)
-    private EFriendType friendType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "friend_user_id")
+    private User friendUser;
+
+    @Column(name = "friend_nickname")
+    private String friendNickname;
 
     @Column(name = "friend_name")
     private String friendName;
@@ -34,10 +37,11 @@ public class Friend {
     private EProfile friendProfile;
 
     @Builder
-    public Friend(User user, EFriendType friendType, String friendName, EProfile friendProfile) {
+    public Friend(User user, User friendUser, String friendName, String friendNickname, EProfile friendProfile) {
         this.user = user;
-        this.friendType = friendType;
+        this.friendUser = friendUser;
         this.friendProfile = friendProfile;
         this.friendName = friendName;
+        this.friendNickname = friendNickname;
     }
 }
