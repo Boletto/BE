@@ -50,23 +50,13 @@ public class AppleService {
     @Value("${apple.client-id}")
     private String APPLE_CLIENT_ID;
 
-    @Value("${apple.redirect-url}")
-    private String APPLE_REDIRECT_URL;
-
     @Value("${apple.key-path}")
     private String APPLE_KEY_PATH;
 
     private final static String APPLE_AUTH_URL = "https://appleid.apple.com";
 
-    public String getAppleLoginUrl() {
-        return APPLE_AUTH_URL + "/auth/authorize"
-                + "?client_id=" + APPLE_CLIENT_ID
-                + "&redirect_uri=" + APPLE_REDIRECT_URL
-                + "&response_type=code%20id_token&scope=name%20email&response_mode=form_post";
-    }
-
-    public User loginwithApple(String code, HttpServletResponse response) {
-
+    // 리다이렉트 URL 없이 authorization code 받아 처리
+    public User loginWithApple(String code, String idToken, HttpServletResponse response) {
         String userId;
         String email;
         String accessToken;
@@ -74,12 +64,8 @@ public class AppleService {
         User user;
 
         try {
-            // Apple로부터 토큰 정보를 받아옴
-            JSONObject jsonObj = new JSONObject(generateAuthToken(code));
-            accessToken = jsonObj.getString("access_token");
-
             // ID TOKEN을 통해 회원 고유 식별자 받기
-            SignedJWT signedJWT = SignedJWT.parse(String.valueOf(jsonObj.get("id_token")));
+            SignedJWT signedJWT = SignedJWT.parse(idToken);
             JWTClaimsSet getPayload = signedJWT.getJWTClaimsSet();
 
             userId = getPayload.getSubject();  // 'sub' 값을 통해 애플 사용자 ID 가져오기
@@ -113,45 +99,12 @@ public class AppleService {
     }
 
     public void loginSuccess(User user, HttpServletResponse response) {
-
         String accessToken = jwtUtil.generateToken(user.getId(), user.getRole(), jwtUtil.getAccessExpiration());
         String refreshToken = jwtUtil.generateToken(user.getId(), user.getRole(), jwtUtil.getRefreshExpiration());
 
         // AccessToken과 RefreshToken을 응답 헤더에 추가
         jwtUtil.sendAccessAndRefreshToken(response, accessToken, refreshToken);
         userRepository.updateRefreshTokenAndLoginStatus(user.getId(), refreshToken, true);
-    }
-
-
-    public String generateAuthToken(String code) throws IOException {
-        if (code == null) throw new IllegalArgumentException("Failed get authorization code");
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", APPLE_CLIENT_ID);
-        params.add("client_secret", createClientSecretKey());
-        params.add("code", code);
-        params.add("redirect_uri", APPLE_REDIRECT_URL);
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, headers);
-
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(
-                    APPLE_AUTH_URL + "/auth/token",
-                    HttpMethod.POST,
-                    httpEntity,
-                    String.class
-            );
-
-            return response.getBody();
-        } catch (HttpClientErrorException e) {
-            throw new IllegalArgumentException("Apple Auth Token Error");
-        }
     }
 
     public String createClientSecretKey() throws IOException {
@@ -184,6 +137,4 @@ public class AppleService {
 
         return converter.getPrivateKey(object);
     }
-
-
 }

@@ -21,6 +21,7 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,11 +33,11 @@ public class AuthController {
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     // Apple 로그인 요청을 리디렉션
-    @GetMapping("/oauth2/login/apple")
-    @Operation(summary = "애플 로그인", description = "애플 로그인")
-    public void loginRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        redirectStrategy.sendRedirect(request, response, appleService.getAppleLoginUrl());
-    }
+//    @GetMapping("/oauth2/login/apple")
+//    @Operation(summary = "애플 로그인", description = "애플 로그인")
+//    public void loginRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        redirectStrategy.sendRedirect(request, response, appleService.getAppleLoginUrl());
+//    }
 
     @PostMapping("/oauth/login")
     @Operation(summary = "소셜로그인", description = "클라이언트 사이드 인증을 통한 소셜 로그인")
@@ -46,11 +47,13 @@ public class AuthController {
     }
 
     @PostMapping("/oauth2/callback/apple")
-    @Operation(summary = "callback", description = "로그인 성공, authorization code를 service 단에 넘겨줌")
-    public ResponseDto<?> callback(HttpServletRequest request, HttpServletResponse response) {
+    @Operation(summary = "애플 로그인 콜백", description = "클라이언트에서 받은 code 및 id_token을 통해 애플 로그인 처리")
+    public ResponseDto<?> callback(@RequestBody Map<String, String> tokens, HttpServletResponse response) {
+        String code = tokens.get("code");
+        String idToken = tokens.get("id_token");
 
         // 애플 회원가입 또는 로그인 실패
-        if (appleService.loginwithApple(request.getParameter("code"), response) == null) {
+        if (appleService.loginWithApple(code, idToken, response) == null) {
             return ResponseDto.fail(ErrorCode.FAILURE_LOGIN);
         }
 
