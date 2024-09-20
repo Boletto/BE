@@ -3,6 +3,7 @@ package com.demoboletto.controller;
 import com.demoboletto.domain.Friend;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.FriendRequestDto;
+import com.demoboletto.dto.response.AddFriendResponseDto;
 import com.demoboletto.dto.response.FriendResponseDto;
 import com.demoboletto.service.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +28,17 @@ public class FriendController {
     @Schema(name = "Add Friend", description = "친구 목록 추가")
     public ResponseDto<?> addFriend(@RequestBody FriendRequestDto friendRequestdto) {
         Friend friend=friendService.addFriend(friendRequestdto);
-        return ResponseDto.ok(friend);
+        AddFriendResponseDto responseDto = AddFriendResponseDto.builder()
+                .userId(friend.getUser().getId())
+                .userName(friend.getUser().getName())
+                .userNickName(friend.getUser().getNickname())
+                .userProfile(friend.getUser().getUserProfile())
+                .friendUserId(friend.getFriendUser().getId())
+                .friendName(friend.getFriendName())
+                .friendNickName(friend.getFriendNickname())
+                .friendProfile(friend.getFriendProfile())
+                .build();
+        return ResponseDto.ok(responseDto);
     }
 
     @GetMapping
