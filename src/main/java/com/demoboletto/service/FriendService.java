@@ -52,7 +52,6 @@ public class FriendService {
 
     @Transactional
     public Friend addFriend(FriendRequestDto friendRequest) {
-        log.info("진입");
         User user = userRepository.findById(friendRequest.userId())
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
 
