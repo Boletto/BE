@@ -33,11 +33,10 @@ public class Friend {
     private String friendName;
 
     @Column(name = "friend_profile")
-    @Enumerated(EnumType.STRING)
-    private EProfile friendProfile;
+    private String friendProfile;
 
     @Builder
-    public Friend(User user, User friendUser, String friendName, String friendNickname, EProfile friendProfile) {
+    public Friend(User user, User friendUser, String friendName, String friendNickname, String friendProfile) {
         this.user = user;
         this.friendUser = friendUser;
         this.friendProfile = friendProfile;

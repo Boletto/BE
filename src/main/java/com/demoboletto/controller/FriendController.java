@@ -1,6 +1,7 @@
 package com.demoboletto.controller;
 
 import com.demoboletto.domain.Friend;
+import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.FriendRequestDto;
 import com.demoboletto.dto.response.FriendResponseDto;
 import com.demoboletto.service.FriendService;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +25,9 @@ public class FriendController {
     @PostMapping("")
     @Operation(summary = "친구 추가", description = "마이페이지에서 친구를 추가합니다.")
     @Schema(name = "Add Friend", description = "친구 목록 추가")
-    public void addFriend(@RequestBody FriendRequestDto friendRequestdto) {
-        friendService.addFriend(friendRequestdto);
+    public ResponseDto<?> addFriend(@RequestBody FriendRequestDto friendRequestdto) {
+        Friend friend=friendService.addFriend(friendRequestdto);
+        return ResponseDto.ok(friend);
     }
 
     @GetMapping
