@@ -2,6 +2,7 @@ package com.demoboletto.service;
 
 import com.demoboletto.domain.Friend;
 import com.demoboletto.domain.User;
+import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.FriendRequestDto;
 import com.demoboletto.dto.response.FriendResponseDto;
 import com.demoboletto.exception.CommonException;
@@ -12,11 +13,13 @@ import com.demoboletto.type.EFriendType;
 import com.demoboletto.type.EProfile;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FriendService {
@@ -32,7 +35,7 @@ public class FriendService {
                         friend.getFriendUser().getId(),
                         friend.getFriendNickname(),
                         friend.getFriendName(),
-                        friend.getFriendProfile().name()
+                        friend.getFriendProfile()
                 ))
                 .collect(Collectors.toList());
     }
@@ -48,8 +51,8 @@ public class FriendService {
     }
 
     @Transactional
-    public void addFriend(FriendRequestDto friendRequest) {
-
+    public Friend addFriend(FriendRequestDto friendRequest) {
+        log.info("진입");
         User user = userRepository.findById(friendRequest.userId())
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
 
@@ -61,10 +64,11 @@ public class FriendService {
                 .friendUser(friendUser)
                 .friendName(friendRequest.friendName())
                 .friendNickname(friendRequest.friendNickname())
-                .friendProfile(EProfile.valueOf(friendRequest.friendProfile()))
+                .friendProfile(friendRequest.friendProfile())
                 .build();
 
         friendRepository.save(newFriend);
+        return newFriend;
     }
 
 }
