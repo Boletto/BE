@@ -65,8 +65,7 @@ public class User {
     private boolean isLogin;
 
     @Column(name = "friend_profile")
-    @Enumerated(EnumType.STRING)
-    private EProfile userProfile;
+    private String userProfile;
 
 
     @Builder
@@ -83,7 +82,7 @@ public class User {
         this.isFriendApply=true;
         this.isLocation=true;
         this.isLogin=true;
-        this.userProfile = EProfile.Blue;
+        this.userProfile = "default";
     }
 
     public void register(String nickname) {
@@ -108,7 +107,7 @@ public class User {
                 .build();
     }
 
-    public void updateProfile(String nickname, String name, EProfile userProfile) {
+    public void updateProfile(String nickname, String name, String userProfile) {
         this.nickname = nickname;
         this.name = name;
         this.userProfile = userProfile;

@@ -16,7 +16,7 @@ public record UserProfileUpdateDto(
         @Schema(description = "유저 이름", example = "홍길동")
         String name,
 
-        @Schema(description = "유저 프로필 색상", example = "Blue")
-        EProfile userProfile
+        @Schema(description = "유저 프로필 url", example = "유저 프로필 이미지 url")
+        String userProfile
 ) {
 }
