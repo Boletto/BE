@@ -24,8 +24,10 @@ public enum ErrorCode {
     INVALID_HEADER_ERROR(40003, HttpStatus.BAD_REQUEST, "유효하지 않은 헤더입니다."),
     MISSING_REQUEST_HEADER(40004, HttpStatus.BAD_REQUEST, "필수 요청 헤더가 누락되었습니다."),
     BAD_REQUEST_PARAMETER(40005, HttpStatus.BAD_REQUEST, "잘못된 요청 파라미터입니다."),
-    BAD_REQUEST_JSON(40006, HttpStatus.BAD_REQUEST, "잘못된 JSON 형식입니다."),
-    SEARCH_SHORT_LENGTH_ERROR(40007, HttpStatus.BAD_REQUEST, "검색어는 2글자 이상이어야 합니다."),
+    INVALID_APPLE_TOKEN(40006, HttpStatus.BAD_REQUEST, "유효하지 않는 Apple Token입니다."),
+    BAD_REQUEST_JSON(40007, HttpStatus.BAD_REQUEST, "잘못된 JSON 형식입니다."),
+    SEARCH_SHORT_LENGTH_ERROR(40008, HttpStatus.BAD_REQUEST, "검색어는 2글자 이상이어야 합니다."),
+    INVALID_PROVIDER(40009, HttpStatus.BAD_REQUEST, "유효하지 않은 Provider입니다."),
 
 
     // Access Denied Error
