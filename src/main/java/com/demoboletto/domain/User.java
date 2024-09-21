@@ -64,12 +64,12 @@ public class User {
     @Column(name = "is_login")
     private boolean isLogin;
 
-    @Column(name = "friend_profile")
+    @Column(name = "user_profile")
     private String userProfile;
 
 
     @Builder
-    public User(String serialId, String password, String email, String name, String nickname, EProvider provider, ERole role) {
+    public User(String serialId, String password, String email, String name, String nickname, EProvider provider, ERole role, String userProfile) {
         this.serialId = serialId;
         this.password = password;
         this.provider = provider;
@@ -82,7 +82,7 @@ public class User {
         this.isFriendApply=true;
         this.isLocation=true;
         this.isLogin=true;
-        this.userProfile = "default";
+        this.userProfile = userProfile != null ? userProfile : "default";
     }
 
     public void register(String nickname) {
