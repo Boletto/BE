@@ -1,189 +1,153 @@
 package com.demoboletto.service;
 
+import com.demoboletto.client.AppleFeignClient;
 import com.demoboletto.domain.User;
+import com.demoboletto.dto.response.AppleLoginInformation;
+import com.demoboletto.dto.response.JwtTokenDto;
+import com.demoboletto.dto.response.OAuthUserInformation;
+import com.demoboletto.dto.response.Keys;
+import com.demoboletto.exception.CommonException;
+import com.demoboletto.exception.ErrorCode;
+import com.demoboletto.factory.OAuthServiceFactory;
 import com.demoboletto.repository.UserRepository;
 import com.demoboletto.type.EProvider;
+
 import com.demoboletto.type.ERole;
 import com.demoboletto.utility.JwtUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.RSAKey;
 
-import org.json.JSONObject;
-import com.nimbusds.jwt.*;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 
-import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-import org.bouncycastle.openssl.PEMParser;
-import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.*;
+
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.security.PrivateKey;
-import java.util.*;
+import java.security.interfaces.RSAPublicKey;
+import java.text.ParseException;
+
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class AppleService {
-
-    private final UserRepository userRepository;
+    private final AppleFeignClient appleAuthKeyFeignClient;
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
-    @Value("${apple.team-id}")
-    private String APPLE_TEAM_ID;
+    private final OAuthServiceFactory oAuthServiceFactory;
 
-    @Value("${apple.login-key}")
-    private String APPLE_LOGIN_KEY;
+    private static final String EMAIL_CLAIM = "email";
 
-    @Value("${apple.client-id}")
-    private String APPLE_CLIENT_ID;
-
-    @Value("${apple.redirect-url}")
-    private String APPLE_REDIRECT_URL;
-
-    @Value("${apple.key-path}")
-    private String APPLE_KEY_PATH;
-
-    private final static String APPLE_AUTH_URL = "https://appleid.apple.com";
-
-    public String getAppleLoginUrl() {
-        return APPLE_AUTH_URL + "/auth/authorize"
-                + "?client_id=" + APPLE_CLIENT_ID
-                + "&redirect_uri=" + APPLE_REDIRECT_URL
-                + "&response_type=code%20id_token&scope=name%20email&response_mode=form_post";
+    public EProvider getProvider() {
+        return EProvider.APPLE;
     }
 
-    public User loginwithApple(String code, HttpServletResponse response) {
-
-        String userId;
-        String email;
-        String accessToken;
-
-        User user;
-
+    public OAuthUserInformation requestUserInformation(String token) {
         try {
-            // Apple로부터 토큰 정보를 받아옴
-            JSONObject jsonObj = new JSONObject(generateAuthToken(code));
-            accessToken = jsonObj.getString("access_token");
+            // Apple의 공개 키 가져오기 및 JWT 파싱
+            Keys keys = getApplePublicKeys();
+            SignedJWT signedJWT = SignedJWT.parse(token);
 
-            // ID TOKEN을 통해 회원 고유 식별자 받기
-            SignedJWT signedJWT = SignedJWT.parse(String.valueOf(jsonObj.get("id_token")));
-            JWTClaimsSet getPayload = signedJWT.getJWTClaimsSet();
-
-            userId = getPayload.getSubject();  // 'sub' 값을 통해 애플 사용자 ID 가져오기
-            email = getPayload.getStringClaim("email");  // 이메일 가져오기
-
-            Optional<User> existingUser = userRepository.findByProviderAndSerialId(EProvider.APPLE, userId);
-
-            if (existingUser.isPresent()) {
-                user = existingUser.get();
-                String refreshToken = jwtUtil.generateRefreshToken(user.getId(), user.getRole());
-
-                // RefreshToken 업데이트
-                userRepository.updateRefreshTokenAndLoginStatus(user.getId(), refreshToken, true);
+            // 서명이 유효하면 사용자 정보를 반환
+            if (isVerifiedToken(keys, signedJWT)) {
+                return extractUserInfo(signedJWT);
             } else {
-                // 신규 회원 가입
-                user = userRepository.save(User.builder()
-                        .serialId(userId)
-                        .email(email)
-                        .provider(EProvider.APPLE)
-                        .role(ERole.GUEST)
-                        .build());
+                log.warn("[AppleOAuthServiceImpl] requestUserInformation, 유효하지 않은 토큰 : {}", token);
+                throw new CommonException(ErrorCode.INVALID_APPLE_TOKEN);
             }
 
-            // Access 토큰 & RefreshToken 발급
-            loginSuccess(user, response);
-            return user;
-
-        } catch(Exception e){
-            throw new RuntimeException("Apple login failed", e);
+        } catch (JsonProcessingException | ParseException | JOSEException e) {
+            log.error("[AppleOAuthServiceImpl] requestUserInformation, Exception: {}", token, e);
+            throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public void loginSuccess(User user, HttpServletResponse response) {
-
-        String accessToken = jwtUtil.generateToken(user.getId(), user.getRole(), jwtUtil.getAccessExpiration());
-        String refreshToken = jwtUtil.generateToken(user.getId(), user.getRole(), jwtUtil.getRefreshExpiration());
-
-        // AccessToken과 RefreshToken을 응답 헤더에 추가
-        jwtUtil.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-        userRepository.updateRefreshTokenAndLoginStatus(user.getId(), refreshToken, true);
+    // Apple에서 공개 키를 가져오고 JSON을 Keys 객체로 변환
+    private Keys getApplePublicKeys() throws JsonProcessingException {
+        String publicKeys = appleAuthKeyFeignClient.call();
+        return objectMapper.readValue(publicKeys, Keys.class);
     }
 
+    // JWT의 서명을 검증
+    private boolean isVerifiedToken(Keys keys, SignedJWT signedJWT) throws
+            ParseException,
+            JOSEException,
+            JsonProcessingException {
+        return keys.getKeyList().stream()
+                .anyMatch(key -> verifySignature(key, signedJWT));
+    }
 
-    public String generateAuthToken(String code) throws IOException {
-        if (code == null) throw new IllegalArgumentException("Failed get authorization code");
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", APPLE_CLIENT_ID);
-        params.add("client_secret", createClientSecretKey());
-        params.add("code", code);
-        params.add("redirect_uri", APPLE_REDIRECT_URL);
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, headers);
-
+    // 개별 키에 대해 서명을 검증
+    private boolean verifySignature(Keys.Key key, SignedJWT signedJWT) {
         try {
-            ResponseEntity<String> response = restTemplate.exchange(
-                    APPLE_AUTH_URL + "/auth/token",
-                    HttpMethod.POST,
-                    httpEntity,
-                    String.class
-            );
+            RSAKey rsaKey = (RSAKey)JWK.parse(objectMapper.writeValueAsString(key));
+            RSAPublicKey publicKey = rsaKey.toRSAPublicKey();
+            RSASSAVerifier verifier = new RSASSAVerifier(publicKey);
 
-            return response.getBody();
-        } catch (HttpClientErrorException e) {
-            throw new IllegalArgumentException("Apple Auth Token Error");
+            return signedJWT.verify(verifier);
+        } catch (Exception e) {
+            log.error("[AppleOAuthServiceImpl] 서명 검증 실패: {}", key.getKid(), e);
+            return false;
         }
     }
 
-    public String createClientSecretKey() throws IOException {
-        // headerParams 적재
-        Map<String, Object> headerParamsMap = new HashMap<>();
-        headerParamsMap.put("kid", APPLE_LOGIN_KEY);
-        headerParamsMap.put("alg", "ES256");
-
-        // clientSecretKey 생성
-        return Jwts
-                .builder()
-                .setHeaderParams(headerParamsMap)
-                .setIssuer(APPLE_TEAM_ID)
-                .setIssuedAt(new Date(System.currentTimeMillis())) // 발행시간
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 30)) // 만료 시간 (30초)
-                .setAudience(APPLE_AUTH_URL)
-                .setSubject(APPLE_CLIENT_ID)
-                .signWith(getPrivateKey(), SignatureAlgorithm.ES256)
-                .compact();
+    // JWT에서 사용자 정보를 추출
+    private OAuthUserInformation extractUserInfo(SignedJWT signedJWT) throws ParseException {
+        JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
+        return AppleLoginInformation.builder()
+                .providerId(jwtClaimsSet.getSubject())
+                .email(jwtClaimsSet.getStringClaim(EMAIL_CLAIM))
+                .build();
     }
 
-    private PrivateKey getPrivateKey() throws IOException {
-        ClassPathResource resource = new ClassPathResource(APPLE_KEY_PATH);
-        String privateKey = new String(resource.getInputStream().readAllBytes());
+    @Transactional
+    public JwtTokenDto login(String token) {
+        OAuthUserInformation userInformation = requestUserInformation(token);
+        User user;
 
-        Reader pemReader = new StringReader(privateKey);
-        PEMParser pemParser = new PEMParser(pemReader);
-        JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
-        PrivateKeyInfo object = (PrivateKeyInfo) pemParser.readObject();
-
-        return converter.getPrivateKey(object);
+        if (isExistsByProviderAndSerialId(EProvider.APPLE, userInformation.getProviderId())) {
+            log.info("[UserService] login, response: {}", userInformation);
+            user = findByEmail(userInformation.getEmail());
+        } else {
+            log.info("[UserService] signUp, response: {}", userInformation);
+            user = saveUser(userInformation);
+        }
+        return jwtUtil.generateTokens(user.getId(), ERole.USER);
     }
 
+    private User saveUser(OAuthUserInformation userInformation) {
+        User user = User.builder()
+                .email(userInformation.getEmail())
+                .name(userInformation.getNickname())
+                .provider(userInformation.getProvider())
+                .serialId(userInformation.getProviderId())
+                .userProfile(userInformation.getProfileImgUrl())
+                .role(ERole.USER)
+                .build();
+        userRepository.save(user);
+
+        return user;
+    }
+
+
+    private boolean isExistsByProviderAndSerialId(EProvider provider, String serialId) {
+        return userRepository.existsByProviderAndProviderId(provider, serialId);
+    }
+
+    private User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
+    }
 
 }

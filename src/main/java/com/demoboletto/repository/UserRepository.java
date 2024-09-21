@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByProviderAndSerialId(EProvider provider, String serialId);
 
-    User findByNickname(String nickname);
+    Optional<User> findByEmail(String email);
 
     @Query("select u.id as id, u.role as role, u.password as password from User u where u.serialId = :serialId")
     Optional<UserSecurityForm> findSecurityFormBySerialId(String serialId);
@@ -32,6 +32,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void updateRefreshTokenAndLoginStatus(Long id, String refreshToken, Boolean isLogin);
 
     boolean existsByNickname(String nickname);
+
+    boolean existsByProviderAndProviderId(EProvider provider, String providerId);
 
     interface UserSecurityForm {
         Long getId();
