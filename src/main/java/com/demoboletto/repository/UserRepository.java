@@ -6,13 +6,13 @@ import com.demoboletto.type.ERole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByIdAndRefreshTokenAndIsLogin(Long id, String refreshToken, Boolean isLogin);
 
     Optional<User> findBySerialId(String serialId);
     Boolean existsBySerialId(String serialId);
@@ -20,6 +20,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByProviderAndSerialId(EProvider provider, String serialId);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByIdAndRefreshTokenAndIsLogin(Long id, String refreshToken, Boolean isLogin);
 
     @Query("select u.id as id, u.role as role, u.password as password from User u where u.serialId = :serialId")
     Optional<UserSecurityForm> findSecurityFormBySerialId(String serialId);
@@ -31,9 +33,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User u set u.refreshToken = :refreshToken, u.isLogin = :isLogin where u.id = :id")
     void updateRefreshTokenAndLoginStatus(Long id, String refreshToken, Boolean isLogin);
 
-    boolean existsByNickname(String nickname);
-
-    boolean existsByProviderAndProviderId(EProvider provider, String providerId);
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u WHERE u.provider = :provider AND u.serialId = :providerId")
+    boolean existsByProviderAndProviderId(@Param("provider") EProvider provider, @Param("providerId") String providerId);
 
     interface UserSecurityForm {
         Long getId();
