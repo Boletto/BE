@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 public class OAuthController {
 
-    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-    private final UserService userService;
     private final AppleService appleService;
     private final KakaoService kakaoService;
 

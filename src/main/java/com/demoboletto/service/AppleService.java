@@ -8,7 +8,6 @@ import com.demoboletto.dto.response.OAuthUserInformation;
 import com.demoboletto.dto.response.Keys;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
-import com.demoboletto.factory.OAuthServiceFactory;
 import com.demoboletto.repository.UserRepository;
 import com.demoboletto.type.EProvider;
 
@@ -44,8 +43,6 @@ public class AppleService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-
-    private final OAuthServiceFactory oAuthServiceFactory;
 
     private static final String EMAIL_CLAIM = "email";
 
@@ -139,7 +136,6 @@ public class AppleService {
 
         return user;
     }
-
 
     private boolean isExistsByProviderAndSerialId(EProvider provider, String serialId) {
         return userRepository.existsByProviderAndProviderId(provider, serialId);
