@@ -1,17 +1,23 @@
 package com.demoboletto.controller;
 
+import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.AppleLoginDto;
 import com.demoboletto.dto.request.OauthLoginDto;
+import com.demoboletto.dto.response.JwtTokenDto;
+import com.demoboletto.exception.CommonException;
+import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.service.AppleService;
 import com.demoboletto.service.KakaoService;
-import com.demoboletto.service.UserService;
+import com.demoboletto.utility.HeaderUtil;
+import com.demoboletto.constants.Constants;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,6 +41,18 @@ public class OAuthController {
     @Schema(name = "login", description = "애플 로그인")
     public ResponseDto<?> login(@RequestBody AppleLoginDto appleLoginDto) {
         return ResponseDto.ok(appleService.login(appleLoginDto.accessToken()));
+    }
+
+    @PostMapping("/auth/reissue")
+    @Operation(summary = "Access 토큰 재발급", description = "Access 토큰을 재발급합니다.")
+    public ResponseDto<?> reissue(HttpServletRequest request, HttpServletResponse response,
+            @UserId Long userId) {
+        String refreshToken = HeaderUtil.refineHeader(request, Constants.AUTHORIZATION_HEADER, Constants.BEARER_PREFIX)
+                .orElseThrow(() -> new CommonException(ErrorCode.MISSING_REQUEST_HEADER));
+
+        JwtTokenDto jwtTokenDto = kakaoService.reissue(userId, refreshToken);
+
+        return ResponseDto.ok(jwtTokenDto);
     }
 
 }
