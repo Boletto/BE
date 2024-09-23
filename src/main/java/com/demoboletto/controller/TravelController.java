@@ -23,8 +23,8 @@ public class TravelController {
     }
     @GetMapping(value = "/get/all", params = "user_id")
     @Operation(summary = "get all travel list", description = "Get all travel list.")
-    public ResponseDto<?> getAllTravelList(@RequestParam(value = "user_id") Long userId) {
-        return ResponseDto.ok(travelService.getAllTravelList(userId));
+    public ResponseDto<?> getAllTravelList() {
+        return ResponseDto.ok(travelService.getAllTravelList());
     }
     @GetMapping(value = "/get", params = "travel_id")
     @Operation(summary = "get one travel list", description = "Get one travel list.")
