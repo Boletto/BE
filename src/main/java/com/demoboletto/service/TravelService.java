@@ -65,7 +65,7 @@ public class TravelService {
             return null;    // return empty object
         }
     }
-    public List<GetTravelDto> getAllTravelList(@UserId Long userId) {
+    public List<GetTravelDto> getAllTravelList(Long userId) {
         List<Travel> travel = userTravelRepository.findTravelsByUserId(userId);
         List<GetTravelDto> travelList = new ArrayList<>();
         for (Travel t : travel) {
