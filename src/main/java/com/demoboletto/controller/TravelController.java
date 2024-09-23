@@ -1,5 +1,6 @@
 package com.demoboletto.controller;
 
+import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.CreateTravelDto;
 import com.demoboletto.dto.request.UpdateTravelDto;
@@ -23,8 +24,8 @@ public class TravelController {
     }
     @GetMapping(value = "/get/all", params = "user_id")
     @Operation(summary = "get all travel list", description = "Get all travel list.")
-    public ResponseDto<?> getAllTravelList() {
-        return ResponseDto.ok(travelService.getAllTravelList());
+    public ResponseDto<?> getAllTravelList(@UserId Long userId) {
+        return ResponseDto.ok(travelService.getAllTravelList(userId));
     }
     @GetMapping(value = "/get", params = "travel_id")
     @Operation(summary = "get one travel list", description = "Get one travel list.")
