@@ -1,5 +1,6 @@
 package com.demoboletto.controller;
 
+import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.UserProfileUpdateDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
@@ -28,9 +29,9 @@ public class UserController {
     private final UserService userService;
     private final CollectService collectService;
 
-    @GetMapping("/{userId}")
+    @GetMapping("")
     @Operation(summary = "Get User Info", description = "유저의 닉네임과 이름 정보를 가져오는 API")
-    public ResponseEntity<GetUserInfoDto> getUserNameAndNickname(@PathVariable Long userId) {
+    public ResponseEntity<GetUserInfoDto> getUserNameAndNickname(@UserId Long userId) {
         GetUserInfoDto userInfo = userService.getUserNameAndNickname(userId);
         return ResponseEntity.ok(userInfo);
     }
@@ -41,9 +42,9 @@ public class UserController {
         return ResponseEntity.ok(ResponseDto.ok("프로필이 성공적으로 업데이트되었습니다."));
     }
 
-    @GetMapping("/{userId}/frames")
+    @GetMapping("/frames")
     @Operation(summary = "Get User collected Frames", description = "유저가 획득한 프레임과 개수를 가져오는 API")
-    public ResponseEntity<?> getCollectedFrames(@PathVariable Long userId) {
+    public ResponseEntity<?> getCollectedFrames(@UserId Long userId) {
         List<EFrame> frames = collectService.getCollectedFrames(userId);
         Map<String, Object> response = new HashMap<>();
         response.put("frameCount", frames.size());
@@ -51,9 +52,9 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{userId}/stickers")
+    @GetMapping("/stickers")
     @Operation(summary = "Get User collected Stickers", description = "유저가 획득한 스티커와 개수를 가져오는 API")
-    public ResponseEntity<?> getCollectedStickers(@PathVariable Long userId) {
+    public ResponseEntity<?> getCollectedStickers(@UserId Long userId) {
         List<ESticker> stickers = collectService.getCollectedStickers(userId);
         Map<String, Object> response = new HashMap<>();
         response.put("stickerCount", stickers.size());
