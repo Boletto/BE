@@ -27,7 +27,7 @@ public class Collect {
 
     @Column(name = "frame_type")
     @Enumerated(EnumType.STRING)
-    private EFrame frameType;
+    private String frameUrl;
 
     @Column(name = "sticker_type")
     @Enumerated(EnumType.STRING)
@@ -37,9 +37,9 @@ public class Collect {
     private LocalDateTime collectedAt;
 
     @Builder
-    public Collect(User user, EFrame frameType, ESticker stickerType) {
+    public Collect(User user, String frameUrl, ESticker stickerType) {
         this.user = user;
-        this.frameType = frameType;
+        this.frameUrl = frameUrl;
         this.stickerType = stickerType;
         this.collectedAt = LocalDateTime.now();
     }
