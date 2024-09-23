@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface CollectRepository extends JpaRepository<Collect, Long> {
 
-    List<Collect> findByUserIdAndFrameTypeIsNotNull(Long userId);
+    List<Collect> findByUserIdAndFrameUrlIsNotNull(Long userId);
 
     List<Collect> findByUserIdAndStickerTypeIsNotNull(Long userId);
 }
