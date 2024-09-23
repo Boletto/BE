@@ -26,7 +26,6 @@ public class Collect {
     private User user;
 
     @Column(name = "frame_type")
-    @Enumerated(EnumType.STRING)
     private String frameUrl;
 
     @Column(name = "sticker_type")
