@@ -22,7 +22,7 @@ public class TravelController {
     public ResponseDto<?> createTravelList(@RequestBody CreateTravelDto travelDto) {
         return travelService.createTravelList(travelDto) ? ResponseDto.ok("success") : ResponseDto.fail("existing data");
     }
-    @GetMapping(value = "/get/all", params = "user_id")
+    @GetMapping(value = "/get/all")
     @Operation(summary = "get all travel list", description = "Get all travel list.")
     public ResponseDto<?> getAllTravelList(@UserId Long userId) {
         return ResponseDto.ok(travelService.getAllTravelList(userId));
