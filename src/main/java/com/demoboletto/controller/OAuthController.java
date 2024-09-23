@@ -36,7 +36,7 @@ public class OAuthController {
         return ResponseDto.ok(kakaoService.login(userloginDto));
     }
 
-    @PostMapping("/oauth/login/apple")
+    @PostMapping("/oauth2/login/apple")
     @Operation(summary = "애플로그인", description = "애플 로그인")
     @Schema(name = "login", description = "애플 로그인")
     public ResponseDto<?> login(@RequestBody AppleLoginDto appleLoginDto) {

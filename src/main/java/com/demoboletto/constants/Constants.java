@@ -13,8 +13,8 @@ public class Constants {
     public static String DEFAULT_IMAGE = "https://areyousleeping.s3.ap-northeast-2.amazonaws.com/KakaoTalk_Photo_2024-03-24-05-26-45.png";
 
     public static List<String> NO_NEED_AUTH_URLS = List.of(
-            "/api/v1/no-auth/**", "/api/v1/oauth/login",
-            "api/v1/oauth2/login/apple",
+            "/api/v1/no-auth/**", "/api/v1/oauth/login/**",
+            "/api/v1/oauth2/login/apple",
             "/api/v1/oauth2/callback/apple",
             "/api/v1/auth/sign-up",
             "/api/v1/auth/email-duplicate",
