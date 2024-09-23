@@ -15,12 +15,15 @@ public record JwtTokenDto(
         String accessToken,
 
         @JsonProperty("refresh_token")
-        String refreshToken
+        String refreshToken,
+        @JsonProperty("user_id")
+        Long userId
 ) implements Serializable {
-    public static JwtTokenDto of(String accessToken, String refreshToken) {
+    public static JwtTokenDto of(String accessToken, String refreshToken,Long userId) {
         return JwtTokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .userId(userId)
                 .build();
     }
 }
