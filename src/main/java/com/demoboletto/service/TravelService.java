@@ -6,6 +6,7 @@ import com.demoboletto.domain.UserTravel;
 import com.demoboletto.dto.request.CreateTravelDto;
 import com.demoboletto.dto.request.UpdateTravelDto;
 import com.demoboletto.dto.response.GetTravelDto;
+import com.demoboletto.dto.response.GetUserTravelDto;
 import com.demoboletto.repository.TravelRepository;
 import com.demoboletto.repository.UserRepository;
 import com.demoboletto.repository.UserTravelRepository;
@@ -88,7 +89,7 @@ public class TravelService {
                 .keyword(travel.getKeyword())
                 .startDate(travel.getStartDate())
                 .endDate(travel.getEndDate())
-                .members(userTravelRepository.findUsersByTravelId(travel.getTravelId()))
+                .members(convertUser(userTravelRepository.findUsersByTravelId(travel.getTravelId())))
                 .color(travel.getColor())
                 .build();
     }
@@ -151,5 +152,19 @@ public class TravelService {
             return false;
         }
         return true;
+    }
+    private List<GetUserTravelDto> convertUser(List<User> userList) {
+        List<GetUserTravelDto> resultList = new ArrayList<>();
+        userList.forEach(user -> {
+            resultList.add(
+                    GetUserTravelDto.builder()
+                            .name(user.getName())
+                            .nickname(user.getNickname())
+                            .userProfile(user.getUserProfile())
+                            .userId(user.getId())
+                            .build()
+            );
+        });
+        return resultList;
     }
 }
