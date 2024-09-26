@@ -1,7 +1,10 @@
 package com.demoboletto.dto.response;
 
+import com.demoboletto.type.EStatusType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -21,6 +24,10 @@ public record GetMemoryDto(
         List<GetStickerDto> stickerList,
         @NotNull(message = "speech can not be null")
         @JsonProperty("speech_list") @Schema(description = "speech list", example = "[speech1, speech2]")
-        List<GetSpeechDto> speechList
+        List<GetSpeechDto> speechList,
+        @NotNull(message = "status can not be null")
+        @Enumerated(EnumType.STRING)
+        @JsonProperty("status") @Schema(description = "travel status", example = "UNLOCK")
+        EStatusType status
 ) {
 }
