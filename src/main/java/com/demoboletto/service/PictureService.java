@@ -24,10 +24,10 @@ public class PictureService {
     private final AWSS3Service awsS3Service;
 
     @Transactional
-    public boolean createPicture(CreatePictureDto createPictureDto, MultipartFile file) {
+    public GetPictureDto createPicture(CreatePictureDto createPictureDto, MultipartFile file) {
         //save image to s3, create picture object && save picture object to db
         try {
-            pictureRepository.save(
+            Picture savePicture = pictureRepository.save(
                     Picture.create(awsS3Service.uploadFile(file),
                             createPictureDto.pictureIdx(),
                             travelRepository.findById(createPictureDto.travelId())
@@ -36,10 +36,14 @@ public class PictureService {
                                     .orElseThrow(() -> new IllegalArgumentException("user not found"))
                     )
             );
+            return GetPictureDto.builder()
+                    .pictureId(savePicture.getId())
+                    .pictureIdx(savePicture.getPictureIdx())
+                    .pictureUrl(savePicture.getPictureUrl())
+                    .build();
         } catch (IOException e) {
-            return false;
+            return null;
         }
-        return true;
     }
     @Transactional
     public boolean deletePicture(Long pictureId) {

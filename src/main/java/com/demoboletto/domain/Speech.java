@@ -34,9 +34,9 @@ public class Speech {
     private int rotation;
 
     @Column(name = "scale")
-    private int scale;
+    private float scale;
     @Builder
-    public Speech(String text, float locX, float locY, Travel travel, int rotation, int scale) {
+    public Speech(String text, float locX, float locY, Travel travel, int rotation, float scale) {
         this.text = text;
         this.locX = locX;
         this.locY = locY;
