@@ -49,6 +49,9 @@ public class KakaoService {
 
         if (existingUser.isPresent()) {
             user = existingUser.get();
+            if (user.getName() == null || user.getName().isEmpty()) {
+                log.info("User with serialId: {} has no profile (name is missing).", userLoginDto.serialId());
+            }
         } else {
             user = userRepository.save(User.signUp(userLoginDto.serialId(), userLoginDto.provider(), userLoginDto.nickname()));
             isNewUser = true;
