@@ -117,7 +117,7 @@ public class AppleService {
             log.info("[UserService] login, response: {}", userInformation);
             user = findByEmail(userInformation.getEmail());
         } else {
-            log.info("[UserService] signUp, response: {}", userInformation);
+            log.info("User logged in for the first time, response: {}", userInformation);
             user = saveUser(userInformation);
         }
         return jwtUtil.generateTokens(user.getId(), ERole.USER);
