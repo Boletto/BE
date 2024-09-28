@@ -16,6 +16,7 @@ public record JwtTokenDto(
 
         @JsonProperty("refresh_token")
         String refreshToken,
+
         @JsonProperty("user_id")
         Long userId
 ) implements Serializable {

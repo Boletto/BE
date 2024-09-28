@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.Optional;
 
 @Slf4j
@@ -48,12 +49,13 @@ public class KakaoService {
 
         if (existingUser.isPresent()) {
             user = existingUser.get();
-//            if (user.getRole()==ERole.DELETED){
-//                throw new CommonException(ErrorCode.SIGN_OUT_USER);
-//            }
+            if (user.getName() == null || user.getName().isEmpty()) {
+                log.info("User with serialId: {} has no profile (name is missing).", userLoginDto.serialId());
+            }
         } else {
             user = userRepository.save(User.signUp(userLoginDto.serialId(), userLoginDto.provider(), userLoginDto.nickname()));
             isNewUser = true;
+            log.info("User with serialId: {} logged in for the first time.", userLoginDto.serialId());
         }
 
         JwtTokenDto jwtTokenDto = jwtUtil.generateTokens(user.getId(), ERole.USER);

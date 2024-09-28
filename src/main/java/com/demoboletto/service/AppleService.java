@@ -116,8 +116,11 @@ public class AppleService {
         if (isExistsByProviderAndSerialId(EProvider.APPLE, userInformation.getProviderId())) {
             log.info("[UserService] login, response: {}", userInformation);
             user = findByEmail(userInformation.getEmail());
+            if (user.getName() == null || user.getName().isEmpty()) {
+                log.info("User with providerId: {} has no profile (name is missing).", userInformation.getProviderId());
+            }
         } else {
-            log.info("[UserService] signUp, response: {}", userInformation);
+            log.info("User logged in for the first time, response: {}", userInformation);
             user = saveUser(userInformation);
         }
         return jwtUtil.generateTokens(user.getId(), ERole.USER);
