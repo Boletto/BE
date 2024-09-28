@@ -2,6 +2,7 @@ package com.demoboletto.controller;
 
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.CreatePictureDto;
+import com.demoboletto.dto.response.GetPictureDto;
 import com.demoboletto.service.PictureService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,7 +20,10 @@ public class PictureController {
     @PostMapping("/save")
     @Operation(summary = "save picture", description = "save picture in the travel.")
     public ResponseDto<?> createPictureList(@RequestPart(value = "data") CreatePictureDto pictureDto, @RequestPart(required = false, value = "picture_file") MultipartFile picture_file) {
-        return pictureService.createPicture(pictureDto,picture_file) ? ResponseDto.ok("success") : ResponseDto.fail("fail");
+        GetPictureDto picture = pictureService.createPicture(pictureDto, picture_file);
+        if (picture == null)
+            return ResponseDto.fail("fail");
+        return ResponseDto.created(picture);
     }
     @DeleteMapping("/delete")
     @Operation(summary = "delete picture", description = "delete picture in the travel.")
