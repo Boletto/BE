@@ -18,15 +18,14 @@ public class MemoryService {
     private final TravelRepository travelRepository;
 
     public GetMemoryDto getMemoryByTravelId(Long travelId) {
-
         // get picture data from db & get sticker data from db & get speech data from db
-        GetMemoryDto getMemoryDto = GetMemoryDto.builder()
+        return GetMemoryDto.builder()
                 .travelId(travelId)
                 .pictureList(pictureService.getPictureList(travelId))
                 .stickerList(stickerService.getStickerList(travelId))
                 .speechList(speechService.getSpeechList(travelId))
+                .status(travelRepository.findStatusByTravelId(travelId))
                 .build();
-        return getMemoryDto;
     }
     @Transactional
     public boolean memoryEditMode(MemoryEditDto memoryEditDto) {

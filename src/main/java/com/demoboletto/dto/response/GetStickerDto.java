@@ -29,6 +29,6 @@ public record GetStickerDto(
         int rotation,
         @NotNull(message = "scale can not be null")
         @JsonProperty("scale") @Schema(description = "speech scale", example = "0")
-        int scale
+        float scale
 ) {
 }

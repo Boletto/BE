@@ -36,9 +36,9 @@ public class Sticker {
     private int rotation;
 
     @Column(name = "scale")
-    private int scale;
+    private float scale;
     @Builder
-    public Sticker(ESticker field, float locX, float locY, Travel travel, int rotation, int scale) {
+    public Sticker(ESticker field, float locX, float locY, Travel travel, int rotation, float scale) {
         this.field = field;
         this.locX = locX;
         this.locY = locY;

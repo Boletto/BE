@@ -33,8 +33,8 @@ public record GetTravelDto(
         @JsonProperty("end_date") @Schema(description = "travel end date", example = "2024-09-13 20:00:00")
         String endDate,
         @NotNull(message = "members can not be null")
-        @JsonProperty("members") @Schema(description = "travel members list", example = "[user1,user2]")
-        List<User> members,
+        @JsonProperty("members") @Schema(description = "travel members list", example = "[userTravelDto1, userTravelDto2]")
+        List<GetUserTravelDto> members,
         @NotNull(message = "color can not be null")
         @JsonProperty("color") @Schema(description = "travel list color", example = "#FF0000")
         String color,
