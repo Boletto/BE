@@ -113,4 +113,8 @@ public class User {
         this.userProfile = userProfile;
     }
 
+    public void updateSignOutUser(){
+        this.role = ERole.DELETED;
+        this.isLogin=false;
+    }
 }

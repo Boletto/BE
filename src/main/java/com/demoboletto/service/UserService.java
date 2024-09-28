@@ -5,7 +5,9 @@ import com.demoboletto.domain.User;
 import com.demoboletto.dto.request.UserProfileUpdateDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
 import com.demoboletto.exception.CommonException;
+import com.demoboletto.repository.CollectRepository;
 import com.demoboletto.repository.UserRepository;
+import com.demoboletto.repository.UserTravelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final CollectRepository collectRepository;
+    private final UserTravelRepository userTravelRepository;
 
     // 유저의 이름과 닉네임을 조회
     public GetUserInfoDto getUserNameAndNickname(Long userId) {
@@ -44,7 +48,7 @@ public class UserService {
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
-
-        userRepository.delete(user);
+        user.updateSignOutUser();
+        userRepository.save(user);
     }
 }

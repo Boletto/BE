@@ -48,6 +48,9 @@ public class KakaoService {
 
         if (existingUser.isPresent()) {
             user = existingUser.get();
+//            if (user.getRole()==ERole.DELETED){
+//                throw new CommonException(ErrorCode.SIGN_OUT_USER);
+//            }
         } else {
             user = userRepository.save(User.signUp(userLoginDto.serialId(), userLoginDto.provider(), userLoginDto.nickname()));
             isNewUser = true;
