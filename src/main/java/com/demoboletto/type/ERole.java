@@ -9,7 +9,8 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public enum ERole {
     GUEST("GUEST", "ROLE_GUEST"),
-    USER("USER", "ROLE_USER");
+    USER("USER", "ROLE_USER"),
+    DELETED("DELETED", "ROLE_DELETED");
 
     private final String name;
     private final String securityName;

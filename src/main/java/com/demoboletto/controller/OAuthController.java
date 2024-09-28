@@ -59,7 +59,7 @@ public class OAuthController {
 
     @DeleteMapping("/auth/sign-out")
     @Operation(summary = "회원탈퇴", description = "현재 로그인된 사용자를 탈퇴 처리하고 DB에서 삭제합니다.")
-    public ResponseDto<?> signout(HttpServletRequest request, @UserId Long userId) {
+    public ResponseDto<?> signout(@UserId Long userId) {
         userService.deleteUser(userId);
         return ResponseDto.ok("회원 탈퇴가 완료되었습니다.");
     }

@@ -34,6 +34,7 @@ public enum ErrorCode {
     ACCESS_DENIED(40300, HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     NOT_MATCH_AUTH_CODE(40301, HttpStatus.FORBIDDEN, "인증 코드가 일치하지 않습니다."),
     NOT_MATCH_USER(40302, HttpStatus.FORBIDDEN, "해당 사용자가 일치하지 않습니다."),
+    SIGN_OUT_USER(40303, HttpStatus.FORBIDDEN, "탈퇴한 사용자는 24시간 이내 가입할 수 없습니다."),
 
 
     // Unauthorized Error
