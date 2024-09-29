@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.demoboletto.dto.response.OAuthLoginResponseDto;
 
 import java.util.Optional;
 
@@ -41,7 +41,7 @@ public class KakaoService {
     }
 
     @Transactional
-    public JwtTokenDto login(OauthLoginDto userLoginDto) {
+    public OAuthLoginResponseDto login(OauthLoginDto userLoginDto) {
         User user;
         boolean isNewUser = false;
 
@@ -49,9 +49,6 @@ public class KakaoService {
 
         if (existingUser.isPresent()) {
             user = existingUser.get();
-            if (user.getId() != null || user.getName().isEmpty()) {
-                log.info("User with serialId: {} has no profile (name is missing).", userLoginDto.serialId());
-            }
         } else {
             user = userRepository.save(User.signUp(userLoginDto.serialId(), userLoginDto.provider(), userLoginDto.nickname()));
             isNewUser = true;
@@ -64,7 +61,13 @@ public class KakaoService {
             userRepository.updateRefreshTokenAndLoginStatus(user.getId(), jwtTokenDto.refreshToken(), true);
         }
 
-        return jwtTokenDto;
+        return new OAuthLoginResponseDto(
+                jwtTokenDto.accessToken(),
+                jwtTokenDto.refreshToken(),
+                user.getName(),
+                user.getNickname(),
+                user.getUserProfile()
+        );
     }
 
     public boolean checkDuplicate(String email) {

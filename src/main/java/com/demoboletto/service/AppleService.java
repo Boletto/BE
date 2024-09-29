@@ -2,10 +2,7 @@ package com.demoboletto.service;
 
 import com.demoboletto.client.AppleFeignClient;
 import com.demoboletto.domain.User;
-import com.demoboletto.dto.response.AppleLoginInformation;
-import com.demoboletto.dto.response.JwtTokenDto;
-import com.demoboletto.dto.response.OAuthUserInformation;
-import com.demoboletto.dto.response.Keys;
+import com.demoboletto.dto.response.*;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.UserRepository;
@@ -109,21 +106,30 @@ public class AppleService {
     }
 
     @Transactional
-    public JwtTokenDto login(String token) {
+    public AppleLoginResponseDto login(String token) {
         OAuthUserInformation userInformation = requestUserInformation(token);
         User user;
 
         if (isExistsByProviderAndSerialId(EProvider.APPLE, userInformation.getProviderId())) {
             log.info("[UserService] login, response: {}", userInformation);
-            user = findByEmail(userInformation.getEmail());
-            if (user.getName() == null || user.getName().isEmpty()) {
-                log.info("User with providerId: {} has no profile (name is missing).", userInformation.getProviderId());
-            }
+            user = findBySerialId(userInformation.getProviderId());
         } else {
             log.info("User logged in for the first time, response: {}", userInformation);
             user = saveUser(userInformation);
         }
-        return jwtUtil.generateTokens(user.getId(), ERole.USER);
+
+        JwtTokenDto tokens = jwtUtil.generateTokens(user.getId(), ERole.USER);
+        String name = user.getName();
+        String nickname = user.getNickname();
+        String userProfile = user.getUserProfile();
+
+        return new AppleLoginResponseDto(
+                tokens.accessToken(),
+                tokens.refreshToken(),
+                name,
+                nickname,
+                userProfile
+        );
     }
 
     private User saveUser(OAuthUserInformation userInformation) {
@@ -144,8 +150,8 @@ public class AppleService {
         return userRepository.existsByProviderAndProviderId(provider, serialId);
     }
 
-    private User findByEmail(String email) {
-        return userRepository.findByEmail(email)
+    private User findBySerialId(String providerId) {
+        return userRepository.findBySerialId(providerId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
     }
 
