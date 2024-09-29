@@ -32,6 +32,9 @@ public class Picture {
     @Column(name = "picture_idx")
     private int pictureIdx;
 
+    @Column(name = "is_deleted")
+    private boolean isDeleted=false;
+
     @Builder
     public Picture(User user, Travel travel, ECategory category, String pictureUrl, int pictureIdx) {
         this.user = user;
@@ -47,4 +50,9 @@ public class Picture {
                 .pictureIdx(i)
                 .build();
     }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
 }

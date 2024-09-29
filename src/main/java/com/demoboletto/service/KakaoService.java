@@ -49,7 +49,7 @@ public class KakaoService {
 
         if (existingUser.isPresent()) {
             user = existingUser.get();
-            if (user.getName() == null || user.getName().isEmpty()) {
+            if (user.getId() != null || user.getName().isEmpty()) {
                 log.info("User with serialId: {} has no profile (name is missing).", userLoginDto.serialId());
             }
         } else {

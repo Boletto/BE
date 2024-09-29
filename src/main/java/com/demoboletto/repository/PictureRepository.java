@@ -11,4 +11,8 @@ import java.util.List;
 public interface PictureRepository extends JpaRepository<Picture, Long> {
     @Query("select p from Picture p where p.travel.travelId = :id")
     List<Picture> findAllByTravelId(Long id);
+
+    List<Picture> findByUserId(Long userId);
+
+    List<Picture> findAllByTravel_TravelIdAndIsDeletedFalse(Long travelId);
 }
