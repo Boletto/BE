@@ -1,5 +1,6 @@
 package com.demoboletto.controller;
 
+import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.MemoryEditDto;
 import com.demoboletto.service.MemoryService;
@@ -21,7 +22,7 @@ public class MemoryController {
     }
     @PatchMapping("/edit")
     @Operation(summary = "edit memory mode", description = "edit memory mode")
-    public ResponseDto<?> memoryEditMode(@RequestBody MemoryEditDto memoryEditDtot) {
-        return memoryService.memoryEditMode(memoryEditDtot) ? ResponseDto.ok("success") : ResponseDto.fail("fail");
+    public ResponseDto<?> memoryEditMode(@RequestBody MemoryEditDto memoryEditDto) {
+        return memoryService.memoryEditMode(memoryEditDto) ? ResponseDto.ok("success") : ResponseDto.fail("fail");
     }
 }

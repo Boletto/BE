@@ -8,7 +8,7 @@ import lombok.Builder;
 
 @Builder
 @Schema(name = "CreatePictureDto", description = "request for saving  picture")
-public record CreatePictureDto(
+public record CreatePictureFourCutDto(
         @NotNull(message = "travelId can not be null")
         @JsonProperty("travel_id") @Schema(description = "travel unique id", example = "1234")
         Long travelId,
@@ -17,7 +17,9 @@ public record CreatePictureDto(
         int pictureIdx,
         @NotNull(message = "picture isFourCut can not be null")
         @JsonProperty("is_fourCut") @Schema(description = "whether picture is fourCut", example = "false")
-        boolean isFourCut
-
+        boolean isFourCut,
+        @NotNull(message = "collect id can not be null")
+        @JsonProperty("collect_id") @Schema(description = "collect unique id", example = "1234")
+        Long collectId
 ) {
 }

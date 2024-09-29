@@ -1,7 +1,5 @@
 package com.demoboletto.domain;
 
-import com.demoboletto.dto.request.CreatePictureDto;
-import com.demoboletto.type.ECategory;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,20 +36,30 @@ public class Picture {
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
+    @Column(name = "is_fourCut")
+    private boolean isFourCut;
+
+    @Column(name = "sub_idx")
+    private int subIdx;
+
     @Builder
-    public Picture(User user, Travel travel, ECategory category, String pictureUrl, int pictureIdx) {
+    public Picture(User user, Travel travel, String pictureUrl, int pictureIdx, boolean isFourCut, int subIdx) {
         this.user = user;
         this.travel = travel;
         this.pictureUrl = pictureUrl;
         this.pictureIdx = pictureIdx;
         this.isDeleted=false;
+        this.isFourCut=isFourCut;
+        this.subIdx=subIdx;
     }
-    public static Picture create(String url, int i, Travel travel, User user) {
+    public static Picture create(String url, int i, Travel travel, User user, boolean isFourCut, int subIdx) {
         return Picture.builder()
                 .user(user)
                 .travel(travel)
                 .pictureUrl(url)
                 .pictureIdx(i)
+                .isFourCut(isFourCut)
+                .subIdx(subIdx)
                 .build();
     }
 
