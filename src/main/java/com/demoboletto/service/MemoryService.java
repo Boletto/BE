@@ -25,6 +25,7 @@ public class MemoryService {
                 .stickerList(stickerService.getStickerList(travelId))
                 .speechList(speechService.getSpeechList(travelId))
                 .status(travelRepository.findStatusByTravelId(travelId))
+                .fourCutList(pictureService.getFourCutList(travelId))
                 .build();
     }
     @Transactional

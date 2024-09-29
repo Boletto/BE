@@ -28,6 +28,9 @@ public record GetMemoryDto(
         @NotNull(message = "status can not be null")
         @Enumerated(EnumType.STRING)
         @JsonProperty("status") @Schema(description = "travel status", example = "UNLOCK")
-        EStatusType status
+        EStatusType status,
+        @NotNull(message = "fourCut_list can not be null")
+        @JsonProperty("fourCut_list") @Schema(description = "fourCut list", example = "[fourCut1, fourCut2]")
+        List<GetFourCutDto> fourCutList
 ) {
 }
