@@ -102,7 +102,7 @@ public class User {
                 .provider(provider)
                 .password(null)
                 .nickname(nickname)
-                .name("Default_Name")
+                .name(null)
                 .role(ERole.USER)
                 .build();
     }
