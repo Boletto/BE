@@ -56,8 +56,7 @@ public class PictureService {
             return null;
         }
     }
-    @Transactional
-    public boolean deleteS3AndDB(Long pictureId) {
+    private void deleteS3AndDB(Long pictureId) {
         try {
             // remove file from s3
             String[] split = pictureRepository.findById(pictureId)
