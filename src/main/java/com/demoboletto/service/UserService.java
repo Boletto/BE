@@ -63,7 +63,6 @@ public class UserService {
         userRepository.save(user);
 
         return GetUserProfileUpdateDto.builder()
-                .userId(user.getId())
                 .nickname(user.getNickname())
                 .name(user.getName())
                 .profileUrl(user.getUserProfile())
