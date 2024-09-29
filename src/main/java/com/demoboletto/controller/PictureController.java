@@ -4,6 +4,7 @@ import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.CreatePictureDto;
 import com.demoboletto.dto.request.CreatePictureFourCutDto;
+import com.demoboletto.dto.request.DeletePictureDto;
 import com.demoboletto.dto.response.GetPictureDto;
 import com.demoboletto.service.PictureService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,8 +29,8 @@ public class PictureController {
     }
     @DeleteMapping("/delete")
     @Operation(summary = "delete picture", description = "delete picture in the travel.")
-    public ResponseDto<?> deletePictureList(@RequestParam(value = "picture_id") Long pictureId) {
-        return pictureService.deletePicture(pictureId) ? ResponseDto.ok("success") : ResponseDto.fail("fail");
+    public ResponseDto<?> deletePictureList(@RequestBody DeletePictureDto deletePictureDto) {
+        return pictureService.deletePicture(deletePictureDto) ? ResponseDto.ok("success") : ResponseDto.fail("fail");
     }
     @PostMapping("/save/fourCut")
     @Operation(summary = "save fourCut picture", description = "save fourCut picture in the travel.")

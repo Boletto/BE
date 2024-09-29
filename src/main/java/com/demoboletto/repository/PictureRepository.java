@@ -15,4 +15,6 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
     List<Picture> findByUserId(Long userId);
 
     List<Picture> findAllByTravel_TravelIdAndIsDeletedFalse(Long travelId);
+
+    List<Picture> findAllByTravel_TravelIdAndPictureIdx(Long travelId, int pictureIdx);
 }

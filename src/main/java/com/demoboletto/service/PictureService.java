@@ -4,6 +4,7 @@ import com.demoboletto.domain.FourCut;
 import com.demoboletto.domain.Picture;
 import com.demoboletto.dto.request.CreatePictureDto;
 import com.demoboletto.dto.request.CreatePictureFourCutDto;
+import com.demoboletto.dto.request.DeletePictureDto;
 import com.demoboletto.dto.response.GetFourCutDto;
 import com.demoboletto.dto.response.GetPictureDto;
 import com.demoboletto.repository.FourCutRepository;
@@ -55,9 +56,8 @@ public class PictureService {
             return null;
         }
     }
-
     @Transactional
-    public boolean deletePicture(Long pictureId) {
+    public boolean deleteS3AndDB(Long pictureId) {
         try {
             // remove file from s3
             String[] split = pictureRepository.findById(pictureId)
@@ -90,7 +90,7 @@ public class PictureService {
     @Transactional
     public void deleteAllByTravelId(Long travelId) {
         pictureRepository.findAllByTravelId(travelId).forEach(picture -> {
-            deletePicture(picture.getId());
+            deleteS3AndDB(picture.getId());
         });
     }
     @Transactional
@@ -119,5 +119,20 @@ public class PictureService {
                         createPictureDto.collectId()
                 )).getId())
                 .build();
+    }
+    @Transactional
+    public boolean deletePicture(DeletePictureDto deletePictureDto) {
+        try {
+            pictureRepository.findAllByTravel_TravelIdAndPictureIdx(deletePictureDto.travelId(), deletePictureDto.pictureIdx())
+                    .forEach(picture -> {
+                        deleteS3AndDB(picture.getId());
+                    });
+            if (deletePictureDto.isFourCut()) {
+                fourCutRepository.deleteByTravel_TravelIdAndPictureIdx(deletePictureDto.travelId(), deletePictureDto.pictureIdx());
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }
