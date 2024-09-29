@@ -7,11 +7,7 @@ import com.demoboletto.dto.request.CreatePictureFourCutDto;
 import com.demoboletto.dto.request.DeletePictureDto;
 import com.demoboletto.dto.response.GetFourCutDto;
 import com.demoboletto.dto.response.GetPictureDto;
-import com.demoboletto.repository.FourCutRepository;
-import com.demoboletto.repository.PictureRepository;
-import com.demoboletto.repository.TravelRepository;
-import com.demoboletto.repository.UserRepository;
-import jakarta.validation.constraints.NotNull;
+import com.demoboletto.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +25,7 @@ public class PictureService {
     private final UserRepository userRepository;
     private final AWSS3Service awsS3Service;
     private final FourCutRepository fourCutRepository;
+    private final CollectRepository collectRepository;
 
     @Transactional
     public GetPictureDto createPicture(CreatePictureDto createPictureDto, MultipartFile file, Long userId) {
@@ -117,6 +114,10 @@ public class PictureService {
                                 .orElseThrow(() -> new IllegalArgumentException("travel not found")),
                         createPictureDto.collectId()
                 )).getId())
+                .collectId(createPictureDto.collectId())
+                .frameUrl(collectRepository.findById(createPictureDto.collectId())
+                        .orElseThrow(() -> new IllegalArgumentException("collect not found"))
+                        .getFrameUrl())
                 .build();
     }
     @Transactional
@@ -142,6 +143,10 @@ public class PictureService {
                         GetFourCutDto.builder()
                                 .fourCutId(fourCut.getId())
                                 .pictureIdx(fourCut.getPictureIdx())
+                                .collectId(fourCut.getCollectId())
+                                .frameUrl(collectRepository.findById(fourCut.getCollectId())
+                                        .orElseThrow(() -> new IllegalArgumentException("collect not found"))
+                                        .getFrameUrl())
                                 .build()
                 ));
         return fourCutDtoList;

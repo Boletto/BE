@@ -19,6 +19,12 @@ public record GetFourCutDto(
         int pictureIdx,
         @NotNull(message = "fourCutId can not be null")
         @JsonProperty("fourCut_id") @Schema(description = "fourCut unique id", example = "123")
-        Long fourCutId
+        Long fourCutId,
+        @NotNull(message = "collectId can not be null")
+        @JsonProperty("collect_id") @Schema(description = "collect unique id", example = "123")
+        Long collectId,
+        @NotNull(message = "frame_type can not be null")
+        @JsonProperty("frame_type") @Schema(description = "frameUrl", example = "https://boletto.com/abc.jpg")
+        String frameUrl
 ) {
 }
