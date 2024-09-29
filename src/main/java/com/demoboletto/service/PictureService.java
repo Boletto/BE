@@ -68,9 +68,8 @@ public class PictureService {
             pictureRepository.deleteById(pictureId);
 
         } catch (Exception e) {
-            return false;
+            throw new IllegalArgumentException("delete failed");
         }
-        return true;
     }
 
     public List<GetPictureDto> getPictureList(Long travelId) {
