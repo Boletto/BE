@@ -119,16 +119,14 @@ public class AppleService {
         }
 
         JwtTokenDto tokens = jwtUtil.generateTokens(user.getId(), ERole.USER);
-        String name = user.getName();
-        String nickname = user.getNickname();
-        String userProfile = user.getUserProfile();
 
         return new AppleLoginResponseDto(
                 tokens.accessToken(),
                 tokens.refreshToken(),
-                name,
-                nickname,
-                userProfile
+                user.getId(),
+                user.getName(),
+                user.getNickname(),
+                user.getUserProfile()
         );
     }
 

@@ -15,6 +15,10 @@ public record AppleLoginResponseDto(
         @Schema(description = "리프레시 토큰")
         String refreshToken,
 
+        @JsonProperty("userId")
+        @Schema(description = "유저의 기본키", example="2")
+        Long userId,
+
         @JsonProperty("userName")
         @Schema(description = "유저의 이름", example = "이다은")
         String name,

@@ -64,6 +64,7 @@ public class KakaoService {
         return new OAuthLoginResponseDto(
                 jwtTokenDto.accessToken(),
                 jwtTokenDto.refreshToken(),
+                user.getId(),
                 user.getName(),
                 user.getNickname(),
                 user.getUserProfile()
