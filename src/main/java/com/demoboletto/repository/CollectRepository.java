@@ -12,4 +12,6 @@ public interface CollectRepository extends JpaRepository<Collect, Long> {
     List<Collect> findByUserIdAndFrameUrlIsNotNull(Long userId);
 
     List<Collect> findByUserIdAndStickerTypeIsNotNull(Long userId);
+
+    List<Collect> findByUserId(Long userId);
 }

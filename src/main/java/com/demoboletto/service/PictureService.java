@@ -65,7 +65,8 @@ public class PictureService {
 
     public List<GetPictureDto> getPictureList(Long travelId) {
         List<GetPictureDto> pictureDtoList = new ArrayList<>();
-        pictureRepository.findAllByTravelId(travelId).forEach(picture ->
+        pictureRepository.findAllByTravelIdAndIsDeletedFalse(travelId)  // add a condition to filter out deleted pictures
+                .forEach(picture ->
                 pictureDtoList.add(
                         GetPictureDto.builder()
                                 .pictureId(picture.getId())

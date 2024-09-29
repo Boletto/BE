@@ -25,4 +25,6 @@ public interface UserTravelRepository extends JpaRepository<UserTravel, Long> {
     @Modifying
     @Query("delete from UserTravel ut where ut.travel.travelId = :travelId")
     void deleteAllByTravelId(Long travelId);
+
+    List<UserTravel> findByUserId(Long userId);
 }
