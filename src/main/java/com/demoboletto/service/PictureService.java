@@ -11,6 +11,7 @@ import com.demoboletto.repository.FourCutRepository;
 import com.demoboletto.repository.PictureRepository;
 import com.demoboletto.repository.TravelRepository;
 import com.demoboletto.repository.UserRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,5 +133,17 @@ public class PictureService {
             return false;
         }
         return true;
+    }
+
+    public List<GetFourCutDto> getFourCutList(Long travelId) {
+        List<GetFourCutDto> fourCutDtoList = new ArrayList<>();
+        fourCutRepository.findAllByTravel_TravelId(travelId).forEach(fourCut ->
+                fourCutDtoList.add(
+                        GetFourCutDto.builder()
+                                .fourCutId(fourCut.getId())
+                                .pictureIdx(fourCut.getPictureIdx())
+                                .build()
+                ));
+        return fourCutDtoList;
     }
 }

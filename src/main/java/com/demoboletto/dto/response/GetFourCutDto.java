@@ -10,10 +10,8 @@ import java.util.List;
 @Builder
 @Schema(name = "GetFourCutDto", description = "request for getting fourCut picture")
 public record GetFourCutDto(
-        @NotNull(message = "pictureId can not be null")
         @JsonProperty("picture_id") @Schema(description = "picture unique id", example = "[1234]")
         List<Long> pictureId,
-        @NotNull(message = "picture url can not be null")
         @JsonProperty("picture_url") @Schema(description = "picture url", example = "[https://boletto.com/abc.jpg]")
         List<String> pictureUrl,
         @NotNull(message = "picture index can not be null")
