@@ -1,6 +1,7 @@
 package com.demoboletto.service;
 
 import com.demoboletto.domain.*;
+import com.demoboletto.dto.response.GetUserProfileUpdateDto;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.dto.request.UserProfileUpdateDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
@@ -10,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +27,7 @@ public class UserService {
     private final UserTravelRepository userTravelRepository;
     private final PictureRepository pictureRepository;
     private final FriendRepository friendRepository;
-
+    private final AWSS3Service awsS3Service;
 
     // 유저의 이름과 닉네임을 조회
     public GetUserInfoDto getUserNameAndNickname(Long userId) {
@@ -38,16 +41,33 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserProfile(UserProfileUpdateDto userProfileUpdateDto) {
-        User user = userRepository.findById(1L)
+    public GetUserProfileUpdateDto updateUserProfile(Long userId, UserProfileUpdateDto userProfileUpdateDto, MultipartFile file) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
 
+        String profileUrl = null;
+        if (file != null && !file.isEmpty()) {
+            try {
+                profileUrl = awsS3Service.uploadFile(file); // 새 파일 업로드
+            } catch (IOException e) {
+                throw new CommonException(ErrorCode.UPLOAD_FILE_ERROR);
+            }
+        }
+
         user.updateProfile(
-                userProfileUpdateDto.nickname(),
+                userProfileUpdateDto.nickName(),
                 userProfileUpdateDto.name(),
-                userProfileUpdateDto.userProfile()
+                profileUrl
         );
+
         userRepository.save(user);
+
+        return GetUserProfileUpdateDto.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .name(user.getName())
+                .profileUrl(user.getUserProfile())
+                .build();
     }
 
     @Transactional

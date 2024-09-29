@@ -5,6 +5,7 @@ import com.demoboletto.domain.Collect;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.UserProfileUpdateDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
+import com.demoboletto.dto.response.GetUserProfileUpdateDto;
 import com.demoboletto.service.CollectService;
 import com.demoboletto.service.UserService;
 import com.demoboletto.type.ESticker;
@@ -37,15 +38,15 @@ public class UserController {
     }
 
     @PatchMapping("")
-    public ResponseDto<ResponseDto<?>> updateUserProfile(@RequestBody @Validated UserProfileUpdateDto userProfileUpdateDto) {
-        userService.updateUserProfile(userProfileUpdateDto);
-        return ResponseDto.ok(ResponseDto.ok("프로필이 성공적으로 업데이트되었습니다."));
+    public ResponseDto<?> updateUserProfile(@UserId Long userId, @RequestPart(value="data") @Validated UserProfileUpdateDto userProfileUpdateDto, @RequestPart(value="file") MultipartFile userProfile) {
+        GetUserProfileUpdateDto getuserProfileUpdateDto=userService.updateUserProfile(userId, userProfileUpdateDto, userProfile);
+        return ResponseDto.ok(getuserProfileUpdateDto);
     }
 
     @GetMapping("/frames")
     @Operation(summary = "Get User collected Frames", description = "유저가 획득한 프레임과 개수를 가져오는 API")
     public ResponseDto<?> getCollectedFrames(@UserId Long userId) {
-        List<String> frames = collectService.getCollectedFrames(userId);
+        List<Map<String, Object>> frames = collectService.getCollectedFrames(userId);
         Map<String, Object> response = new HashMap<>();
         response.put("frameCount", frames.size());
         response.put("frames", frames);
@@ -55,7 +56,7 @@ public class UserController {
     @GetMapping("/stickers")
     @Operation(summary = "Get User collected Stickers", description = "유저가 획득한 스티커와 개수를 가져오는 API")
     public ResponseDto<?> getCollectedStickers(@UserId Long userId) {
-        List<ESticker> stickers = collectService.getCollectedStickers(userId);
+        List<Map<String, Object>> stickers = collectService.getCollectedStickers(userId);
         Map<String, Object> response = new HashMap<>();
         response.put("stickerCount", stickers.size());
         response.put("stickers", stickers);
