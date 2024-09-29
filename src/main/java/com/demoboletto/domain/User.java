@@ -107,10 +107,10 @@ public class User {
                 .build();
     }
 
-    public void updateProfile(String nickname, String name, String userProfile) {
+    public void updateProfile(String nickname, String name, String profileUrl) {
         this.nickname = nickname;
         this.name = name;
-        this.userProfile = userProfile;
+        this.userProfile= profileUrl;
     }
 
     public void updateSignOutUser(){

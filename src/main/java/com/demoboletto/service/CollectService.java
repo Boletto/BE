@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,17 +52,27 @@ public class CollectService {
         return collectRepository.save(collect);
     }
 
-    public List<String> getCollectedFrames(Long userId) {
+    public List<Map<String, Object>> getCollectedFrames(Long userId) {
         List<Collect> collections = collectRepository.findByUserIdAndFrameUrlIsNotNull(userId);
         return collections.stream()
-                .map(Collect::getFrameUrl)
+                .map(collect -> {
+                    Map<String, Object> frameData = new HashMap<>();
+                    frameData.put("id", collect.getId());
+                    frameData.put("frameUrl", collect.getFrameUrl());
+                    return frameData;
+                })
                 .collect(Collectors.toList());
     }
 
-    public List<ESticker> getCollectedStickers(Long userId) {
+    public List<Map<String, Object>> getCollectedStickers(Long userId) {
         List<Collect> collections = collectRepository.findByUserIdAndStickerTypeIsNotNull(userId);
         return collections.stream()
-                .map(Collect::getStickerType)
+                .map(collect -> {
+                    Map<String, Object> stickerData = new HashMap<>();
+                    stickerData.put("id", collect.getId());
+                    stickerData.put("stickerType", collect.getStickerType().toString());
+                    return stickerData;
+                })
                 .collect(Collectors.toList());
     }
 }
