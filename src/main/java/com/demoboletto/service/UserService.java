@@ -66,6 +66,7 @@ public class UserService {
         if (!pictures.isEmpty()) {
             pictures.forEach(picture -> {
                 picture.setDeleted(true);  // soft delete
+                picture.setUser(null);
                 pictureRepository.save(picture);
             });
         }

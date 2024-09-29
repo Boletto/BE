@@ -6,11 +6,13 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Getter
+@Setter
 @Table(name = "picture")
 public class Picture {
     @Id
@@ -18,6 +20,7 @@ public class Picture {
     @Column(name = "picture_id")
     private Long id;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
