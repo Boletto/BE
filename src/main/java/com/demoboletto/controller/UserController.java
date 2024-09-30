@@ -72,7 +72,7 @@ public class UserController {
             @RequestPart(value = "frameFile", required = false) MultipartFile frameFile) {
         Collect collect=collectService.saveCollect(userId, stickerType, frameFile);
 
-        return ResponseDto.ok(collect);
+        return ResponseDto.ok("유저가 수집한 항목 저장에 성공했습니달라.");
     }
 
 }
