@@ -1,11 +1,13 @@
 package com.demoboletto.service;
 
+import com.demoboletto.domain.FourCut;
 import com.demoboletto.domain.Picture;
 import com.demoboletto.dto.request.CreatePictureDto;
+import com.demoboletto.dto.request.CreatePictureFourCutDto;
+import com.demoboletto.dto.request.DeletePictureDto;
+import com.demoboletto.dto.response.GetFourCutDto;
 import com.demoboletto.dto.response.GetPictureDto;
-import com.demoboletto.repository.PictureRepository;
-import com.demoboletto.repository.TravelRepository;
-import com.demoboletto.repository.UserRepository;
+import com.demoboletto.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,18 +24,25 @@ public class PictureService {
     private final TravelRepository travelRepository;
     private final UserRepository userRepository;
     private final AWSS3Service awsS3Service;
+    private final FourCutRepository fourCutRepository;
+    private final CollectRepository collectRepository;
 
     @Transactional
-    public GetPictureDto createPicture(CreatePictureDto createPictureDto, MultipartFile file) {
+    public GetPictureDto createPicture(CreatePictureDto createPictureDto, MultipartFile file, Long userId) {
         //save image to s3, create picture object && save picture object to db
+        return savePicture(createPictureDto, file,0, userId);
+    }
+
+    private GetPictureDto savePicture(CreatePictureDto createPictureDto, MultipartFile file, int idx, Long userId) {
         try {
             Picture savePicture = pictureRepository.save(
                     Picture.create(awsS3Service.uploadFile(file),
                             createPictureDto.pictureIdx(),
                             travelRepository.findById(createPictureDto.travelId())
                                     .orElseThrow(() -> new IllegalArgumentException("travel not found")),
-                            userRepository.findById(createPictureDto.userId())
+                            userRepository.findById(userId)
                                     .orElseThrow(() -> new IllegalArgumentException("user not found"))
+                            , createPictureDto.isFourCut(), idx
                     )
             );
             return GetPictureDto.builder()
@@ -45,8 +54,7 @@ public class PictureService {
             return null;
         }
     }
-    @Transactional
-    public boolean deletePicture(Long pictureId) {
+    private void deleteS3AndDB(Long pictureId) {
         try {
             // remove file from s3
             String[] split = pictureRepository.findById(pictureId)
@@ -58,9 +66,8 @@ public class PictureService {
             pictureRepository.deleteById(pictureId);
 
         } catch (Exception e) {
-            return false;
+            throw new IllegalArgumentException("delete failed");
         }
-        return true;
     }
 
     public List<GetPictureDto> getPictureList(Long travelId) {
@@ -79,7 +86,69 @@ public class PictureService {
     @Transactional
     public void deleteAllByTravelId(Long travelId) {
         pictureRepository.findAllByTravelId(travelId).forEach(picture -> {
-            deletePicture(picture.getId());
+            deleteS3AndDB(picture.getId());
         });
+    }
+    @Transactional
+    public GetFourCutDto createPictureFourCut(CreatePictureFourCutDto createPictureDto, List<MultipartFile> fileList, Long userId) {
+        //save image to s3, create picture object && save picture object to db
+        List<Long> pictureIdList = new ArrayList<>();
+        List<String> pictureUrlList = new ArrayList<>();
+        GetPictureDto getPictureDto;
+        for (int i = 0; i < fileList.size(); i++) {
+            getPictureDto = savePicture(CreatePictureDto.builder()
+                    .isFourCut(createPictureDto.isFourCut())
+                    .pictureIdx(createPictureDto.pictureIdx())
+                    .travelId(createPictureDto.travelId())
+                    .build(), fileList.get(i), i + 1, userId);
+            pictureIdList.add(getPictureDto.pictureId());
+            pictureUrlList.add(getPictureDto.pictureUrl());
+        }
+        return GetFourCutDto.builder()
+                .pictureId(pictureIdList)
+                .pictureUrl(pictureUrlList)
+                .pictureIdx(createPictureDto.pictureIdx())
+                .fourCutId(fourCutRepository.save(FourCut.create(
+                        createPictureDto.pictureIdx(),
+                        travelRepository.findById(createPictureDto.travelId())
+                                .orElseThrow(() -> new IllegalArgumentException("travel not found")),
+                        createPictureDto.collectId()
+                )).getId())
+                .collectId(createPictureDto.collectId())
+                .frameUrl(collectRepository.findById(createPictureDto.collectId())
+                        .orElseThrow(() -> new IllegalArgumentException("collect not found"))
+                        .getFrameUrl())
+                .build();
+    }
+    @Transactional
+    public boolean deletePicture(DeletePictureDto deletePictureDto) {
+        try {
+            pictureRepository.findAllByTravel_TravelIdAndPictureIdx(deletePictureDto.travelId(), deletePictureDto.pictureIdx())
+                    .forEach(picture -> {
+                        deleteS3AndDB(picture.getId());
+                    });
+            if (deletePictureDto.isFourCut()) {
+                fourCutRepository.deleteByTravel_TravelIdAndPictureIdx(deletePictureDto.travelId(), deletePictureDto.pictureIdx());
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public List<GetFourCutDto> getFourCutList(Long travelId) {
+        List<GetFourCutDto> fourCutDtoList = new ArrayList<>();
+        fourCutRepository.findAllByTravel_TravelId(travelId).forEach(fourCut ->
+                fourCutDtoList.add(
+                        GetFourCutDto.builder()
+                                .fourCutId(fourCut.getId())
+                                .pictureIdx(fourCut.getPictureIdx())
+                                .collectId(fourCut.getCollectId())
+                                .frameUrl(collectRepository.findById(fourCut.getCollectId())
+                                        .orElseThrow(() -> new IllegalArgumentException("collect not found"))
+                                        .getFrameUrl())
+                                .build()
+                ));
+        return fourCutDtoList;
     }
 }

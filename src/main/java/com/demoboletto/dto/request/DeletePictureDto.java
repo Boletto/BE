@@ -7,8 +7,8 @@ import lombok.Builder;
 
 
 @Builder
-@Schema(name = "CreatePictureDto", description = "request for saving  picture")
-public record CreatePictureDto(
+@Schema(name = "DeletePictureDto", description = "request for deleting  picture")
+public record DeletePictureDto(
         @NotNull(message = "travelId can not be null")
         @JsonProperty("travel_id") @Schema(description = "travel unique id", example = "1234")
         Long travelId,

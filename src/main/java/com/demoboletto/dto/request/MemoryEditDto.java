@@ -13,9 +13,6 @@ import java.util.List;
 @Builder
 @Schema(name = "MemoryEditDto", description = "request for editing memory")
 public record MemoryEditDto(
-        @NotNull(message = "userId can not be null")
-        @JsonProperty("user_id") @Schema(description = "user unique id", example = "1234")
-        Long userId,
         @NotNull(message = "travelId can not be null")
         @JsonProperty("travel_id") @Schema(description = "travel unique id", example = "1234")
         Long travelId,
