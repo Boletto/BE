@@ -8,10 +8,6 @@ import lombok.Builder;
 @Builder
 @Schema(name="GetUserProfileUpdateDto", description = "Response Dto for User Profile Update")
 public record GetUserProfileUpdateDto(
-        @NotNull(message = "UserId cannot be null")
-        @JsonProperty("userId") @Schema(description = "User's id", example = "2")
-        Long userId,
-
         @JsonProperty("nickname") @Schema(description = "User's nickname", example = "johnny")
         String nickname,
 
