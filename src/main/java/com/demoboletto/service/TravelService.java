@@ -36,7 +36,8 @@ public class TravelService {
 //    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
-    public boolean createTravelList(CreateTravelDto travelDto) {
+    public boolean createTravelList(CreateTravelDto travelDto, Long userId) {
+        travelDto.members().add(userId);
         // check if travel data exists
         for (Long memberId : travelDto.members()) {
             for (Travel travel : userTravelRepository.findTravelsByUserId(memberId)) {
