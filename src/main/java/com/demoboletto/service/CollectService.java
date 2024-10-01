@@ -54,6 +54,9 @@ public class CollectService {
 
     public List<Map<String, Object>> getCollectedFrames(Long userId) {
         List<Collect> collections = collectRepository.findByUserIdAndFrameUrlIsNotNull(userId);
+        for (long i = 1L; i < 4; i++) {
+            collectRepository.findById(i).ifPresent(collections::add);
+        }
         return collections.stream()
                 .map(collect -> {
                     Map<String, Object> frameData = new HashMap<>();
