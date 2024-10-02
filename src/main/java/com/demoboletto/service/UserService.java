@@ -7,6 +7,7 @@ import com.demoboletto.dto.request.UserProfileUpdateDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -71,6 +72,8 @@ public class UserService {
 
     @Transactional
     public void deleteUser(Long userId) {
+        System.out.println("User ID: " + userId);
+
         List<UserTravel> userTravels = userTravelRepository.findByUserId(userId);
         if (!userTravels.isEmpty()) {
             userTravelRepository.deleteAll(userTravels);
@@ -100,12 +103,8 @@ public class UserService {
             friendRepository.deleteAll(friendsOfOthers);
         }
 
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            userRepository.delete(userOptional.get());
-        } else {
-            throw new CommonException(ErrorCode.NOT_FOUND_USER);
-        }
+        User user=userRepository.findById(userId)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
+        userRepository.delete(user);
     }
-
 }

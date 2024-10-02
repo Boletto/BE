@@ -14,9 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,6 +52,11 @@ public class CollectService {
 
     public List<Map<String, Object>> getCollectedFrames(Long userId) {
         List<Collect> collections = collectRepository.findByUserIdAndFrameUrlIsNotNull(userId);
+        Arrays.asList(1L, 2L, 3L).stream()
+                .map(collectRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(collections::add);
         return collections.stream()
                 .map(collect -> {
                     Map<String, Object> frameData = new HashMap<>();
