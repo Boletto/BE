@@ -1,11 +1,9 @@
 package com.demoboletto.domain;
-
+import com.demoboletto.type.EAlarmType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -17,20 +15,16 @@ public class Alarm {
     @Column(name = "alarm_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable=true)
-    private User user;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "alarm_type")
+    private EAlarmType alarmType;
 
-    @Column(name = "contents")
-    private String contents;
-
-    @Column(name="alarm_status")
-    private Boolean alarmStatus;
+    @Column(name = "message")
+    private String message;
 
     @Builder
-    public Alarm(User user, String contents, Boolean alarmStatus) {
-        this.user = user;
-        this.contents = contents;
-        this.alarmStatus = alarmStatus;
+    public Alarm(EAlarmType alarmType, String message) {
+        this.alarmType = alarmType;
+        this.message = message;
     }
 }
