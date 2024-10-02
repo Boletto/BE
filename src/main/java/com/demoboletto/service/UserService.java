@@ -7,9 +7,12 @@ import com.demoboletto.dto.request.UserProfileUpdateDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.repository.*;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.origin.SystemEnvironmentOrigin;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -105,6 +108,8 @@ public class UserService {
 
         User user=userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
+        log.info(user.toString());
+
         userRepository.delete(user);
     }
 }
