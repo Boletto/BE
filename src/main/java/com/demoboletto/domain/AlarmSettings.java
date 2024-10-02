@@ -1,11 +1,8 @@
 package com.demoboletto.domain;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -36,19 +33,14 @@ public class AlarmSettings {
     @Column(name = "location_sharing_consent")
     private Boolean locationSharingConsent;
 
-    @Column(name = "created_date")
-    private LocalDateTime createdDate;
-
-    @Builder
-    public AlarmSettings(User user, Boolean allNotifications,
-                                Boolean stickerFrameNotifications, Boolean friendRequestNotifications,
-                                Boolean travelInvitationNotifications, Boolean locationSharingConsent) {
+    public AlarmSettings(User user, Boolean allNotifications, Boolean stickerFrameNotifications,
+                         Boolean friendRequestNotifications, Boolean travelInvitationNotifications,
+                         Boolean locationSharingConsent) {
         this.user = user;
         this.allNotifications = allNotifications;
         this.stickerFrameNotifications = stickerFrameNotifications;
         this.friendRequestNotifications = friendRequestNotifications;
         this.travelInvitationNotifications = travelInvitationNotifications;
         this.locationSharingConsent = locationSharingConsent;
-        this.createdDate = new LocalDateTime();
     }
 }
