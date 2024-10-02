@@ -22,5 +22,6 @@ public enum ESticker {
     BS, // BIFF Square
     GDB, // Gwangandaegyo Bridge
     HB, // Haeundae Beach
-    BCC // Busan Cinema Center
+    BCC, // Busan Cinema Center
+    KHU
 }
