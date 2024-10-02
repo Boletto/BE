@@ -101,13 +101,8 @@ public class UserService {
             friendRepository.deleteAll(friendsOfOthers);
         }
 
-        try {
-            User user = userRepository.getReferenceById(userId);
-            System.out.println("User ID: " + userId);
-            userRepository.delete(user);
-        } catch (EntityNotFoundException e) {
-            throw new CommonException(ErrorCode.NOT_FOUND_USER);
-        }
+        userRepository.findById(userId)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
     }
 
 }
