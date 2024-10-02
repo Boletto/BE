@@ -14,6 +14,9 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    @Query("SELECT u FROM User u WHERE u.id = :userId")
+    Optional<User> findByUserId(@Param("userId") Long userId);
+
     Optional<User> findBySerialId(String serialId);
     Boolean existsBySerialId(String serialId);
 
