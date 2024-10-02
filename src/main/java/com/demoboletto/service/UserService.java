@@ -72,6 +72,8 @@ public class UserService {
 
     @Transactional
     public void deleteUser(Long userId) {
+        System.out.println("User ID: " + userId);
+
         List<UserTravel> userTravels = userTravelRepository.findByUserId(userId);
         if (!userTravels.isEmpty()) {
             userTravelRepository.deleteAll(userTravels);
@@ -101,8 +103,8 @@ public class UserService {
             friendRepository.deleteAll(friendsOfOthers);
         }
 
-        userRepository.findById(userId)
+        User user=userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
+        userRepository.delete(user);
     }
-
 }
