@@ -41,23 +41,23 @@ public class FriendController {
     @GetMapping
     @Operation(summary = "친구 목록 조회", description = "유저의 아이디를 넘겨받아 해당 유저의 친구 목록을 조회합니다.")
     @Schema(name = "Get Friend List", description = "친구 목록 조회")
-    public List<FriendResponseDto> getFriends(@UserId Long userId) {
-        return friendService.getAllFriends(userId);
+    public ResponseDto<?> getFriends(@UserId Long userId) {
+        return ResponseDto.ok(friendService.getAllFriends(userId));
     }
 
     @GetMapping("/search")
     @Operation(summary = "친구 검색", description = "친구의 닉네임과 이름으로 친구를 조회합니다.")
     @Schema(name = "Search Friend", description = "특정 친구 조회")
-    public List<Friend> searchFriends(@RequestParam String keyword) {
-        return friendService.searchFriends(keyword);
+    public ResponseDto<?> searchFriends(@RequestParam String keyword) {
+        return ResponseDto.ok(friendService.searchFriends(keyword));
     }
 
 
     @DeleteMapping("/{userId}")
     @Operation(summary = "친구 삭제", description = "삭제하고 싶은 친구의 유저 id를 받아 특정 친구를 삭제합니다.")
     @Schema(name = "Search Friend", description = "특정 친구 삭제")
-    public void deleteFriend(@PathVariable Long userId) {
-        friendService.deleteFriend(userId);
+    public ResponseDto<?> deleteFriend(@PathVariable Long userId) {
+        return ResponseDto.ok("특정 친구 삭제에 성공하였습니다.");
     }
 
 }

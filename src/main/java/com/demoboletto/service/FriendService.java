@@ -31,12 +31,17 @@ public class FriendService {
         List<Friend> friends = friendRepository.findByUserId(userId);
 
         return friends.stream()
-                .map(friend -> new FriendResponseDto(
-                        friend.getFriendUser().getId(),
-                        friend.getFriendNickname(),
-                        friend.getFriendName(),
-                        friend.getFriendProfile()
-                ))
+                .map(friend -> {
+                    Long friendUserId = friend.getFriendUser().getId();
+                    boolean isFriend = friendRepository.existsByUserIdAndFriendUserId(userId, friendUserId);
+                    return new FriendResponseDto(
+                            friendUserId,
+                            friend.getFriendNickname(),
+                            friend.getFriendName(),
+                            friend.getFriendProfile(),
+                            isFriend
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
