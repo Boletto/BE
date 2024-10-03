@@ -1,6 +1,7 @@
 package com.demoboletto.service;
 
 import com.demoboletto.domain.*;
+import com.demoboletto.dto.response.GetAllUserResponseDto;
 import com.demoboletto.dto.response.GetUserProfileUpdateDto;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.dto.request.UserProfileUpdateDto;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -71,6 +73,18 @@ public class UserService {
                 .name(user.getName())
                 .profileUrl(user.getUserProfile())
                 .build();
+    }
+
+    public List<GetAllUserResponseDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> new GetAllUserResponseDto(
+                        user.getId(),
+                        user.getNickname(),
+                        user.getUserProfile(),
+                        user.getName()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Transactional
