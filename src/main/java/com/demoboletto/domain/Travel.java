@@ -54,6 +54,9 @@ public class Travel {
     }
 
     public static Travel create(CreateTravelDto travelDto) {
+        System.out.println("DTO Start Date: " + travelDto.startDate());
+        System.out.println("DTO End Date: " + travelDto.endDate());
+
         return Travel.builder()
                 .arrive(travelDto.arrive())
                 .departure(travelDto.departure())

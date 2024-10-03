@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @PatchMapping("")
-    public ResponseDto<?> updateUserProfile(@UserId Long userId, @RequestPart(value="data") @Validated UserProfileUpdateDto userProfileUpdateDto, @RequestPart(value="file") MultipartFile userProfile) {
+    public ResponseDto<?> updateUserProfile(@UserId Long userId, @RequestPart(value="data") @Validated UserProfileUpdateDto userProfileUpdateDto, @RequestPart(value="file", required = false) MultipartFile userProfile) {
         GetUserProfileUpdateDto getuserProfileUpdateDto=userService.updateUserProfile(userId, userProfileUpdateDto, userProfile);
         return ResponseDto.ok(getuserProfileUpdateDto);
     }
