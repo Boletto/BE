@@ -81,8 +81,8 @@ public class UserService {
                 .map(user -> new GetAllUserResponseDto(
                         user.getId(),
                         user.getNickname(),
-                        user.getUserProfile(),
-                        user.getName()
+                        user.getName(),
+                        user.getUserProfile()
                 ))
                 .collect(Collectors.toList());
     }

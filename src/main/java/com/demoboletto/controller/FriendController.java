@@ -1,5 +1,6 @@
 package com.demoboletto.controller;
 
+import com.demoboletto.annotation.UserId;
 import com.demoboletto.domain.Friend;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.FriendRequestDto;
@@ -26,13 +27,9 @@ public class FriendController {
     @PostMapping("")
     @Operation(summary = "친구 추가", description = "마이페이지에서 친구를 추가합니다.")
     @Schema(name = "Add Friend", description = "친구 목록 추가")
-    public ResponseDto<?> addFriend(@RequestBody FriendRequestDto friendRequestdto) {
-        Friend friend=friendService.addFriend(friendRequestdto);
+    public ResponseDto<?> addFriend(@UserId Long userId, @RequestParam Long friendId) {
+        Friend friend=friendService.addFriend(userId, friendId);
         AddFriendResponseDto responseDto = AddFriendResponseDto.builder()
-                .userId(friend.getUser().getId())
-                .userName(friend.getUser().getName())
-                .userNickName(friend.getUser().getNickname())
-                .userProfile(friend.getUser().getUserProfile())
                 .friendUserId(friend.getFriendUser().getId())
                 .friendName(friend.getFriendName())
                 .friendNickName(friend.getFriendNickname())

@@ -51,22 +51,28 @@ public class FriendService {
     }
 
     @Transactional
-    public Friend addFriend(FriendRequestDto friendRequest) {
-        User user = userRepository.findById(friendRequest.userId())
+    public Friend addFriend(Long userId, Long friendId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
 
-        User friendUser = userRepository.findById(friendRequest.friendUserId())
+        User friendUser = userRepository.findById(friendId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
+
+        boolean isAlreadyFriend = friendRepository.existsByUserIdAndFriendUserId(userId, friendId);
+        if (isAlreadyFriend) {
+            throw new IllegalArgumentException("Friend has already been added.");
+        }
 
         Friend newFriend = Friend.builder()
                 .user(user)
                 .friendUser(friendUser)
-                .friendName(friendRequest.friendName())
-                .friendNickname(friendRequest.friendNickname())
-                .friendProfile(friendRequest.friendProfile())
+                .friendName(friendUser.getName())
+                .friendNickname(friendUser.getNickname())
+                .friendProfile(friendUser.getUserProfile())
                 .build();
 
         friendRepository.save(newFriend);
+
         return newFriend;
     }
 
