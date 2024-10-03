@@ -1,14 +1,19 @@
 {
-    applinks: {
-        details: [
-            {
-                appIDs: [NG2NLR2Z86.Boleto.Boleto],
-                components: [
-               		{
-                	/: “*”
-                    }
-                ]
-            }
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["NG2NLR2Z86.Boleto.Boleto"],
+        "components": [
+          {
+            "/": "*",  // 앱에서 모든 경로 처리
+            "comment": "Handle all paths"
+          },
+          {
+            "/": "/friend-invitation",
+            "comment": "Handle friend invitation link"
+          }
         ]
-    }
+      }
+    ]
+  }
 }
