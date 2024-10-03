@@ -7,7 +7,6 @@ import lombok.Builder;
 @Builder
 @Schema(description = "Response for get All Users information")
 public record GetAllUserResponseDto(
-
         @JsonProperty("userId")
         @Schema(description = "ID of the friend user", example = "2")
         Long userId,
