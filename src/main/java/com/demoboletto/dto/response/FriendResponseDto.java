@@ -22,11 +22,7 @@ public record FriendResponseDto(
 
         @JsonProperty("userProfile")
         @Schema(description = "Profile of the friend", example = "BLUE")
-        String friendProfile,
-
-        @JsonProperty("isFriend")
-        @Schema(description = "is Friend", example = "true")
-        Boolean isFriend
+        String friendProfile
 
 ) {
 }

@@ -38,8 +38,7 @@ public class FriendService {
                             friendUserId,
                             friend.getFriendNickname(),
                             friend.getFriendName(),
-                            friend.getFriendProfile(),
-                            isFriend
+                            friend.getFriendProfile()
                     );
                 })
                 .collect(Collectors.toList());

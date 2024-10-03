@@ -76,15 +76,20 @@ public class UserService {
                 .build();
     }
 
-    public List<GetAllUserResponseDto> getAllUsers() {
+    public List<GetAllUserResponseDto> getAllUsers(Long userId) {
         return userRepository.findAll()
                 .stream()
-                .map(user -> new GetAllUserResponseDto(
-                        user.getId(),
-                        user.getNickname(),
-                        user.getName(),
-                        user.getUserProfile()
-                ))
+                .map(user -> {
+                    boolean isFriend = friendRepository.existsByUserIdAndFriendUserId(userId, user.getId());
+
+                    return new GetAllUserResponseDto(
+                            user.getId(),
+                            user.getNickname(),
+                            user.getName(),
+                            user.getUserProfile(),
+                            isFriend
+                    );
+                })
                 .collect(Collectors.toList());
     }
 

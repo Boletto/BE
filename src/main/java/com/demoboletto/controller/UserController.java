@@ -40,7 +40,7 @@ public class UserController {
     @GetMapping("/all")
     @Operation(summary = "Get All User Info", description = "모든 유저의 정보를 반환합니다.")
     public ResponseDto<?> getAllUsers(@UserId Long userId) {
-        return ResponseDto.ok(userService.getAllUsers());
+        return ResponseDto.ok(userService.getAllUsers(userId));
     }
 
     @PatchMapping("")

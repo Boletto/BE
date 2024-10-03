@@ -21,6 +21,10 @@ public record GetAllUserResponseDto(
 
         @JsonProperty("userProfile")
         @Schema(description = "Profile of the friend", example = "BLUE")
-        String userProfile
+        String userProfile,
+
+        @JsonProperty("isFriend")
+        @Schema(description = "is Friend", example = "true")
+        Boolean isFriend
 ) {
 }
