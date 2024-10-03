@@ -7,6 +7,8 @@ import com.demoboletto.dto.request.CreateTravelDto;
 import com.demoboletto.dto.request.UpdateTravelDto;
 import com.demoboletto.dto.response.GetTravelDto;
 import com.demoboletto.dto.response.GetUserTravelDto;
+import com.demoboletto.exception.CommonException;
+import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.TravelRepository;
 import com.demoboletto.repository.UserRepository;
 import com.demoboletto.repository.UserTravelRepository;
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 
@@ -40,25 +43,39 @@ public class TravelService {
         travelDto.members().add(userId);
         // check if travel data exists
         for (Long memberId : travelDto.members()) {
-            for (Travel travel : userTravelRepository.findTravelsByUserId(memberId)) {
-                if (isOverlapping(travel.getStartDate(),travel.getEndDate(),travelDto.startDate(),travelDto.endDate())) {
+            Optional<User> user = userRepository.findById(memberId);
+            if (user.isEmpty()) {
+                throw new CommonException(ErrorCode.NOT_FOUND_USER);
+            }
+
+            // 기존 여행 기록을 가져옴
+            List<Travel> travels = userTravelRepository.findTravelsByUserId(memberId);
+            if (travels == null || travels.isEmpty()) {
+                continue; // 여행 기록이 없으면 다음 멤버로 넘어감
+            }
+
+            for (Travel travel : travels) {
+                if (travel.getStartDate() == null || travel.getEndDate() == null) {
+                    continue;
+                }
+
+                if (isOverlapping(travel.getStartDate(), travel.getEndDate(), travelDto.startDate(), travelDto.endDate())) {
                     return false;
                 }
             }
         }
+
         // insert new travel data in db
         Travel travel = travelRepository.save(Travel.create(travelDto));
         // get member id from travelDto, and insert into UserTravel table
         travelDto.members().forEach(memberId -> {
             Optional<User> user = userRepository.findById(memberId);
-            if (!user.isPresent()) {
-                return;
-            }
-            // insert user object into UserTravel table
-            userTravelRepository.save(UserTravel.create(user.get(), travel));
+            user.ifPresent(u -> userTravelRepository.save(UserTravel.create(u, travel)));
         });
         return true;
     }
+
+
     public GetTravelDto getTravelList(Long id) {
         Optional<Travel> travel = travelRepository.findById(id);
         if (travel.isPresent()) {
@@ -76,11 +93,20 @@ public class TravelService {
         return travelList;
     }
     private boolean isOverlapping(String preStart, String preEnd, String start, String end) {
-        LocalDateTime preStartDate = LocalDateTime.parse(preStart, formatter);
-        LocalDateTime preEndDate = LocalDateTime.parse(preEnd, formatter);
-        LocalDateTime startDate = LocalDateTime.parse(start, formatter);
-        LocalDateTime endDate = LocalDateTime.parse(end, formatter);
-        return (startDate.isBefore(preEndDate) && endDate.isAfter(preStartDate));
+        try {
+            if (preStart == null || preEnd == null || start == null || end == null) {
+                return false;  // 또는 적절한 예외 처리
+            }
+
+            LocalDateTime preStartDate = LocalDateTime.parse(preStart, formatter);
+            LocalDateTime preEndDate = LocalDateTime.parse(preEnd, formatter);
+            LocalDateTime startDate = LocalDateTime.parse(start, formatter);
+            LocalDateTime endDate = LocalDateTime.parse(end, formatter);
+            return (startDate.isBefore(preEndDate) && endDate.isAfter(preStartDate));
+        } catch (DateTimeParseException e) {
+            System.err.println("Invalid date format: " + e.getMessage());  // 로그 출력
+            return false;  // 또는 예외를 던지거나 다른 방식으로 처리
+        }
     }
     private GetTravelDto convertToGetTravelDto(Travel travel) {
         return GetTravelDto.builder()
