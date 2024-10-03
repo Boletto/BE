@@ -11,6 +11,7 @@ build/*
 
 ### secret files ###
 *.p8
+boletto-5a414-firebase-adminsdk-ivaiw-8000129b9e.json
 
 ### STS ###
 .apt_generated

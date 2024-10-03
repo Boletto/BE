@@ -50,7 +50,7 @@ public class KakaoService {
         if (existingUser.isPresent()) {
             user = existingUser.get();
         } else {
-            user = userRepository.save(User.signUp(userLoginDto.serialId(), userLoginDto.provider(), userLoginDto.nickname()));
+            user = userRepository.save(User.signUp(userLoginDto.serialId(), userLoginDto.provider(), userLoginDto.nickname(), userLoginDto.deviceToken()));
             isNewUser = true;
             log.info("User with serialId: {} logged in for the first time.", userLoginDto.serialId());
         }
