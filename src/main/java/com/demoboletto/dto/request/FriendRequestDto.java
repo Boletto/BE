@@ -14,19 +14,7 @@ public record FriendRequestDto(
 
         @NotNull(message = "friendUserId can not be null")
         @JsonProperty("friendUserId") @Schema(description = "ID of the user being added as friend", example = "2")
-        Long friendUserId,
-
-        @NotNull(message = "friendName can not be null")
-        @JsonProperty("friendName") @Schema(description = "Name of the friend", example = "홍길동")
-        String friendName,
-
-        @NotNull(message = "friendNickname can not be null")
-        @JsonProperty("friendNickname") @Schema(description = "Nickname of the friend", example = "길동이")
-        String friendNickname,
-
-        @NotNull(message = "friendProfile can not be null")
-        @JsonProperty("friendProfile") @Schema(description = "Profile of the friend (image URL or enum value)", example = "CUSTOM")
-        String friendProfile
+        Long friendUserId
 ) {
 }
 
