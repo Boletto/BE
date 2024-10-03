@@ -126,38 +126,51 @@ public class TravelService {
         Travel preTravel = travelRepository.findById(travelDto.travelId())
                 .orElseThrow(() -> new EntityNotFoundException("travel data not found"));
 
-        // check if travel data exists
         for (Long memberId : travelDto.members()) {
-            for (Travel travel : userTravelRepository.findTravelsByUserId(memberId)) {
-                if (isOverlapping(travel.getStartDate(),travel.getEndDate(),travelDto.startDate(),travelDto.endDate())) {
-                    if (!travel.getTravelId().equals(travelDto.travelId())) return null;
+            Optional<User> user = userRepository.findById(memberId);
+            if (user.isEmpty()) {
+                throw new CommonException(ErrorCode.NOT_FOUND_USER);
+            }
+
+            // 기존 여행 기록을 가져옴
+            List<Travel> travels = userTravelRepository.findTravelsByUserId(memberId);
+            if (travels == null || travels.isEmpty()) {
+                continue;
+            }
+
+            for (Travel travel : travels) {
+                if (travel.getStartDate() == null || travel.getEndDate() == null) {
+                    continue;
+                }
+                // 일정이 겹치는지 확인하고, 다른 여행과 겹치면 예외 던짐
+                if (!travel.getTravelId().equals(travelDto.travelId())) {
+                    if (isOverlapping(travel.getStartDate(), travel.getEndDate(), travelDto.startDate(), travelDto.endDate())) {
+                        throw new IllegalArgumentException("The travel period overlaps with an existing travel for userId: " + memberId);
+                    }
                 }
             }
         }
-        // update travel data
+        // 여행 데이터 업데이트
         Travel postTravel = travelRepository.save(preTravel.update(travelDto));
 
-        // if member list is changed, update UserTravel table
+        // 기존 멤버 리스트 가져오기
+        List<UserTravel> existingUserTravels = userTravelRepository.findAllByTravelId(travelDto.travelId());
 
-        //get user list in UserTravel table
-        userTravelRepository.findAllByTravelId(travelDto.travelId()).forEach(member -> {
-            // if member is not in the new member list, delete the member from UserTravel table
-            if (!travelDto.members().contains(member.getUser().getId())) {
-                userTravelRepository.delete(userTravelRepository.findByUserIdAndTravelId(member.getId(), travelDto.travelId()));
-            } else {
-            // if member is in the new member list, delete the member from the new member list
-                travelDto.members().remove(member.getId());
+        // 1. 기존 멤버 삭제
+        existingUserTravels.forEach(existingUserTravel -> {
+            if (!travelDto.members().contains(existingUserTravel.getUser().getId())) {
+                userTravelRepository.delete(existingUserTravel);
             }
         });
-        // insert new member list into UserTravel table
+
+        // 2. 새로운 멤버 추가
         travelDto.members().forEach(memberId -> {
             Optional<User> user = userRepository.findById(memberId);
-            if (!user.isPresent()) {
-                return;
+            if (user.isPresent() && existingUserTravels.stream().noneMatch(ut -> ut.getUser().getId().equals(memberId))) {
+                userTravelRepository.save(UserTravel.create(user.get(), postTravel));
             }
-            // insert user object into UserTravel table
-            userTravelRepository.save(UserTravel.create(user.get(), postTravel));
         });
+
         return convertToGetTravelDto(postTravel);
     }
     @Transactional
