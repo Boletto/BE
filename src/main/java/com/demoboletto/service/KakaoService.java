@@ -55,6 +55,9 @@ public class KakaoService {
             log.info("User with serialId: {} logged in for the first time.", userLoginDto.serialId());
         }
 
+        user.updateDeviceToken(userLoginDto.deviceToken());
+        userRepository.save(user);
+
         JwtTokenDto jwtTokenDto = jwtUtil.generateTokens(user.getId(), ERole.USER);
 
         if (isNewUser || !jwtTokenDto.refreshToken().equals(user.getRefreshToken())) {

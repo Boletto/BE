@@ -2,6 +2,7 @@ package com.demoboletto.service;
 
 import com.demoboletto.client.AppleFeignClient;
 import com.demoboletto.domain.User;
+import com.demoboletto.dto.request.AppleLoginDto;
 import com.demoboletto.dto.response.*;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
@@ -106,7 +107,8 @@ public class AppleService {
     }
 
     @Transactional
-    public AppleLoginResponseDto login(String token) {
+    public AppleLoginResponseDto login(AppleLoginDto appleLoginDto) {
+        String token = appleLoginDto.identityToken();
         OAuthUserInformation userInformation = requestUserInformation(token);
         User user;
 
@@ -118,6 +120,8 @@ public class AppleService {
             user = saveUser(userInformation);
         }
 
+        user.updateDeviceToken(appleLoginDto.deviceToken());
+        userRepository.save(user);
         JwtTokenDto tokens = jwtUtil.generateTokens(user.getId(), ERole.USER);
 
         return new AppleLoginResponseDto(
