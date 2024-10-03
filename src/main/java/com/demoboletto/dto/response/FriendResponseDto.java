@@ -8,19 +8,19 @@ import lombok.Builder;
 @Schema(description = "Response for friend's information")
 public record FriendResponseDto(
 
-        @JsonProperty("friend_user_id")
+        @JsonProperty("userId")
         @Schema(description = "ID of the friend user", example = "2")
         Long friendUserId,
 
-        @JsonProperty("friend_nickname")
+        @JsonProperty("nickName")
         @Schema(description = "Nickname of the friend", example = "으아어")
         String friendNickname,
 
-        @JsonProperty("friend_name")
+        @JsonProperty("name")
         @Schema(description = "Name of the friend", example = "홍길동")
         String friendName,
 
-        @JsonProperty("friend_profile")
+        @JsonProperty("userProfile")
         @Schema(description = "Profile of the friend", example = "BLUE")
         String friendProfile
 ) {

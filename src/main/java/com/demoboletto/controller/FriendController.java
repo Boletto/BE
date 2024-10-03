@@ -41,7 +41,7 @@ public class FriendController {
     @GetMapping
     @Operation(summary = "친구 목록 조회", description = "유저의 아이디를 넘겨받아 해당 유저의 친구 목록을 조회합니다.")
     @Schema(name = "Get Friend List", description = "친구 목록 조회")
-    public List<FriendResponseDto> getFriends(@RequestParam Long userId) {
+    public List<FriendResponseDto> getFriends(@UserId Long userId) {
         return friendService.getAllFriends(userId);
     }
 
