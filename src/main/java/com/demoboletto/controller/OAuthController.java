@@ -42,7 +42,8 @@ public class OAuthController {
     @Operation(summary = "애플로그인", description = "애플 로그인")
     @Schema(name = "login", description = "애플 로그인")
     public ResponseDto<?> login(@RequestBody AppleLoginDto appleLoginDto) {
-        return ResponseDto.ok(appleService.login(appleLoginDto.identityToken()));
+        appleService.login(appleLoginDto);
+        return ResponseDto.ok(appleLoginDto.identityToken());
     }
 
     @PostMapping("/auth/reissue")

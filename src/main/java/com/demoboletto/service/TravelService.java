@@ -33,6 +33,8 @@ public class TravelService {
     private final UserRepository userRepository;
     private final PictureService pictureService;
     private final StickerService stickerService;
+    private final AlarmService alarmService;
+    private final FCMService fcmService;
     private final SpeechService speechService;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final ZonedDateTime nowKorea = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
@@ -41,6 +43,7 @@ public class TravelService {
     @Transactional
     public boolean createTravelList(CreateTravelDto travelDto, Long userId) {
         travelDto.members().add(userId);
+
         // check if travel data exists
         for (Long memberId : travelDto.members()) {
             Optional<User> user = userRepository.findById(memberId);
@@ -67,11 +70,20 @@ public class TravelService {
 
         // insert new travel data in db
         Travel travel = travelRepository.save(Travel.create(travelDto));
+
         // get member id from travelDto, and insert into UserTravel table
         travelDto.members().forEach(memberId -> {
             Optional<User> user = userRepository.findById(memberId);
             user.ifPresent(u -> userTravelRepository.save(UserTravel.create(u, travel)));
         });
+
+        // 친구들에게 알림 전송
+        travelDto.members().forEach(memberId -> {
+            if (!memberId.equals(userId)) {
+                alarmService.sendFriendInviteAlarm(userId, memberId, travel);  // 친구들에게 알림 전송
+            }
+        });
+
         return true;
     }
 

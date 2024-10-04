@@ -121,4 +121,8 @@ public class User {
         this.role = ERole.DELETED;
         this.isLogin=false;
     }
+
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
 }
