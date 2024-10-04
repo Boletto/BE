@@ -120,8 +120,8 @@ public class AppleService {
             user = saveUser(userInformation);
         }
 
-        user.updateDeviceToken(appleLoginDto.deviceToken());
-        userRepository.save(user);
+//        user.updateDeviceToken(appleLoginDto.deviceToken());
+//        userRepository.save(user);
         JwtTokenDto tokens = jwtUtil.generateTokens(user.getId(), ERole.USER);
 
         return new AppleLoginResponseDto(

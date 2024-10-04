@@ -67,11 +67,11 @@ public class User {
     @Column(name = "user_profile")
     private String userProfile;
 
-    @Column(name="device_token")
-    private String deviceToken;
+//    @Column(name="device_token")
+//    private String deviceToken;
 
     @Builder
-    public User(String serialId, String password, String email, String name, String nickname, EProvider provider, ERole role, String userProfile, String deviceToken) {
+    public User(String serialId, String password, String email, String name, String nickname, EProvider provider, ERole role, String userProfile) {
         this.serialId = serialId;
         this.password = password;
         this.provider = provider;
@@ -80,7 +80,7 @@ public class User {
         this.email =email;
         this.name = name;
         this.nickname = nickname;
-        this.deviceToken = deviceToken;
+//        this.deviceToken = deviceToken;
         this.isFrame=true;
         this.isFriendApply=true;
         this.isLocation=true;
@@ -99,14 +99,14 @@ public class User {
 
 
     // 소셜 로그인
-    public static User signUp(String serialId, EProvider provider, String nickname, String deviceToken) {
+    public static User signUp(String serialId, EProvider provider, String nickname) {
         return User.builder()
                 .serialId(serialId)
                 .provider(provider)
                 .password(null)
                 .nickname(nickname)
                 .name(null)
-                .deviceToken(deviceToken)
+//                .deviceToken(deviceToken)
                 .role(ERole.USER)
                 .build();
     }
@@ -122,7 +122,7 @@ public class User {
         this.isLogin=false;
     }
 
-    public void updateDeviceToken(String deviceToken) {
-        this.deviceToken = deviceToken;
-    }
+//    public void updateDeviceToken(String deviceToken) {
+//        this.deviceToken = deviceToken;
+//    }
 }

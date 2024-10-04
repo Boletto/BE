@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 public record AppleLoginDto(
         @NotBlank(message = "identity token은 필수 입력입니다.")
         @JsonProperty("identity_token")
-        String identityToken,
-
-        @JsonProperty("device_token")
-        String deviceToken
+        String identityToken
+//
+//        @JsonProperty("device_token")
+//        String deviceToken
 ) {
 }

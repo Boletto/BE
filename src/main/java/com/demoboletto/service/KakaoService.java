@@ -50,13 +50,13 @@ public class KakaoService {
         if (existingUser.isPresent()) {
             user = existingUser.get();
         } else {
-            user = userRepository.save(User.signUp(userLoginDto.serialId(), userLoginDto.provider(), userLoginDto.nickname(), userLoginDto.deviceToken()));
+            user = userRepository.save(User.signUp(userLoginDto.serialId(), userLoginDto.provider(), userLoginDto.nickname()));
             isNewUser = true;
             log.info("User with serialId: {} logged in for the first time.", userLoginDto.serialId());
         }
-
-        user.updateDeviceToken(userLoginDto.deviceToken());
-        userRepository.save(user);
+//
+//        user.updateDeviceToken(userLoginDto.deviceToken());
+//        userRepository.save(user);
 
         JwtTokenDto jwtTokenDto = jwtUtil.generateTokens(user.getId(), ERole.USER);
 

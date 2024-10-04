@@ -18,9 +18,9 @@ public record OauthLoginDto(
         EProvider provider,
 
         @JsonProperty("nickname") @Schema(description = "유저의 닉네임", example = "leedaeun")
-        String nickname,
+        String nickname
 
-        @JsonProperty("deviceToken") @Schema(description = "유저 기기의 device Token")
-        String deviceToken
+//        @JsonProperty("deviceToken") @Schema(description = "유저 기기의 device Token")
+//        String deviceToken
 ) {
 }

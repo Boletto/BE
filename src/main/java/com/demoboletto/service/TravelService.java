@@ -77,13 +77,12 @@ public class TravelService {
             user.ifPresent(u -> userTravelRepository.save(UserTravel.create(u, travel)));
         });
 
-        // 친구들에게 알림 전송
-        travelDto.members().forEach(memberId -> {
-            if (!memberId.equals(userId)) {
-                alarmService.sendFriendInviteAlarm(userId, memberId, travel);  // 친구들에게 알림 전송
-            }
-        });
-
+//        // 친구들에게 알림 전송
+//        travelDto.members().forEach(memberId -> {
+//            if (!memberId.equals(userId)) {
+//                alarmService.sendFriendInviteAlarm(userId, memberId, travel);  // 친구들에게 알림 전송
+//            }
+//        });
         return true;
     }
 
