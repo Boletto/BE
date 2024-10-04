@@ -67,8 +67,6 @@ public class User {
     @Column(name = "user_profile")
     private String userProfile;
 
-//    @Column(name="device_token")
-//    private String deviceToken;
 
     @Builder
     public User(String serialId, String password, String email, String name, String nickname, EProvider provider, ERole role, String userProfile) {
@@ -80,7 +78,6 @@ public class User {
         this.email =email;
         this.name = name;
         this.nickname = nickname;
-//        this.deviceToken = deviceToken;
         this.isFrame=true;
         this.isFriendApply=true;
         this.isLocation=true;
@@ -106,7 +103,6 @@ public class User {
                 .password(null)
                 .nickname(nickname)
                 .name(null)
-//                .deviceToken(deviceToken)
                 .role(ERole.USER)
                 .build();
     }
@@ -121,8 +117,4 @@ public class User {
         this.role = ERole.DELETED;
         this.isLogin=false;
     }
-
-//    public void updateDeviceToken(String deviceToken) {
-//        this.deviceToken = deviceToken;
-//    }
 }

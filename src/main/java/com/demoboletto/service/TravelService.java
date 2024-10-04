@@ -33,7 +33,7 @@ public class TravelService {
     private final UserRepository userRepository;
     private final PictureService pictureService;
     private final StickerService stickerService;
-    private final AlarmService alarmService;
+    //    private final AlarmService alarmService;
     private final FCMService fcmService;
     private final SpeechService speechService;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
