@@ -34,7 +34,7 @@ public class TravelService {
     private final PictureService pictureService;
     private final StickerService stickerService;
     //    private final AlarmService alarmService;
-    private final FCMService fcmService;
+//    private final FCMService fcmService;
     private final SpeechService speechService;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final ZonedDateTime nowKorea = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
