@@ -1,5 +1,6 @@
 package com.demoboletto.dto.response;
 
+import com.demoboletto.domain.Friend;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -25,4 +26,11 @@ public record FriendResponseDto(
         String friendProfile
 
 ) {
+    public static FriendResponseDto of(Friend friend) {
+        return new FriendResponseDto(
+                friend.getId(),
+                friend.getFriendNickname(),
+                friend.getFriendName(),
+                friend.getFriendProfile());
+    }
 }

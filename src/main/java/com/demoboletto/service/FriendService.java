@@ -2,15 +2,12 @@ package com.demoboletto.service;
 
 import com.demoboletto.domain.Friend;
 import com.demoboletto.domain.User;
-import com.demoboletto.dto.global.ResponseDto;
-import com.demoboletto.dto.request.FriendRequestDto;
+import com.demoboletto.dto.response.AddFriendResponseDto;
 import com.demoboletto.dto.response.FriendResponseDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
-import com.demoboletto.repository.FriendRepository;
+import com.demoboletto.repository.friend.FriendRepository;
 import com.demoboletto.repository.UserRepository;
-import com.demoboletto.type.EFriendType;
-import com.demoboletto.type.EProfile;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,31 +28,20 @@ public class FriendService {
         List<Friend> friends = friendRepository.findByUserId(userId);
 
         return friends.stream()
-                .map(friend -> {
-                    Long friendUserId = friend.getFriendUser().getId();
-                    boolean isFriend = friendRepository.existsByUserIdAndFriendUserId(userId, friendUserId);
-                    return new FriendResponseDto(
-                            friendUserId,
-                            friend.getFriendNickname(),
-                            friend.getFriendName(),
-                            friend.getFriendProfile()
-                    );
-                })
+                .map(FriendResponseDto::of)
                 .collect(Collectors.toList());
     }
 
-    // 친구 이름 또는 닉네임으로 검색
     public List<Friend> searchFriends(String keyword) {
-        return friendRepository.findByFriendNameContainingOrFriendNicknameContaining(keyword, keyword);
+        return friendRepository.findFriendByKeyword(keyword);
     }
 
-    @Transactional
     public void deleteFriend(Long friendId) {
         friendRepository.deleteByFriendUserId(friendId);
     }
 
     @Transactional
-    public Friend addFriend(Long userId, Long friendId) {
+    public AddFriendResponseDto addFriend(Long userId, Long friendId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
 
@@ -77,7 +63,12 @@ public class FriendService {
 
         friendRepository.save(newFriend);
 
-        return newFriend;
+        return AddFriendResponseDto.builder()
+                .friendUserId(newFriend.getFriendUser().getId())
+                .friendName(newFriend.getFriendName())
+                .friendNickName(newFriend.getFriendNickname())
+                .friendProfile(newFriend.getFriendProfile())
+                .build();
     }
 
 }
