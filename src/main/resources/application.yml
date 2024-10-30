@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: boletto-backend
+  profiles:
+    active: local
+    group:
+      local:
+        - local
+        - common
+        - swagger
+        - secret
+      prod:
+        - prod
+        - common
+        - swagger
+        - secret

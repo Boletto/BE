@@ -5,13 +5,14 @@ HELP.md
 !**/src/test/**/build/
 
 ### ignore application.yml ###
-src/main/resources/application.yml
+src/main/resources/application-secret.yml
 .gradle/*
 build/*
 
 ### secret files ###
 *.p8
 boletto-5a414-firebase-adminsdk-ivaiw-4838d9285c.json
+
 
 ### STS ###
 .apt_generated
@@ -43,3 +44,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### H2 Database ###
+*.db

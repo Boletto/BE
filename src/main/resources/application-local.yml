@@ -1,0 +1,28 @@
+datasource:
+  driver-class-name: org.h2.Driver
+  username: sa
+  password: 11
+  url: jdbc:h2:file:./bolleto_local_db;AUTO_SERVER=TRUE
+
+jpa:
+  hibernate:
+    ddl-auto: update
+  properties:
+    hibernate:
+      format_sql: true
+      show_sql: true
+      use_sql_comments: true
+      dialect: org.hibernate.dialect.H2Dialect
+
+security:
+  oauth2:
+    client:
+      registration:
+        kakao:
+          redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+logging:
+  level:
+    root: info
+    org.springframework.security: debug
+    org.springframework.web: debug
+    com.demoboletto: debug
