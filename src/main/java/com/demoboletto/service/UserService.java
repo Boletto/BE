@@ -8,6 +8,7 @@ import com.demoboletto.dto.request.UserProfileUpdateDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.repository.*;
+import com.demoboletto.repository.friend.FriendRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
