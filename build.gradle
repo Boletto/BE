@@ -85,6 +85,16 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
+    // Oracle
+    runtimeOnly('com.oracle.database.jdbc:ojdbc8:21.10.0.0') {
+        exclude group: "com.oracle.ojdbc", module: "simplefan"
+        exclude group: "com.oracle.jdbc", module: "ons"
+    }
+    implementation 'com.oracle.database.jdbc:ucp:21.10.0.0'
+    implementation 'com.oracle.database.security:oraclepki:21.10.0.0'
+    implementation 'com.oracle.database.security:osdt_core:21.10.0.0'
+    implementation 'com.oracle.database.security:osdt_cert:21.10.0.0'
+
     // Local
     runtimeOnly 'com.h2database:h2'
 }
