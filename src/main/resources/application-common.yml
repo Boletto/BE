@@ -25,15 +25,6 @@ spring:
       object-storage:
         bucket: ${secret.oci.object-storage.bucket}
         namespace: ${secret.oci.object-storage.namespace}
-    aws:
-      credentials:
-        accessKey: ${secret.aws.credentials.accessKey}
-        secretKey: ${secret.aws.credentials.secretKey}
-      s3:
-        bucket: ${secret.aws.s3.bucket}
-      region:
-        static: ${secret.aws.region.static}
-
   security:
     oauth2:
       client:
