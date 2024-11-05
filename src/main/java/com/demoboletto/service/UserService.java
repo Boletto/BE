@@ -8,20 +8,20 @@ import com.demoboletto.dto.request.UserProfileUpdateDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.repository.*;
+
 import com.demoboletto.repository.friend.FriendRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.origin.SystemEnvironmentOrigin;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,7 +34,7 @@ public class UserService {
     private final UserTravelRepository userTravelRepository;
     private final PictureRepository pictureRepository;
     private final FriendRepository friendRepository;
-    private final AWSS3Service awsS3Service;
+    private final ObjectStorageService objectStorageService;
     private final UserAlarmRepository userAlarmRepository;
 
     // 유저의 이름과 닉네임을 조회
@@ -56,7 +56,7 @@ public class UserService {
         String profileUrl = null;
         if (file != null && !file.isEmpty()) {
             try {
-                profileUrl = awsS3Service.uploadFile(file); // 새 파일 업로드
+                profileUrl = objectStorageService.uploadFile(file, userId);
             } catch (IOException e) {
                 throw new CommonException(ErrorCode.UPLOAD_FILE_ERROR);
             }

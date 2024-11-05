@@ -24,7 +24,7 @@ public class CollectService {
     private final CollectRepository collectRepository;
     private final UserRepository userRepository;
     private final PictureRepository pictureRepository;
-    private final AWSS3Service awsS3Service;
+    private final ObjectStorageService objectStorageService;
 
     @Transactional
     public Collect saveCollect(Long userId, ESticker stickerType, MultipartFile frameFile) {
@@ -35,7 +35,7 @@ public class CollectService {
         String frameUrl = null;
         if (frameFile != null && !frameFile.isEmpty()) {
             try {
-                frameUrl = awsS3Service.uploadFile(frameFile);  // S3에 이미지 업로드
+                frameUrl = objectStorageService.uploadFile(frameFile, userId);  // S3에 이미지 업로드
             } catch (IOException e) {
                 throw new CommonException(ErrorCode.UPLOAD_FILE_ERROR);
             }
