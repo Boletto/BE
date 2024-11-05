@@ -4,6 +4,8 @@ import com.demoboletto.domain.Sticker;
 import com.demoboletto.domain.Travel;
 import com.demoboletto.dto.request.CreateStickerDto;
 import com.demoboletto.dto.response.GetStickerDto;
+import com.demoboletto.exception.CommonException;
+import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.StickerRepository;
 import com.demoboletto.repository.TravelRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,33 +36,19 @@ public class StickerService {
                 ));
         return stickerDtoList;
     }
+
     @Transactional
-    public boolean createSticker(List<CreateStickerDto> stickerDtoList, Long travelId) {
-        try {
-            stickerRepository.findAllByTravelId(travelId).forEach(stickerRepository::delete);
-            if (stickerDtoList.size() == 0) {
-                return true;
-            }
-            stickerRepository.saveAll(makeStickerList(stickerDtoList, travelId));
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
-    public List<Sticker> makeStickerList(List<CreateStickerDto> stickerDtoList, Long travelId) {
-        List<Sticker> newStickerList = new ArrayList<>();
+    public void createSticker(List<CreateStickerDto> stickerDtoList, Long travelId) {
+        stickerRepository.deleteAllByTravelId(travelId);
         Travel travel = travelRepository.findById(travelId)
-                .orElseThrow(() -> new IllegalArgumentException("travel not found"));
-        for (int i = 0; i < stickerDtoList.size(); i++) {
-            newStickerList.add(
-                    Sticker.create(
-                            stickerDtoList.get(i),
-                            travel
-                    )
-            );
-        }
-        return newStickerList;
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_TRAVEL));
+
+        List<Sticker> stickers = stickerDtoList.stream()
+                .map(createStickerDto -> Sticker.create(createStickerDto, travel))
+                .toList();
+        stickerRepository.saveAll(stickers);
     }
+
     @Transactional
     public void deleteAllByTravelId(Long travelId) {
         stickerRepository.deleteAllByTravelId(travelId);
