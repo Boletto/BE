@@ -15,15 +15,16 @@ spring:
         use_sql_comments: ${jpa.properties.hibernate.use_sql_comments}
         dialect: ${jpa.properties.hibernate.dialect}
   cloud:
-    aws:
+    oci:
       credentials:
-        accessKey: ${secret.aws.credentials.accessKey}
-        secretKey: ${secret.aws.credentials.secretKey}
-      s3:
-        bucket: ${secret.aws.s3.bucket}
-      region:
-        static: ${secret.aws.region.static}
-
+        user: ${secret.oci.credentials.user}
+        fingerprint: ${secret.oci.credentials.fingerprint}
+        tenancy: ${secret.oci.credentials.tenancy}
+        region: ${secret.oci.credentials.region}
+        key-file: ${secret.oci.credentials.key_file}
+      object-storage:
+        bucket: ${secret.oci.object-storage.bucket}
+        namespace: ${secret.oci.object-storage.namespace}
   security:
     oauth2:
       client:
@@ -52,7 +53,7 @@ springdoc:
 
 apple:
   api_url:
-    information: "test"
+    information: https://appleid.apple.com/auth/keys
 
 jwt:
   secret-key: ${secret.jwt.secret-key}

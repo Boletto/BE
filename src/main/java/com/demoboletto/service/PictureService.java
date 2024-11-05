@@ -23,20 +23,20 @@ public class PictureService {
     private final PictureRepository pictureRepository;
     private final TravelRepository travelRepository;
     private final UserRepository userRepository;
-    private final AWSS3Service awsS3Service;
+    private final ObjectStorageService ObjectStorageService;
     private final FourCutRepository fourCutRepository;
     private final CollectRepository collectRepository;
 
     @Transactional
     public GetPictureDto createPicture(CreatePictureDto createPictureDto, MultipartFile file, Long userId) {
         //save image to s3, create picture object && save picture object to db
-        return savePicture(createPictureDto, file,0, userId);
+        return savePicture(createPictureDto, file, 0, userId);
     }
 
     private GetPictureDto savePicture(CreatePictureDto createPictureDto, MultipartFile file, int idx, Long userId) {
         try {
             Picture savePicture = pictureRepository.save(
-                    Picture.create(awsS3Service.uploadFile(file),
+                    Picture.create(ObjectStorageService.uploadFile(file, userId),
                             createPictureDto.pictureIdx(),
                             travelRepository.findById(createPictureDto.travelId())
                                     .orElseThrow(() -> new IllegalArgumentException("travel not found")),
@@ -54,6 +54,7 @@ public class PictureService {
             return null;
         }
     }
+
     private void deleteS3AndDB(Long pictureId) {
         try {
             // remove file from s3
@@ -61,7 +62,7 @@ public class PictureService {
                     .orElseThrow(() -> new IllegalArgumentException("picture not found"))
                     .getPictureUrl()
                     .split("/");
-            awsS3Service.deleteFile(split[split.length - 1]);
+            ObjectStorageService.deleteFile(split[split.length - 1]);
             // remove picture object from db
             pictureRepository.deleteById(pictureId);
 
@@ -74,21 +75,23 @@ public class PictureService {
         List<GetPictureDto> pictureDtoList = new ArrayList<>();
         pictureRepository.findAllByTravel_TravelIdAndIsDeletedFalse(travelId)  // add a condition to filter out deleted pictures
                 .forEach(picture ->
-                pictureDtoList.add(
-                        GetPictureDto.builder()
-                                .pictureId(picture.getId())
-                                .pictureUrl(picture.getPictureUrl())
-                                .pictureIdx(picture.getPictureIdx())
-                                .build()
-                ));
+                        pictureDtoList.add(
+                                GetPictureDto.builder()
+                                        .pictureId(picture.getId())
+                                        .pictureUrl(picture.getPictureUrl())
+                                        .pictureIdx(picture.getPictureIdx())
+                                        .build()
+                        ));
         return pictureDtoList;
     }
+
     @Transactional
     public void deleteAllByTravelId(Long travelId) {
         pictureRepository.findAllByTravelId(travelId).forEach(picture -> {
             deleteS3AndDB(picture.getId());
         });
     }
+
     @Transactional
     public GetFourCutDto createPictureFourCut(CreatePictureFourCutDto createPictureDto, List<MultipartFile> fileList, Long userId) {
         //save image to s3, create picture object && save picture object to db
@@ -120,6 +123,7 @@ public class PictureService {
                         .getFrameUrl())
                 .build();
     }
+
     @Transactional
     public boolean deletePicture(DeletePictureDto deletePictureDto) {
         try {
