@@ -145,4 +145,12 @@ public class UserService {
         log.info("Deleting user: " + user.toString());
         userRepository.delete(user);
     }
+
+    public void updateNotificationToken(Long userId, String token) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        
+        user.updateNotificationToken(token);
+        userRepository.save(user);
+    }
 }

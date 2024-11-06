@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-@Table(name="member")
+@Table(name = "member")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long id;
 
     @Column(name = "email")
@@ -67,6 +67,9 @@ public class User {
     @Column(name = "user_profile")
     private String userProfile;
 
+    @Column(name = "user_notification_token")
+    private String userNotificationToken;
+
 
     @Builder
     public User(String serialId, String password, String email, String name, String nickname, EProvider provider, ERole role, String userProfile) {
@@ -75,25 +78,15 @@ public class User {
         this.provider = provider;
         this.role = role;
         this.createdAt = LocalDateTime.now();
-        this.email =email;
+        this.email = email;
         this.name = name;
         this.nickname = nickname;
-        this.isFrame=true;
-        this.isFriendApply=true;
-        this.isLocation=true;
-        this.isLogin=true;
+        this.isFrame = true;
+        this.isFriendApply = true;
+        this.isLocation = true;
+        this.isLogin = true;
         this.userProfile = userProfile != null ? userProfile : "default";
     }
-
-    public void register(String nickname) {
-        this.nickname = nickname;
-        this.role = ERole.USER;
-    }
-
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
 
     // 소셜 로그인
     public static User signUp(String serialId, EProvider provider, String nickname) {
@@ -107,14 +100,27 @@ public class User {
                 .build();
     }
 
+    public void register(String nickname) {
+        this.nickname = nickname;
+        this.role = ERole.USER;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     public void updateProfile(String nickname, String name, String profileUrl) {
         this.nickname = nickname;
         this.name = name;
-        this.userProfile= profileUrl;
+        this.userProfile = profileUrl;
     }
 
-    public void updateSignOutUser(){
+    public void updateSignOutUser() {
         this.role = ERole.DELETED;
-        this.isLogin=false;
+        this.isLogin = false;
+    }
+
+    public void updateNotificationToken(String token) {
+        this.userNotificationToken = token;
     }
 }
