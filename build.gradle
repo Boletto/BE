@@ -106,6 +106,3 @@ test {
     useJUnitPlatform()
 }
 
-tasks.named('test') {
-    enabled = false
-}

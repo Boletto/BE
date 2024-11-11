@@ -1,5 +1,6 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.type.EAlarmType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,9 +22,8 @@ public class UserAlarm {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "template_id", nullable = false)
-    private Alarm alarmTemplate;
+    @Column(name = "alarm_type")
+    private EAlarmType alarmType;
 
     @Column(name = "is_read")
     private Boolean isRead = false;
@@ -31,10 +31,14 @@ public class UserAlarm {
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
+    @Column(name = "value")
+    private String value;
+
     @Builder
-    public UserAlarm(User user, Alarm alarmTemplate) {
+    public UserAlarm(User user, EAlarmType alarmType, String value) {
         this.user = user;
-        this.alarmTemplate = alarmTemplate;
+        this.alarmType = alarmType;
+        this.value = value;
         this.createdDate = LocalDateTime.now();
     }
 
