@@ -1,9 +1,6 @@
 package com.demoboletto.service;
 
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.MulticastMessage;
-import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -34,11 +31,19 @@ public class NotificationService {
 
     @Async
     public void dispatchMessageToUser(Map<String, String> data, String token) {
-        Message.Builder messageBuilder = Message.builder()
-                .setToken(token);
-        data.forEach(messageBuilder::putData);
+        Message message = Message.builder()
+                .setToken(token)
+                .putAllData(data) // 사용자 정의 데이터 추가
+                .setApnsConfig(ApnsConfig.builder()
+                        .setAps(Aps.builder()
+                                .setContentAvailable(true) // 중요: iOS에서 Silent Push 트리거
+                                .build())
+                        .build())
+                .build();
+
         try {
-            firebaseMessaging.send(messageBuilder.build());
+            firebaseMessaging.send(message);
+            log.info("Message sent successfully to token: {}", token);
         } catch (Exception e) {
             log.error("Failed to send message to user: {}", e.getMessage());
         }
