@@ -12,7 +12,6 @@ import com.demoboletto.type.ESticker;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,9 +80,9 @@ public class UserController {
         return ResponseDto.ok("유저가 수집한 항목 저장에 성공했습니달라.");
     }
 
-    @PutMapping("/notification/token")
+    @PutMapping("/device-token")
     public ResponseDto<?> updateNotificationToken(@UserId Long userId, @RequestParam String token) {
-        userService.updateNotificationToken(userId, token);
+        userService.updateDeviceToken(userId, token);
         return ResponseDto.ok("유저의 푸시 알림 토큰이 업데이트 되었습니다.");
     }
 

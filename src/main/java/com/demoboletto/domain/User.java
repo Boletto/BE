@@ -1,14 +1,11 @@
 package com.demoboletto.domain;
 
-import com.demoboletto.type.EProfile;
 import com.demoboletto.type.EProvider;
 import com.demoboletto.type.ERole;
-import com.demoboletto.dto.request.AuthSignUpDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.context.annotation.Profile;
 
 import java.time.LocalDateTime;
 
@@ -67,8 +64,8 @@ public class User {
     @Column(name = "user_profile")
     private String userProfile;
 
-    @Column(name = "user_notification_token")
-    private String userNotificationToken;
+    @Column(name = "device_token")
+    private String deviceToken;
 
 
     @Builder
@@ -120,7 +117,7 @@ public class User {
         this.isLogin = false;
     }
 
-    public void updateNotificationToken(String token) {
-        this.userNotificationToken = token;
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 }
