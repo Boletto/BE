@@ -30,19 +30,24 @@ public class UserAlarmDto {
     @Schema(description = "alarm message", example = "{value} 스티커를 획득했어요.")
     private String message;
 
+    @JsonProperty
+    @Schema(description = "value", example = "부산")
+    private String value;
+
     @JsonProperty("read")
     @Schema(description = "is read default = false", example = "false")
     private boolean read;
 
     @JsonProperty("created_date")
     @Schema(description = "created date", example = "2021-08-01T00:00:00")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime createdAt;
 
     public static UserAlarmDto of(UserAlarm alarm) {
         return UserAlarmDto.builder()
                 .id(alarm.getId())
-                .message(alarm.getAlarmType().getTemplate().replace("{value}", alarm.getValue()))
+                .message(alarm.getAlarmType().getTemplate())
+                .value(alarm.getValue())
                 .createdAt(alarm.getCreatedDate())
                 .read(alarm.getIsRead())
                 .alarmType(alarm.getAlarmType())
