@@ -13,9 +13,9 @@ import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
+    public static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String JWT_SCHEMA_NAME = "JWT TOKEN";
     private static final String VERSION = "0.0.1";
-    public static final String AUTHORIZATION_HEADER = "Authorization";
 
     @Bean
     public GroupedOpenApi publicApi() {
@@ -47,6 +47,9 @@ public class SwaggerConfig {
                         new io.swagger.v3.oas.models.servers.Server()
                                 .url("http://localhost:8080")
                                 .description("Local Server"),
+                        new io.swagger.v3.oas.models.servers.Server()
+                                .url("https://boletto.site")
+                                .description("Production Server"),
                         new io.swagger.v3.oas.models.servers.Server()
                                 .url("https://3.37.140.217")
                                 .description("Remote Server")));

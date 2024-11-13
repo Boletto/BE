@@ -12,7 +12,6 @@ import com.demoboletto.type.ESticker;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,8 +43,8 @@ public class UserController {
     }
 
     @PatchMapping("")
-    public ResponseDto<?> updateUserProfile(@UserId Long userId, @RequestPart(value="data") @Validated UserProfileUpdateDto userProfileUpdateDto, @RequestPart(value="file", required = false) MultipartFile userProfile) {
-        GetUserProfileUpdateDto getuserProfileUpdateDto=userService.updateUserProfile(userId, userProfileUpdateDto, userProfile);
+    public ResponseDto<?> updateUserProfile(@UserId Long userId, @RequestPart(value = "data") @Validated UserProfileUpdateDto userProfileUpdateDto, @RequestPart(value = "file", required = false) MultipartFile userProfile) {
+        GetUserProfileUpdateDto getuserProfileUpdateDto = userService.updateUserProfile(userId, userProfileUpdateDto, userProfile);
         return ResponseDto.ok(getuserProfileUpdateDto);
     }
 
@@ -76,9 +75,15 @@ public class UserController {
             @UserId Long userId,
             @RequestParam(required = false) ESticker stickerType,
             @RequestPart(value = "frameFile", required = false) MultipartFile frameFile) {
-        Collect collect=collectService.saveCollect(userId, stickerType, frameFile);
+        Collect collect = collectService.saveCollect(userId, stickerType, frameFile);
 
         return ResponseDto.ok("유저가 수집한 항목 저장에 성공했습니달라.");
+    }
+
+    @PutMapping("/device-token")
+    public ResponseDto<?> updateNotificationToken(@UserId Long userId, @RequestParam String token) {
+        userService.updateDeviceToken(userId, token);
+        return ResponseDto.ok("유저의 푸시 알림 토큰이 업데이트 되었습니다.");
     }
 
 }

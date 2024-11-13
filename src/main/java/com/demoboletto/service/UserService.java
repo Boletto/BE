@@ -10,9 +10,7 @@ import com.demoboletto.exception.CommonException;
 import com.demoboletto.repository.*;
 
 import com.demoboletto.repository.friend.FriendRepository;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.PersistenceContext;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -144,5 +142,13 @@ public class UserService {
 
         log.info("Deleting user: " + user.toString());
         userRepository.delete(user);
+    }
+
+    public void updateDeviceToken(Long userId, String token) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        user.updateDeviceToken(token);
+        userRepository.save(user);
     }
 }
