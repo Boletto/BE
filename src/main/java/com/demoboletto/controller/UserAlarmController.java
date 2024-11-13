@@ -3,11 +3,14 @@ package com.demoboletto.controller;
 import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.RecordUserAlarmDto;
+import com.demoboletto.dto.response.UserAlarmDto;
 import com.demoboletto.service.UserAlarmService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +22,7 @@ public class UserAlarmController {
 
     @GetMapping
     @Operation(summary = "Get user alarms", description = "유저의 알람을 조회합니다.")
-    public ResponseDto<?> getUserAlarms(@UserId Long userId) {
+    public ResponseDto<List<UserAlarmDto>> getUserAlarms(@UserId Long userId) {
         return ResponseDto.ok(userAlarmService.getUserAlarms(userId));
     }
 

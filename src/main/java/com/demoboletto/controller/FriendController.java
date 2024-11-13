@@ -2,12 +2,18 @@ package com.demoboletto.controller;
 
 import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
+import com.demoboletto.dto.response.FriendCodeDto;
+import com.demoboletto.dto.response.FriendResponseDto;
 import com.demoboletto.service.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,25 +23,18 @@ public class FriendController {
 
     private final FriendService friendService;
 
-    @PostMapping("")
-    @Operation(summary = "친구 추가", description = "마이페이지에서 친구를 추가합니다.")
-    @Schema(name = "Add Friend", description = "친구 목록 추가")
-    public ResponseDto<?> addFriend(@UserId Long userId, @RequestParam Long friendId) {
-        return ResponseDto.ok(friendService.addFriend(userId, friendId));
-    }
-
     @GetMapping
     @Operation(summary = "친구 목록 조회", description = "유저의 아이디를 넘겨받아 해당 유저의 친구 목록을 조회합니다.")
     @Schema(name = "Get Friend List", description = "친구 목록 조회")
-    public ResponseDto<?> getFriends(@UserId Long userId) {
+    public ResponseDto<List<FriendResponseDto>> getFriends(@UserId Long userId) {
         return ResponseDto.ok(friendService.getAllFriends(userId));
     }
 
     @GetMapping("/search")
     @Operation(summary = "친구 검색", description = "친구의 닉네임과 이름으로 친구를 조회합니다.")
     @Schema(name = "Search Friend", description = "특정 친구 조회")
-    public ResponseDto<?> searchFriends(@RequestParam String keyword) {
-        return ResponseDto.ok(friendService.searchFriends(keyword));
+    public ResponseDto<List<FriendResponseDto>> searchFriends(@UserId Long userId, @RequestParam String keyword) {
+        return ResponseDto.ok(friendService.searchFriends(userId, keyword));
     }
 
 
