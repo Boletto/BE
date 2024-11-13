@@ -47,4 +47,19 @@ public class FriendController {
         return ResponseDto.ok("특정 친구 삭제에 성공하였습니다.");
     }
 
+    @GetMapping("/code")
+    @Operation(summary = "친구 코드 발급", description = "친구 추가를 위한 1 회성 코드를 발급합니다.")
+    @Schema(name = "Get Friend Code", description = "친구 코드 발급")
+    public ResponseDto<FriendCodeDto> getFriendCode(@UserId Long userId) {
+        return ResponseDto.ok(friendService.generateFriendCode(userId));
+    }
+
+    @PostMapping("/code/{friendCode}")
+    @Operation(summary = "친구 코드로 친구 추가", description = "친구 코드를 입력받아 친구를 추가합니다.")
+    @Schema(name = "Add Friend By Code", description = "친구 코드로 친구 추가")
+    public ResponseDto<?> addFriendByCode(@UserId Long userId, @PathVariable String friendCode) {
+        friendService.addFriendByCode(userId, friendCode);
+        return ResponseDto.ok("친구 추가에 성공하였습니다.");
+    }
+
 }

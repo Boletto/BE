@@ -17,6 +17,7 @@ public enum ErrorCode {
     NOT_FOUND_AUTHORIZATION_HEADER(40401, HttpStatus.NOT_FOUND, "Authorization 헤더가 존재하지 않습니다."),
     NOT_FOUND_USER(40401, HttpStatus.NOT_FOUND, "해당 사용자가 존재하지 않습니다."),
     NOT_FOUND_TRAVEL(40401, HttpStatus.NOT_FOUND, "해당 여행이 존재하지 않습니다."),
+    NOT_FOUND_FRIEND_CODE(40401, HttpStatus.NOT_FOUND, "해당 친구 코드가 존재하지 않습니다."),
 
     // Invalid Argument Error
     MISSING_REQUEST_PARAMETER(40000, HttpStatus.BAD_REQUEST, "필수 요청 파라미터가 누락되었습니다."),
@@ -29,8 +30,9 @@ public enum ErrorCode {
     BAD_REQUEST_JSON(40007, HttpStatus.BAD_REQUEST, "잘못된 JSON 형식입니다."),
     SEARCH_SHORT_LENGTH_ERROR(40008, HttpStatus.BAD_REQUEST, "검색어는 2글자 이상이어야 합니다."),
     INVALID_PROVIDER(40009, HttpStatus.BAD_REQUEST, "유효하지 않은 Provider입니다."),
-
-
+    EXPIRED_FRIEND_CODE(40010, HttpStatus.BAD_REQUEST, "만료된 친구 코드입니다."),
+    USED_FRIEND_CODE(40011, HttpStatus.BAD_REQUEST, "이미 사용된 친구 코드입니다."),
+    SELF_FRIEND_CODE(40012, HttpStatus.BAD_REQUEST, "자신의 친구 코드는 사용할 수 없습니다."),
     // Access Denied Error
     ACCESS_DENIED(40300, HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     NOT_MATCH_AUTH_CODE(40301, HttpStatus.FORBIDDEN, "인증 코드가 일치하지 않습니다."),
@@ -51,6 +53,7 @@ public enum ErrorCode {
     // Internal Server Error
     INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다."),
     UPLOAD_FILE_ERROR(50001, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다.");
+
 
     private final Integer code;
     private final HttpStatus httpStatus;

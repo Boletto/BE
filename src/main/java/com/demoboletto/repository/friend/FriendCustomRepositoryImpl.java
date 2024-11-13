@@ -16,10 +16,13 @@ public class FriendCustomRepositoryImpl implements FriendCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Friend> findFriendByKeyword(String keyword) {
+    public List<Friend> findFriendByKeyword(Long userId, String keyword) {
         return queryFactory.select(friend)
-                .where(friend.friendName.contains(keyword)
-                        .or(friend.friendNickname.contains(keyword)))
+                .where(
+                        friend.user.id.eq(userId),
+                        friend.friendName.contains(keyword)
+                                .or(friend.friendNickname.contains(keyword)))
+                .from(friend)
                 .fetch();
     }
 }
