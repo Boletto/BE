@@ -1,7 +1,6 @@
 package com.demoboletto.service;
 
 import com.demoboletto.domain.*;
-import com.demoboletto.dto.response.GetAllUserResponseDto;
 import com.demoboletto.dto.response.GetUserProfileUpdateDto;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.dto.request.UserProfileUpdateDto;

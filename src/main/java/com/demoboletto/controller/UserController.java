@@ -4,7 +4,6 @@ import com.demoboletto.annotation.UserId;
 import com.demoboletto.domain.Collect;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.UserProfileUpdateDto;
-import com.demoboletto.dto.response.GetAllUserResponseDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
 import com.demoboletto.dto.response.GetUserProfileUpdateDto;
 import com.demoboletto.service.CollectService;
@@ -36,7 +35,7 @@ public class UserController {
         GetUserInfoDto userInfo = userService.getUserNameAndNickname(userId);
         return ResponseDto.ok(userInfo);
     }
-    
+
 
     @PatchMapping("")
     public ResponseDto<GetUserProfileUpdateDto> updateUserProfile(@UserId Long userId, @RequestPart(value = "data") @Validated UserProfileUpdateDto userProfileUpdateDto, @RequestPart(value = "file", required = false) MultipartFile userProfile) {
