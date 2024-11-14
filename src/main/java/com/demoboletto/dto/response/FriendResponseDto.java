@@ -28,7 +28,7 @@ public record FriendResponseDto(
 ) {
     public static FriendResponseDto of(Friend friend) {
         return new FriendResponseDto(
-                friend.getId(),
+                friend.getUser().getId(),
                 friend.getFriendNickname(),
                 friend.getFriendName(),
                 friend.getFriendProfile());

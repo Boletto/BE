@@ -3,6 +3,7 @@ package com.demoboletto.controller;
 import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.MemoryEditDto;
+import com.demoboletto.dto.response.GetMemoryDto;
 import com.demoboletto.service.MemoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,7 +19,7 @@ public class MemoryController {
 
     @GetMapping("/get")
     @Operation(summary = "get memory list", description = "Get pictures, stickers, speech-bubble.")
-    public ResponseDto<?> getMemoryList(@RequestParam(value = "travel_id") Long traveId) {
+    public ResponseDto<GetMemoryDto> getMemoryList(@RequestParam(value = "travel_id") Long traveId) {
         return ResponseDto.ok(memoryService.getMemoryByTravelId(traveId));
     }
 

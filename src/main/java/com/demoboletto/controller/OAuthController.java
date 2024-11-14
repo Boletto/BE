@@ -4,7 +4,9 @@ import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.AppleLoginDto;
 import com.demoboletto.dto.request.OauthLoginDto;
+import com.demoboletto.dto.response.AppleLoginResponseDto;
 import com.demoboletto.dto.response.JwtTokenDto;
+import com.demoboletto.dto.response.OAuthLoginResponseDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.service.AppleService;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name="OAuth", description = "인증 관련 API")
+@Tag(name = "OAuth", description = "인증 관련 API")
 @RequestMapping("/api/v1")
 public class OAuthController {
 
@@ -34,21 +36,21 @@ public class OAuthController {
     @PostMapping("/oauth/login")
     @Operation(summary = "소셜로그인", description = "클라이언트 사이드 인증을 통한 소셜 로그인")
     @Schema(name = "login", description = "소셜로그인")
-    public ResponseDto<?> login(@RequestBody OauthLoginDto userloginDto) {
+    public ResponseDto<OAuthLoginResponseDto> login(@RequestBody OauthLoginDto userloginDto) {
         return ResponseDto.ok(kakaoService.login(userloginDto));
     }
 
     @PostMapping("/oauth2/login/apple")
     @Operation(summary = "애플로그인", description = "애플 로그인")
     @Schema(name = "login", description = "애플 로그인")
-    public ResponseDto<?> login(@RequestBody AppleLoginDto appleLoginDto) {
+    public ResponseDto<AppleLoginResponseDto> login(@RequestBody AppleLoginDto appleLoginDto) {
         return ResponseDto.ok(appleService.login(appleLoginDto));
     }
 
     @PostMapping("/auth/reissue")
     @Operation(summary = "Access 토큰 재발급", description = "Access 토큰을 재발급합니다.")
-    public ResponseDto<?> reissue(HttpServletRequest request, HttpServletResponse response,
-            @UserId Long userId) {
+    public ResponseDto<JwtTokenDto> reissue(HttpServletRequest request, HttpServletResponse response,
+                                            @UserId Long userId) {
         String refreshToken = HeaderUtil.refineHeader(request, Constants.AUTHORIZATION_HEADER, Constants.BEARER_PREFIX)
                 .orElseThrow(() -> new CommonException(ErrorCode.MISSING_REQUEST_HEADER));
 
