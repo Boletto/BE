@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "travel")
@@ -30,10 +33,10 @@ public class Travel {
     private String keyword;
 
     @Column(name = "start_date")
-    private String startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "end_date")
-    private String endDate;
+    private LocalDateTime endDate;
 
     @Column(name = "color")
     private String color;
@@ -43,7 +46,7 @@ public class Travel {
     private EStatusType status;
 
     @Builder
-    public Travel(String departure, String arrive, String keyword, String startDate, String endDate, String color, EStatusType status) {
+    public Travel(String departure, String arrive, String keyword, LocalDateTime startDate, LocalDateTime endDate, String color, EStatusType status) {
         this.departure = departure;
         this.arrive = arrive;
         this.keyword = keyword;
@@ -64,6 +67,7 @@ public class Travel {
                 .status(EStatusType.UNLOCK)
                 .build();
     }
+
     public Travel update(UpdateTravelDto travelDto) {
         this.departure = travelDto.departure() != null ? travelDto.departure() : this.departure;
         this.arrive = travelDto.arrive() != null ? travelDto.arrive() : this.arrive;
@@ -73,6 +77,7 @@ public class Travel {
         this.color = travelDto.color() != null ? travelDto.color() : this.color;
         return this;
     }
+
     public Travel setStatus(EStatusType status) {
         this.status = status;
         return this;

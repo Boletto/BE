@@ -36,7 +36,7 @@ public class TravelService {
     //    private final AlarmService alarmService;
 //    private final FCMService fcmService;
     private final SpeechService speechService;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    //    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final ZonedDateTime nowKorea = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 //    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -95,6 +95,7 @@ public class TravelService {
             return null;    // return empty object
         }
     }
+
     public List<GetTravelDto> getAllTravelList(Long userId) {
         List<Travel> travel = userTravelRepository.findTravelsByUserId(userId);
         List<GetTravelDto> travelList = new ArrayList<>();
@@ -103,22 +104,20 @@ public class TravelService {
         }
         return travelList;
     }
-    private boolean isOverlapping(String preStart, String preEnd, String start, String end) {
+
+    private boolean isOverlapping(LocalDateTime preStartDate, LocalDateTime preEndDate, LocalDateTime startDate, LocalDateTime endDate) {
         try {
-            if (preStart == null || preEnd == null || start == null || end == null) {
+            if (preStartDate == null || preEndDate == null || startDate == null || endDate == null) {
                 return false;  // 또는 적절한 예외 처리
             }
 
-            LocalDateTime preStartDate = LocalDateTime.parse(preStart, formatter);
-            LocalDateTime preEndDate = LocalDateTime.parse(preEnd, formatter);
-            LocalDateTime startDate = LocalDateTime.parse(start, formatter);
-            LocalDateTime endDate = LocalDateTime.parse(end, formatter);
             return (startDate.isBefore(preEndDate) && endDate.isAfter(preStartDate));
         } catch (DateTimeParseException e) {
             System.err.println("Invalid date format: " + e.getMessage());  // 로그 출력
             return false;  // 또는 예외를 던지거나 다른 방식으로 처리
         }
     }
+
     private GetTravelDto convertToGetTravelDto(Travel travel) {
         return GetTravelDto.builder()
                 .travelId(travel.getTravelId())
@@ -131,6 +130,7 @@ public class TravelService {
                 .color(travel.getColor())
                 .build();
     }
+
     @Transactional
     public GetTravelDto updateTravelList(UpdateTravelDto travelDto) {
         // get travel data from db
@@ -184,6 +184,7 @@ public class TravelService {
 
         return convertToGetTravelDto(postTravel);
     }
+
     @Transactional
     public boolean deleteTravelList(Long travelId) {
         // delete travel data
@@ -204,6 +205,7 @@ public class TravelService {
         }
         return true;
     }
+
     private List<GetUserTravelDto> convertUser(List<User> userList) {
         List<GetUserTravelDto> resultList = new ArrayList<>();
         userList.forEach(user -> {

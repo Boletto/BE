@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -20,9 +21,9 @@ public record UpdateTravelDto(
         @JsonProperty("keyword") @Schema(description = "travel types", example = "쇼핑, 관광")
         String keyword,
         @JsonProperty("start_date") @Schema(description = "travel start date", example = "2024-09-09 10:30:00")
-        String startDate,
+        LocalDateTime startDate,
         @JsonProperty("end_date") @Schema(description = "travel end date", example = "2024-09-13 20:00:00")
-        String endDate,
+        LocalDateTime endDate,
         @JsonProperty("members") @Schema(description = "travel members list", example = "[12323,24234234]")
         List<Long> members,
         @JsonProperty("color") @Schema(description = "travel list color", example = "#FF0000")
