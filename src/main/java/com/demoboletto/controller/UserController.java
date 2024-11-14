@@ -36,12 +36,7 @@ public class UserController {
         GetUserInfoDto userInfo = userService.getUserNameAndNickname(userId);
         return ResponseDto.ok(userInfo);
     }
-
-    @GetMapping("/all")
-    @Operation(summary = "Get All User Info", description = "모든 유저의 정보를 반환합니다.")
-    public ResponseDto<List<GetAllUserResponseDto>> getAllUsers(@UserId Long userId) {
-        return ResponseDto.ok(userService.getAllUsers(userId));
-    }
+    
 
     @PatchMapping("")
     public ResponseDto<GetUserProfileUpdateDto> updateUserProfile(@UserId Long userId, @RequestPart(value = "data") @Validated UserProfileUpdateDto userProfileUpdateDto, @RequestPart(value = "file", required = false) MultipartFile userProfile) {
