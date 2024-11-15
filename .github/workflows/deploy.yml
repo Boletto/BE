@@ -5,12 +5,10 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Java CI with Gradle
+name: Java CD with Gradle
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "main" ]
 
 jobs:
@@ -37,12 +35,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Copy secret
+      - name: Copy secrets
         env:
           BOLETTO_SECRET: ${{ secrets.BOLETTO_SECRET }}
+          BOLETTO_FIREBASE_SECRET: ${{ secrets.BOLETTO_FIREBASE_SECRET }}
+          BOLETTO_OCI_SECRET: ${{ secrets.BOLETTO_OCI_SECRET }}
           BOLETTO_SECRET_DIR: src/main/resources
           BOLETTO_SECRET_DIR_FILE_NAME: application-secret.yml
-        run: echo $BOLETTO_SECRET | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_SECRET_DIR_FILE_NAME
+          BOLETTO_FIREBASE_SECRET_FILE_NAME: firebase-adminsdk.json
+          BOLETTO_OCI_SECRET_FILE_NAME: oci-private-key.pem
+        run: |
+          echo $BOLETTO_SECRET | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_SECRET_DIR_FILE_NAME
+          echo $BOLETTO_FIREBASE_SECRET | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_FIREBASE_SECRET_FILE_NAME
+          echo $BOLETTO_OCI_SECRET | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_OCI_SECRET_FILE_NAME
+
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -64,7 +70,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/boletto:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/deploy:boletto_server
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
@@ -77,11 +83,8 @@ jobs:
           key: ${{ secrets.BOLETTO_KEY }}
           port: ${{ secrets.BOLETTO_PORT }}
           script: |
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/boletto:latest
-            if [ "$(docker ps -q -f name=boletto)" ]; then
-              echo "Stopping and removing existing container..."
-              docker stop boletto
-              docker rm boletto
-            fi
-            docker run -d --name boletto -p 8080:8080 -v /home/ubuntu/secret/wallet:/secret/wallet boletto:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/deploy:boletto_server
+            docker stop boletto
+            docker rm boletto
+            docker run -d --name boletto -p 8080:8080 -v /home/ubuntu/secret/wallet:/secret/wallet ${{ secrets.DOCKERHUB_USERNAME }}/deploy:boletto_server
 
