@@ -5,7 +5,7 @@ import com.demoboletto.dto.request.MemoryEditDto;
 import com.demoboletto.dto.response.GetMemoryDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
-import com.demoboletto.repository.*;
+import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.type.EStatusType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

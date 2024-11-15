@@ -8,6 +8,7 @@ import com.demoboletto.dto.request.DeletePictureDto;
 import com.demoboletto.dto.response.GetFourCutDto;
 import com.demoboletto.dto.response.GetPictureDto;
 import com.demoboletto.repository.*;
+import com.demoboletto.repository.travel.TravelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
