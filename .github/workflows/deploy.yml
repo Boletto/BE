@@ -84,3 +84,4 @@ jobs:
               docker rm boletto
             fi
             docker run -d --name boletto -p 8080:8080 -v /home/ubuntu/secret/wallet:/secret/wallet boletto:latest
+
