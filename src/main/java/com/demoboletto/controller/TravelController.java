@@ -7,6 +7,7 @@ import com.demoboletto.dto.request.UpdateTravelDto;
 import com.demoboletto.dto.response.GetTravelDto;
 import com.demoboletto.service.TravelService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +23,13 @@ public class TravelController {
 
     @PostMapping("/create")
     @Operation(summary = "create new travel list", description = "Create new travel list if there are enough data to create travel data.")
-    public ResponseDto<?> createTravelList(@RequestBody CreateTravelDto travelDto, @UserId Long userId) {
+    public ResponseDto<?> createTravelList(@RequestBody CreateTravelDto travelDto, @Parameter(hidden = true) @UserId Long userId) {
         return travelService.createTravelList(travelDto, userId) ? ResponseDto.ok("success") : ResponseDto.fail("existing data");
     }
 
     @GetMapping(value = "/get/all")
     @Operation(summary = "get all travel list", description = "Get all travel list.")
-    public ResponseDto<List<GetTravelDto>> getAllTravelList(@UserId Long userId) {
+    public ResponseDto<List<GetTravelDto>> getAllTravelList(@Parameter(hidden = true) @UserId Long userId) {
         return ResponseDto.ok(travelService.getAllTravelList(userId));
     }
 

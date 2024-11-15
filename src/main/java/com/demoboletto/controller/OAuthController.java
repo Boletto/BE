@@ -16,6 +16,7 @@ import com.demoboletto.utility.HeaderUtil;
 import com.demoboletto.constants.Constants;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,7 +51,7 @@ public class OAuthController {
     @PostMapping("/auth/reissue")
     @Operation(summary = "Access 토큰 재발급", description = "Access 토큰을 재발급합니다.")
     public ResponseDto<JwtTokenDto> reissue(HttpServletRequest request, HttpServletResponse response,
-                                            @UserId Long userId) {
+                                            @Parameter(hidden = true) @UserId Long userId) {
         String refreshToken = HeaderUtil.refineHeader(request, Constants.AUTHORIZATION_HEADER, Constants.BEARER_PREFIX)
                 .orElseThrow(() -> new CommonException(ErrorCode.MISSING_REQUEST_HEADER));
 
@@ -61,7 +62,7 @@ public class OAuthController {
 
     @DeleteMapping("/auth/sign-out")
     @Operation(summary = "회원탈퇴", description = "현재 로그인된 사용자를 탈퇴 처리하고 DB에서 삭제합니다.")
-    public ResponseDto<?> signout(@UserId Long userId) {
+    public ResponseDto<?> signout(@Parameter(hidden = true) @UserId Long userId) {
         userService.deleteUser(userId);
         return ResponseDto.ok("회원 탈퇴가 완료되었습니다.");
     }

@@ -9,6 +9,7 @@ import com.demoboletto.dto.response.GetFourCutDto;
 import com.demoboletto.dto.response.GetPictureDto;
 import com.demoboletto.service.PictureService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class PictureController {
 
     @PostMapping("/save")
     @Operation(summary = "save picture", description = "save picture in the travel.")
-    public ResponseDto<GetPictureDto> createPictureList(@RequestPart(value = "data") CreatePictureDto pictureDto, @RequestPart(required = false, value = "picture_file") MultipartFile picture_file, @UserId Long userId) {
+    public ResponseDto<GetPictureDto> createPictureList(@RequestPart(value = "data") CreatePictureDto pictureDto, @RequestPart(required = false, value = "picture_file") MultipartFile picture_file, @Parameter(hidden = true) @UserId Long userId) {
         return ResponseDto.created(pictureService.createPicture(pictureDto, picture_file, userId));
     }
 
@@ -37,7 +38,7 @@ public class PictureController {
 
     @PostMapping("/save/fourCut")
     @Operation(summary = "save fourCut picture", description = "save fourCut picture in the travel.")
-    public ResponseDto<GetFourCutDto> createPictureFourCutList(@RequestPart(value = "data") CreatePictureFourCutDto pictureDto, @RequestPart(required = false, value = "picture_file") List<MultipartFile> picture_file, @UserId Long userId) {
+    public ResponseDto<GetFourCutDto> createPictureFourCutList(@RequestPart(value = "data") CreatePictureFourCutDto pictureDto, @RequestPart(required = false, value = "picture_file") List<MultipartFile> picture_file, @Parameter(hidden = true) @UserId Long userId) {
         return ResponseDto.created(pictureService.createPictureFourCut(pictureDto, picture_file, userId));
     }
 }

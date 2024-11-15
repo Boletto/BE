@@ -10,6 +10,7 @@ import com.demoboletto.service.CollectService;
 import com.demoboletto.service.UserService;
 import com.demoboletto.type.ESticker;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -31,21 +32,21 @@ public class UserController {
 
     @GetMapping("")
     @Operation(summary = "Get User Info", description = "유저의 닉네임과 이름 정보를 가져오는 API")
-    public ResponseDto<GetUserInfoDto> getUserNameAndNickname(@UserId Long userId) {
+    public ResponseDto<GetUserInfoDto> getUserNameAndNickname(@Parameter(hidden = true) @UserId Long userId) {
         GetUserInfoDto userInfo = userService.getUserNameAndNickname(userId);
         return ResponseDto.ok(userInfo);
     }
 
 
     @PatchMapping("")
-    public ResponseDto<GetUserProfileUpdateDto> updateUserProfile(@UserId Long userId, @RequestPart(value = "data") @Validated UserProfileUpdateDto userProfileUpdateDto, @RequestPart(value = "file", required = false) MultipartFile userProfile) {
+    public ResponseDto<GetUserProfileUpdateDto> updateUserProfile(@Parameter(hidden = true) @UserId Long userId, @RequestPart(value = "data") @Validated UserProfileUpdateDto userProfileUpdateDto, @RequestPart(value = "file", required = false) MultipartFile userProfile) {
         GetUserProfileUpdateDto getuserProfileUpdateDto = userService.updateUserProfile(userId, userProfileUpdateDto, userProfile);
         return ResponseDto.ok(getuserProfileUpdateDto);
     }
 
     @GetMapping("/frames")
     @Operation(summary = "Get User collected Frames", description = "유저가 획득한 프레임과 개수를 가져오는 API")
-    public ResponseDto<?> getCollectedFrames(@UserId Long userId) {
+    public ResponseDto<?> getCollectedFrames(@Parameter(hidden = true) @UserId Long userId) {
         List<Map<String, Object>> frames = collectService.getCollectedFrames(userId);
         Map<String, Object> response = new HashMap<>();
         response.put("frameCount", frames.size());
@@ -55,7 +56,7 @@ public class UserController {
 
     @GetMapping("/stickers")
     @Operation(summary = "Get User collected Stickers", description = "유저가 획득한 스티커와 개수를 가져오는 API")
-    public ResponseDto<?> getCollectedStickers(@UserId Long userId) {
+    public ResponseDto<?> getCollectedStickers(@Parameter(hidden = true) @UserId Long userId) {
         List<Map<String, Object>> stickers = collectService.getCollectedStickers(userId);
         Map<String, Object> response = new HashMap<>();
         response.put("stickerCount", stickers.size());
@@ -67,7 +68,7 @@ public class UserController {
     @PostMapping("/collect")
     @Operation(summary = "Post user collected Stickers & Frames", description = "userId, stickerType 정보를 받아 유저가 획득한 스티커와 프레임을 저장합니다.")
     public ResponseDto<?> saveCollect(
-            @UserId Long userId,
+            @Parameter(hidden = true) @UserId Long userId,
             @RequestParam(required = false) ESticker stickerType,
             @RequestPart(value = "frameFile", required = false) MultipartFile frameFile) {
         Collect collect = collectService.saveCollect(userId, stickerType, frameFile);
@@ -76,7 +77,7 @@ public class UserController {
     }
 
     @PutMapping("/device-token")
-    public ResponseDto<?> updateNotificationToken(@UserId Long userId, @RequestParam String token) {
+    public ResponseDto<?> updateNotificationToken(@Parameter(hidden = true) @UserId Long userId, @RequestParam String token) {
         userService.updateDeviceToken(userId, token);
         return ResponseDto.ok("유저의 푸시 알림 토큰이 업데이트 되었습니다.");
     }
