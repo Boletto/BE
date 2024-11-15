@@ -9,6 +9,7 @@ import com.demoboletto.exception.CommonException;
 import com.demoboletto.repository.*;
 
 import com.demoboletto.repository.friend.FriendRepository;
+import com.demoboletto.repository.travel.UserTravelRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

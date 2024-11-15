@@ -9,22 +9,23 @@ import com.demoboletto.dto.response.GetTravelDto;
 import com.demoboletto.dto.response.GetUserTravelDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
-import com.demoboletto.repository.TravelRepository;
+import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.UserRepository;
-import com.demoboletto.repository.UserTravelRepository;
+import com.demoboletto.repository.travel.UserTravelRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TravelService {
@@ -33,15 +34,13 @@ public class TravelService {
     private final UserRepository userRepository;
     private final PictureService pictureService;
     private final StickerService stickerService;
-    //    private final AlarmService alarmService;
-//    private final FCMService fcmService;
     private final SpeechService speechService;
-    //    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final ZonedDateTime nowKorea = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-//    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
     public boolean createTravelList(CreateTravelDto travelDto, Long userId) {
+        log.info("createTravelList: {}", travelDto);
+
         travelDto.members().add(userId);
 
         // check if travel data exists
@@ -105,7 +104,7 @@ public class TravelService {
         return travelList;
     }
 
-    private boolean isOverlapping(LocalDateTime preStartDate, LocalDateTime preEndDate, LocalDateTime startDate, LocalDateTime endDate) {
+    private boolean isOverlapping(LocalDate preStartDate, LocalDate preEndDate, LocalDate startDate, LocalDate endDate) {
         try {
             if (preStartDate == null || preEndDate == null || startDate == null || endDate == null) {
                 return false;  // 또는 적절한 예외 처리

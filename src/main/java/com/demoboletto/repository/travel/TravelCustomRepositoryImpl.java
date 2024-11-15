@@ -15,13 +15,6 @@ import static com.demoboletto.domain.QTravel.travel;
 public class TravelCustomRepositoryImpl implements TravelCustomRepository {
     private final JPAQueryFactory queryFactory;
 
-    @Override
-    public List<Long> findTravelIdsByStartDate(LocalDate date) {
-        return queryFactory.select(travel.travelId)
-                .from(travel)
-                .where(travel.startDate.eq(date))
-                .fetch();
-    }
 
     @Override
     public List<Travel> findTravelsByStartDate(LocalDate date) {
@@ -30,14 +23,7 @@ public class TravelCustomRepositoryImpl implements TravelCustomRepository {
                 .fetch();
     }
 
-    @Override
-    public List<Long> findTravelIdsByEndDate(LocalDate date) {
-        return queryFactory.select(travel.travelId)
-                .from(travel)
-                .where(travel.endDate.eq(date))
-                .fetch();
-    }
-
+    
     @Override
     public List<Travel> findTravelsByEndDate(LocalDate date) {
         return queryFactory.selectFrom(travel)
