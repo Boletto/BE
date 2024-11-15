@@ -3,7 +3,6 @@ package com.demoboletto.service;
 import com.demoboletto.domain.Friend;
 import com.demoboletto.domain.FriendCode;
 import com.demoboletto.domain.User;
-import com.demoboletto.dto.response.AddFriendResponseDto;
 import com.demoboletto.dto.response.FriendCodeDto;
 import com.demoboletto.dto.response.FriendResponseDto;
 import com.demoboletto.exception.CommonException;
@@ -52,17 +51,23 @@ public class FriendService {
 
 
     @Transactional
-    public FriendCodeDto generateFriendCode(Long userId) {
+    public FriendCodeDto issueFriendCode(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
         FriendCode friendCode = FriendCode.builder()
-                .friendCode(generateFriendCode())
+                .friendCode(issueFriendCode())
                 .expiredAt(LocalDate.now().plusDays(EXPIRED_DAYS))
                 .user(user)
                 .build();
         friendCodeRepository.save(friendCode);
 
         return FriendCodeDto.of(friendCode);
+    }
+
+    public FriendCodeDto getFriendCode(String friendCode) {
+        FriendCode code = friendCodeRepository.findByFriendCode(friendCode)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_FRIEND_CODE));
+        return FriendCodeDto.of(code);
     }
 
     @Transactional
@@ -109,7 +114,7 @@ public class FriendService {
     }
 
 
-    private String generateFriendCode() {
+    private String issueFriendCode() {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         String friendCode;
         do {

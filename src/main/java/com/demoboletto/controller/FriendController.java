@@ -7,9 +7,7 @@ import com.demoboletto.dto.response.FriendResponseDto;
 import com.demoboletto.service.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -50,8 +48,15 @@ public class FriendController {
     @GetMapping("/code")
     @Operation(summary = "친구 코드 발급", description = "친구 추가를 위한 1 회성 코드를 발급합니다.")
     @Schema(name = "Get Friend Code", description = "친구 코드 발급")
-    public ResponseDto<FriendCodeDto> getFriendCode(@Parameter(hidden = true) @UserId Long userId) {
-        return ResponseDto.ok(friendService.generateFriendCode(userId));
+    public ResponseDto<FriendCodeDto> issueFriendCode(@Parameter(hidden = true) @UserId Long userId) {
+        return ResponseDto.ok(friendService.issueFriendCode(userId));
+    }
+
+    @GetMapping("/code/{friendCode}")
+    @Operation(summary = "친구 코드 조회", description = "친구 코드를 입력받아 친구 코드의 정보를 조회 합니다.")
+    @Schema(name = "Query FriendCode", description = "친구 코드 조회")
+    public ResponseDto<FriendCodeDto> getFriendCode(@PathVariable String friendCode) {
+        return ResponseDto.ok(friendService.getFriendCode(friendCode));
     }
 
     @PostMapping("/code/{friendCode}")

@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Builder
 @Schema(name = "FriendCodeDto", description = "Response Dto for Friend Code")
@@ -20,7 +19,7 @@ public class FriendCodeDto {
     @JsonProperty("user_nickname")
     private String userNickname;
 
-    @Schema(description = "Friend Code Expire Time", example = "2021-12-31 23:59:59")
+    @Schema(description = "Friend Code Expire Time", example = "2021-12-31")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonProperty("expire_date")
     private LocalDate expireDate;
