@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -20,11 +22,11 @@ public record CreateTravelDto(
         @JsonProperty("keyword") @Schema(description = "travel types", example = "쇼핑, 관광")
         String keyword,
         @NotNull(message = "startDate can not be null")
-        @JsonProperty("start_date") @Schema(description = "travel start date", example = "2024-09-09 10:30:00")
-        String startDate,
+        @JsonProperty("start_date") @Schema(description = "travel start date", example = "2024-09-09")
+        LocalDate startDate,
         @NotNull(message = "endDate can not be null")
-        @JsonProperty("end_date") @Schema(description = "travel end date", example = "2024-09-13 20:00:00")
-        String endDate,
+        @JsonProperty("end_date") @Schema(description = "travel end date", example = "2024-09-13")
+        LocalDate endDate,
         @NotNull(message = "members can not be null")
         @JsonProperty("members") @Schema(description = "travel members list", example = "[12323,24234234]")
         List<Long> members,

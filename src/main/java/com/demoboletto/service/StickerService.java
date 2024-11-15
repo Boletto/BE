@@ -7,7 +7,7 @@ import com.demoboletto.dto.response.GetStickerDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.StickerRepository;
-import com.demoboletto.repository.TravelRepository;
+import com.demoboletto.repository.travel.TravelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

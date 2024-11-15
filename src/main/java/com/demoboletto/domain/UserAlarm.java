@@ -31,7 +31,7 @@ public class UserAlarm {
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
-    @Column(name = "value")
+    @Column(name = "alarm_value")
     private String value;
 
     @Builder

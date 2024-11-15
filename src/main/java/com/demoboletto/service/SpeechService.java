@@ -5,7 +5,7 @@ import com.demoboletto.domain.Travel;
 import com.demoboletto.dto.request.CreateSpeechDto;
 import com.demoboletto.dto.response.GetSpeechDto;
 import com.demoboletto.repository.SpeechRepository;
-import com.demoboletto.repository.TravelRepository;
+import com.demoboletto.repository.travel.TravelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +34,7 @@ public class SpeechService {
                 ));
         return speechDtoList;
     }
+
     @Transactional
     public boolean createSpeech(List<CreateSpeechDto> speechList, Long travelId) {
         try {
@@ -47,6 +48,7 @@ public class SpeechService {
         }
         return true;
     }
+
     public List<Speech> makeSpeechList(List<CreateSpeechDto> speechList, Long travelId) {
         List<Speech> newSpeechList = new ArrayList<>();
         Travel travel = travelRepository.findById(travelId)

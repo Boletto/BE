@@ -24,4 +24,12 @@ class NotificationServiceTest {
         Map<String, String> map = Map.of("operationType", "syncData", "extraInfo", "Silent Push Test");
         notificationService.dispatchMessageToUser(map, token);
     }
+
+    @Test
+    void dispatchMessageToGroup() {
+    }
+
+    @Test
+    void pushMessageToGroup() {
+    }
 }

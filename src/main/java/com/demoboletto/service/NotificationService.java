@@ -52,6 +52,11 @@ public class NotificationService {
     @Async
     public void dispatchMessageToGroup(Map<String, String> data, List<String> tokens) {
         MulticastMessage messages = MulticastMessage.builder()
+                .setApnsConfig(ApnsConfig.builder()
+                        .setAps(Aps.builder()
+                                .setContentAvailable(true) // 중요: iOS에서 Silent Push 트리거
+                                .build())
+                        .build())
                 .putAllData(data)
                 .addAllTokens(tokens)
                 .build();

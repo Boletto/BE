@@ -67,6 +67,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/boletto:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
 
       - name: Execute remote ssh
         uses: appleboy/ssh-action@master
@@ -83,3 +84,4 @@ jobs:
               docker rm boletto
             fi
             docker run -d --name boletto -p 8080:8080 -v /home/ubuntu/secret/wallet:/secret/wallet boletto:latest
+
