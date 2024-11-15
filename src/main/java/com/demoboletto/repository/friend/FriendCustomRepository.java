@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface FriendCustomRepository {
     List<Friend> findFriendByKeyword(Long userId, String keyword);
+
+    void deleteByFriendUserId(Long userId, Long friendId);
 }

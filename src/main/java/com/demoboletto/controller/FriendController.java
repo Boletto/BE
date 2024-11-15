@@ -39,11 +39,11 @@ public class FriendController {
     }
 
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/{friendId}")
     @Operation(summary = "친구 삭제", description = "삭제하고 싶은 친구의 유저 id를 받아 특정 친구를 삭제합니다.")
     @Schema(name = "Search Friend", description = "특정 친구 삭제")
-    public ResponseDto<?> deleteFriend(@PathVariable Long userId) {
-        friendService.deleteFriend(userId);
+    public ResponseDto<?> deleteFriend(@Parameter(hidden = true) @UserId Long userId, @PathVariable Long friendId) {
+        friendService.deleteFriend(userId, friendId);
         return ResponseDto.ok("특정 친구 삭제에 성공하였습니다.");
     }
 

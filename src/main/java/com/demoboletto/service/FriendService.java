@@ -45,40 +45,11 @@ public class FriendService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFriend(Long friendId) {
-        friendRepository.deleteByFriendUserId(friendId);
-    }
-
     @Transactional
-    public AddFriendResponseDto addFriend(Long userId, Long friendId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
-
-        User friendUser = userRepository.findById(friendId)
-                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
-
-        boolean isAlreadyFriend = friendRepository.existsByUserIdAndFriendUserId(userId, friendId);
-        if (isAlreadyFriend) {
-            throw new IllegalArgumentException("Friend has already been added.");
-        }
-
-        Friend newFriend = Friend.builder()
-                .user(user)
-                .friendUser(friendUser)
-                .friendName(friendUser.getName())
-                .friendNickname(friendUser.getNickname())
-                .friendProfile(friendUser.getUserProfile())
-                .build();
-
-        friendRepository.save(newFriend);
-
-        return AddFriendResponseDto.builder()
-                .friendUserId(newFriend.getFriendUser().getId())
-                .friendName(newFriend.getFriendName())
-                .friendNickName(newFriend.getFriendNickname())
-                .friendProfile(newFriend.getFriendProfile())
-                .build();
+    public void deleteFriend(Long userId, Long friendId) {
+        friendRepository.deleteByFriendUserId(userId, friendId);
     }
+
 
     @Transactional
     public FriendCodeDto generateFriendCode(Long userId) {
