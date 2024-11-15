@@ -1,6 +1,5 @@
 package com.demoboletto.dto.response;
 
-import com.demoboletto.domain.User;
 import com.demoboletto.type.EStatusType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,7 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Builder
@@ -30,19 +29,19 @@ public record GetTravelDto(
         String keyword,
 
         @NotNull(message = "startDate can not be null")
-        @JsonProperty("start_date") @Schema(description = "travel start date", example = "2024-09-09 10:30:00")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-        LocalDateTime startDate,
+        @JsonProperty("start_date") @Schema(description = "travel start date", example = "2024-09-09")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+        LocalDate startDate,
 
         @NotNull(message = "endDate can not be null")
-        @JsonProperty("end_date") @Schema(description = "travel end date", example = "2024-09-13 20:00:00")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-        LocalDateTime endDate,
+        @JsonProperty("end_date") @Schema(description = "travel end date", example = "2024-09-13")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+        LocalDate endDate,
 
         @NotNull(message = "members can not be null")
         @JsonProperty("members") @Schema(description = "travel members list", example = "[userTravelDto1, userTravelDto2]")
         List<GetUserTravelDto> members,
-        
+
         @NotNull(message = "color can not be null")
         @JsonProperty("color") @Schema(description = "travel list color", example = "#FF0000")
         String color,
