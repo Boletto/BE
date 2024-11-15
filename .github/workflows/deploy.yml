@@ -1,0 +1,86 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Gradle Caching
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+             ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Copy secret
+        env:
+          BOLETTO_SECRET: ${{ secrets.BOLETTO_SECRET }}
+          BOLETTO_SECRET_DIR: src/main/resources
+          BOLETTO_SECRET_DIR_FILE_NAME: application-secret.yml
+        run: echo $BOLETTO_SECRET | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_SECRET_DIR_FILE_NAME
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle Wrapper
+        run: ./gradlew bootJar
+
+      - name: Setup docker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Docker build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/boletto:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+      - name: Execute remote ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.BOLETTO_HOST }}
+          username: ${{ secrets.BOLETTO_USERNAME }}
+          key: ${{ secrets.BOLETTO_KEY }}
+          port: ${{ secrets.BOLETTO_PORT }}
+          script: |
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/boletto:latest
+            if [ "$(docker ps -q -f name=boletto)" ]; then
+              echo "Stopping and removing existing container..."
+              docker stop boletto
+              docker rm boletto
+            fi
+            docker run -d --name boletto -p 8080:8080 -v /home/ubuntu/secret/wallet:/secret/wallet boletto:latest
