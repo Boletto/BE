@@ -9,11 +9,11 @@ import lombok.Builder;
 @Schema(description = "Response for friend's information")
 public record FriendResponseDto(
 
-        @JsonProperty("userId")
+        @JsonProperty("friend_user_id")
         @Schema(description = "ID of the friend user", example = "2")
         Long friendUserId,
 
-        @JsonProperty("nickName")
+        @JsonProperty("nickname")
         @Schema(description = "Nickname of the friend", example = "으아어")
         String friendNickname,
 
@@ -21,16 +21,17 @@ public record FriendResponseDto(
         @Schema(description = "Name of the friend", example = "홍길동")
         String friendName,
 
-        @JsonProperty("userProfile")
+        @JsonProperty("user_profile")
         @Schema(description = "Profile of the friend", example = "BLUE")
         String friendProfile
 
 ) {
     public static FriendResponseDto of(Friend friend) {
-        return new FriendResponseDto(
-                friend.getUser().getId(),
-                friend.getFriendNickname(),
-                friend.getFriendName(),
-                friend.getFriendProfile());
+        return FriendResponseDto.builder()
+                .friendName(friend.getFriendName())
+                .friendUserId(friend.getFriendUser().getId())
+                .friendNickname(friend.getFriendNickname())
+                .friendProfile(friend.getFriendProfile())
+                .build();
     }
 }
