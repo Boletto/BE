@@ -1,5 +1,6 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.domain.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "sys_frame")
 @NoArgsConstructor
 @Getter
-public class SysFrame {
+public class SysFrame extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
