@@ -16,16 +16,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
-@EnableWebMvc
 @RequiredArgsConstructor
 public class WebMVCConfig implements WebMvcConfigurer {
     private final UserIdArgumentResolver userIdArgumentResolver;
-    private final ObjectMapper objectMapper;
-
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
-    }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
