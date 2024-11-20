@@ -6,13 +6,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
 @Schema(description = "시스템 스티커 생성")
 @Getter
-@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CreateSysStickerDto {
 
     @Schema(description = "스티커의 이름", example = "스티커1")

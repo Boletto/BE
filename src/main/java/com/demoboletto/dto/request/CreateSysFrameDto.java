@@ -3,11 +3,14 @@ package com.demoboletto.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
 @Schema(description = "시스템에서 관리하는 프레임 추가")
 @Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CreateSysFrameDto {
     @Schema(description = "프레임의 이름", example = "프레임1")
     @NotNull(message = "frameName can not be null")

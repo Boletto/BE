@@ -1,16 +1,12 @@
 package com.demoboletto.domain;
 
 import com.demoboletto.domain.common.BaseTimeEntity;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "sys_frame")
 @NoArgsConstructor
 @Getter
@@ -37,7 +33,6 @@ public class SysFrame extends BaseTimeEntity {
 
     @Builder
     public SysFrame(String frameCode, String frameName, String frameUrl, boolean defaultProvided, String description) {
-
         this.frameCode = frameCode;
         this.frameName = frameName;
         this.frameUrl = frameUrl;
