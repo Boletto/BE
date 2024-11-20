@@ -3,7 +3,7 @@ package com.demoboletto.service;
 import com.demoboletto.domain.SysFrame;
 import com.demoboletto.domain.User;
 import com.demoboletto.domain.UserFrame;
-import com.demoboletto.dto.response.GetUserFrameDto;
+import com.demoboletto.dto.response.GetUserUsableFrameDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.SysFrameRepository;
@@ -47,7 +47,7 @@ public class UserFrameService {
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
     }
 
-    public List<GetUserFrameDto> getUsableFrames(Long userId) {
+    public List<GetUserUsableFrameDto> getUsableFrames(Long userId) {
         // Retrieve default frames
         List<SysFrame> defaultFrames = sysFrameRepository.findDefaultFrames();
 
@@ -55,15 +55,15 @@ public class UserFrameService {
         List<UserFrame> userFrames = userFrameRepository.findAllByUserId(userId);
 
         // Map default frames to DTOs with `isOwned=false`
-        Map<Long, GetUserFrameDto> frameMap = defaultFrames.stream()
+        Map<Long, GetUserUsableFrameDto> frameMap = defaultFrames.stream()
                 .collect(Collectors.toMap(
                         SysFrame::getFrameId,
-                        GetUserFrameDto::of
+                        GetUserUsableFrameDto::of
                 ));
 
         // Override with user-owned frames (`isOwned=true`)
         for (UserFrame userFrame : userFrames) {
-            frameMap.put(userFrame.getFrame().getFrameId(), GetUserFrameDto.of(userFrame));
+            frameMap.put(userFrame.getFrame().getFrameId(), GetUserUsableFrameDto.of(userFrame));
         }
 
         // Return as a list

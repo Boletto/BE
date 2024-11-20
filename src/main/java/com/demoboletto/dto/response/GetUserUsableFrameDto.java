@@ -6,13 +6,12 @@ import com.demoboletto.domain.UserFrame;
 import com.demoboletto.dto.global.BaseTimeDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Schema(description = "Usable frame information")
 @Getter
 @SuperBuilder
-public class GetUserFrameDto extends BaseTimeDto {
+public class GetUserUsableFrameDto extends BaseTimeDto {
     @Schema(description = "프레임의 기본키", example = "1")
     private long frameId;
 
@@ -31,8 +30,8 @@ public class GetUserFrameDto extends BaseTimeDto {
     @Schema(description = "프레임 이미지 URL", example = "https://example.com/frame.jpg")
     private String frameUrl;
 
-    public static GetUserFrameDto of(SysFrame sysFrame) {
-        return GetUserFrameDto.builder()
+    public static GetUserUsableFrameDto of(SysFrame sysFrame) {
+        return GetUserUsableFrameDto.builder()
                 .frameId(sysFrame.getFrameId())
                 .frameName(sysFrame.getFrameName())
                 .description(sysFrame.getDescription())
@@ -44,8 +43,8 @@ public class GetUserFrameDto extends BaseTimeDto {
                 .build();
     }
 
-    public static GetUserFrameDto of(UserFrame userFrame) {
-        return GetUserFrameDto.builder()
+    public static GetUserUsableFrameDto of(UserFrame userFrame) {
+        return GetUserUsableFrameDto.builder()
                 .frameId(userFrame.getFrame().getFrameId())
                 .frameName(userFrame.getFrame().getFrameName())
                 .description(userFrame.getFrame().getDescription())

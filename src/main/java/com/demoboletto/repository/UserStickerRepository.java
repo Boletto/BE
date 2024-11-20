@@ -1,11 +1,12 @@
 package com.demoboletto.repository;
 
-import com.demoboletto.domain.SysSticker;
+import com.demoboletto.domain.UserSticker;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface SysStickerRepository extends JpaRepository<SysSticker, Long>, SysStickerCustomRepository {
+public interface UserStickerRepository extends JpaRepository<UserSticker, Long> {
+    List<UserSticker> findAllByUserId(Long userId);
 }

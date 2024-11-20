@@ -4,6 +4,8 @@ import com.demoboletto.domain.SysSticker;
 import com.demoboletto.dto.global.BaseTimeDto;
 import com.demoboletto.type.EStickerType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -21,6 +23,7 @@ public class GetSysStickerInfoDto extends BaseTimeDto {
     private String stickerName;
 
     @Schema(description = "스티커의 타입", example = "STICKER OR SPEECH")
+    @Enumerated(EnumType.STRING)
     private EStickerType stickerType;
 
     @Schema(description = "스티커의 기본 제공 여부", example = "true")

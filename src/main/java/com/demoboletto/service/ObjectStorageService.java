@@ -40,6 +40,18 @@ public class ObjectStorageService {
         // Create a unique file name Ex. 1234/20210901/UUID.jpg
         String fileName = String.format("%d/%s/%s.%s", userId, currentDate, UUID.randomUUID(), fileExtension);
 
+        return upload(file, body, fileName);
+    }
+
+    public String uploadSystemFile(MultipartFile file, String path) throws IOException {
+        File body = convertMultipartFileToFile(file);
+        String fileExtension = getFileExtension(file.getOriginalFilename());
+        String fileName = String.format("system/%s/%s.%s", path, UUID.randomUUID(), fileExtension);
+
+        return upload(file, body, fileName);
+    }
+
+    private String upload(MultipartFile file, File body, String fileName) {
         UploadManager uploadManager = new UploadManager(client, uploadConfiguration);
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
