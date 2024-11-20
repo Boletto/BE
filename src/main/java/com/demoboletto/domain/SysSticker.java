@@ -21,6 +21,9 @@ public class SysSticker extends BaseTimeEntity {
     @Column(name = "sticker_name")
     private String stickerName;
 
+    @Column(name = "sticker_code", unique = true)
+    private String stickerCode;
+
     @Column(name = "sticker_type")
     private EStickerType stickerType;
 
@@ -34,8 +37,8 @@ public class SysSticker extends BaseTimeEntity {
     private String description;
 
     @Builder
-    SysSticker(Long stickerId, String stickerName, EStickerType stickerType, boolean defaultProvided, String stickerUrl, String description) {
-        this.stickerId = stickerId;
+    SysSticker(String stickerCode, String stickerName, EStickerType stickerType, boolean defaultProvided, String stickerUrl, String description) {
+        this.stickerCode = stickerCode;
         this.stickerName = stickerName;
         this.stickerType = stickerType;
         this.defaultProvided = defaultProvided;
