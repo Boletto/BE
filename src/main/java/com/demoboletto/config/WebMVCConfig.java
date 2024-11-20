@@ -3,8 +3,11 @@ package com.demoboletto.config;
 import com.demoboletto.constants.Constants;
 import com.demoboletto.intercepter.pre.UserIdArgumentResolver;
 import com.demoboletto.intercepter.pre.UserIdInterceptor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -17,6 +20,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebMVCConfig implements WebMvcConfigurer {
     private final UserIdArgumentResolver userIdArgumentResolver;
+    private final ObjectMapper objectMapper;
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
+    }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
