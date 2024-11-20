@@ -4,6 +4,7 @@ import com.demoboletto.domain.common.BaseTimeEntity;
 import com.demoboletto.type.ESticker;
 import com.demoboletto.type.EStickerType;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,5 +33,14 @@ public class SysSticker extends BaseTimeEntity {
     @Column(name = "description")
     private String description;
 
+    @Builder
+    SysSticker(Long stickerId, String stickerName, EStickerType stickerType, boolean defaultProvided, String stickerUrl, String description) {
+        this.stickerId = stickerId;
+        this.stickerName = stickerName;
+        this.stickerType = stickerType;
+        this.defaultProvided = defaultProvided;
+        this.stickerUrl = stickerUrl;
+        this.description = description;
+    }
 
 }
