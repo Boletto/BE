@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class SysSticker extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "sticker_id")
+    private Long stickerId;
 
     @Column(name = "sticker_name")
     private String stickerName;
