@@ -32,7 +32,7 @@ public class TravelService {
     private final TravelRepository travelRepository;
     private final UserTravelRepository userTravelRepository;
     private final UserRepository userRepository;
-    private final PictureService pictureService;
+    //    private final PictureService pictureService;
     private final StickerService stickerService;
     private final SpeechService speechService;
     private final ZonedDateTime nowKorea = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
@@ -191,7 +191,7 @@ public class TravelService {
             // delete user data in UserTravel table
             userTravelRepository.deleteAllByTravelId(travelId);
             // delete picture data in Picture table
-            pictureService.deleteAllByTravelId(travelId);
+//            pictureService.deleteAllByTravelId(travelId);
             // delete sticker data in Sticker table
             stickerService.deleteAllByTravelId(travelId);
             // delete speech data in Speech table

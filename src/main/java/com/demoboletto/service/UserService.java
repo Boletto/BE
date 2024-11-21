@@ -29,7 +29,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final CollectRepository collectRepository;
     private final UserTravelRepository userTravelRepository;
-    private final PictureRepository pictureRepository;
+    //    private final PictureRepository pictureRepository;
     private final FriendRepository friendRepository;
     private final ObjectStorageService objectStorageService;
     private final UserAlarmRepository userAlarmRepository;
@@ -92,14 +92,14 @@ public class UserService {
         }
 
         // Picture는 soft delete로 처리 (User와의 관계만 끊음, 실제 삭제는 안 함)
-        List<Picture> pictures = pictureRepository.findByUserId(userId);
-        if (!pictures.isEmpty()) {
-            pictures.forEach(picture -> {
-                picture.setDeleted(true);  // soft delete
-                picture.setUser(null);  // User와의 관계만 끊음
-                pictureRepository.save(picture);
-            });
-        }
+//        List<Picture> pictures = pictureRepository.findByUserId(userId);
+//        if (!pictures.isEmpty()) {
+//            pictures.forEach(picture -> {
+//                picture.setDeleted(true);  // soft delete
+//                picture.setUser(null);  // User와의 관계만 끊음
+//                pictureRepository.save(picture);
+//            });
+//        }
 
         // Friend 관련 데이터 삭제 (친구 목록 삭제)
         List<Friend> friends = friendRepository.findByUserId(userId);
