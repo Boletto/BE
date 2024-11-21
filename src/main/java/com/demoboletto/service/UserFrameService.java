@@ -25,7 +25,7 @@ public class UserFrameService {
     private final SysFrameRepository sysFrameRepository;
     private final UserRepository userRepository;
 
-    public void saveUserFrames(Long userId, String frameCode) {
+    public void saveUserFrame(Long userId, String frameCode) {
         SysFrame sysFrame = sysFrameRepository.findByFrameCode(frameCode)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_SYS_FRAME));
         User user = getUser(userId);
@@ -39,7 +39,6 @@ public class UserFrameService {
         } catch (DataIntegrityViolationException e) {
             throw new CommonException(ErrorCode.ALREADY_COLLECTED_FRAME);
         }
-
     }
 
     private User getUser(Long userId) {

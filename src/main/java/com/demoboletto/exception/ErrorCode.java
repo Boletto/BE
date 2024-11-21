@@ -19,6 +19,7 @@ public enum ErrorCode {
     NOT_FOUND_TRAVEL(40401, HttpStatus.NOT_FOUND, "해당 여행이 존재하지 않습니다."),
     NOT_FOUND_FRIEND_CODE(40401, HttpStatus.NOT_FOUND, "해당 친구 코드가 존재하지 않습니다."),
     NOT_FOUND_SYS_FRAME(40490, HttpStatus.NOT_FOUND, "해당 시스템 프레임이 존재하지 않습니다,"),
+    NOT_FOUND_SYS_STICKER(40091, HttpStatus.NOT_FOUND, "해당 시스템 스티커가 존재하지 않습니다."),
     // Invalid Argument Error
     MISSING_REQUEST_PARAMETER(40000, HttpStatus.BAD_REQUEST, "필수 요청 파라미터가 누락되었습니다."),
     INVALID_ARGUMENT(40001, HttpStatus.BAD_REQUEST, "요청에 유효하지 않은 인자입니다."),
@@ -41,6 +42,7 @@ public enum ErrorCode {
 
     // Conflict Error
     ALREADY_COLLECTED_FRAME(40901, HttpStatus.CONFLICT, "이미 수집한 프레임 입니다."),
+    ALREADY_COLLECTED_STICKER(40902, HttpStatus.CONFLICT, "이미 수집한 스티커 입니다."),
     // Unauthorized Error
     FAILURE_LOGIN(40100, HttpStatus.UNAUTHORIZED, "잘못된 아이디 또는 비밀번호입니다."),
     EXPIRED_TOKEN_ERROR(40101, HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
@@ -53,10 +55,12 @@ public enum ErrorCode {
 
     // Internal Server Error
     INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다."),
-    UPLOAD_FILE_ERROR(50001, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다.");
+    UPLOAD_FILE_ERROR(50001, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다."),
+    ;
 
 
     private final Integer code;
     private final HttpStatus httpStatus;
     private final String message;
+
 }
