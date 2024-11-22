@@ -1,17 +1,19 @@
 package com.demoboletto.service;
 
-import com.demoboletto.domain.*;
-import com.demoboletto.dto.response.GetUserProfileUpdateDto;
-import com.demoboletto.exception.ErrorCode;
+import com.demoboletto.domain.Friend;
+import com.demoboletto.domain.User;
+import com.demoboletto.domain.UserAlarm;
+import com.demoboletto.domain.UserTravel;
 import com.demoboletto.dto.request.UserProfileUpdateDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
+import com.demoboletto.dto.response.GetUserProfileUpdateDto;
 import com.demoboletto.exception.CommonException;
-import com.demoboletto.repository.*;
-
+import com.demoboletto.exception.ErrorCode;
+import com.demoboletto.repository.UserAlarmRepository;
+import com.demoboletto.repository.UserRepository;
 import com.demoboletto.repository.friend.FriendRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
 import jakarta.persistence.EntityNotFoundException;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,9 +29,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final CollectRepository collectRepository;
     private final UserTravelRepository userTravelRepository;
-    //    private final PictureRepository pictureRepository;
     private final FriendRepository friendRepository;
     private final ObjectStorageService objectStorageService;
     private final UserAlarmRepository userAlarmRepository;
@@ -85,11 +85,6 @@ public class UserService {
             userTravelRepository.deleteAll(userTravels);
         }
 
-        // Collect 삭제
-        List<Collect> collects = collectRepository.findByUserId(userId);
-        if (!collects.isEmpty()) {
-            collectRepository.deleteAll(collects);
-        }
 
         // Picture는 soft delete로 처리 (User와의 관계만 끊음, 실제 삭제는 안 함)
 //        List<Picture> pictures = pictureRepository.findByUserId(userId);

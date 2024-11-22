@@ -50,4 +50,11 @@ public class TravelController {
     public ResponseDto<?> deleteTravelList(@RequestParam(value = "travel_id") Long id) {
         return travelService.deleteTravelList(id) ? ResponseDto.ok("success") : ResponseDto.fail("fail");
     }
+
+    @PutMapping("{travelId}/status")
+    @Operation(summary = "update travel editable", description = "Update travel editable.")
+    public ResponseDto<String> updateTravelEditable(@Parameter(hidden = true) @UserId Long userId, @PathVariable Long travelId) {
+        travelService.updateTravelEditable(userId, travelId);
+        return ResponseDto.ok("success");
+    }
 }

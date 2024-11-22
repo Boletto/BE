@@ -1,7 +1,5 @@
 package com.demoboletto.dto.response;
 
-import com.demoboletto.domain.SysSticker;
-import com.demoboletto.domain.UserSticker;
 import com.demoboletto.dto.global.BaseTimeDto;
 import com.demoboletto.type.EStickerType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,18 +31,5 @@ public class GetUserStickerInfoDto extends BaseTimeDto {
     @Schema(description = "스티커 설명", example = "스티커 설명입니다.")
     private String description;
 
-//    public static GetUserStickerInfoDto of(UserSticker userSticker) {
-//        return GetUserStickerInfoDto.builder()
-//                .stickerId(userSticker.getSticker().getStickerId())
-//                .stickerCode(userSticker.getSticker().getStickerCode())
-//                .stickerName(userSticker.getSticker().getStickerName())
-//                .stickerType(userSticker.getSticker().getStickerType())
-//                .isOwned(true)
-//                .stickerUrl(userSticker.getSticker().getStickerUrl())
-//                .description(userSticker.getSticker().getDescription())
-//                .createdDate(userSticker.getCreatedDate())
-//                .modifiedDate(userSticker.getModifiedDate())
-//                .build();
-//    }
 
 }

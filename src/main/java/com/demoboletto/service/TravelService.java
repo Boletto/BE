@@ -36,7 +36,7 @@ public class TravelService {
     private final UserRepository userRepository;
     //    private final PictureService pictureService;
 //    private final StickerService stickerService;
-    private final SpeechService speechService;
+//    private final SpeechService speechService;
     private final ZonedDateTime nowKorea = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
     @Transactional
@@ -197,7 +197,7 @@ public class TravelService {
             // delete sticker data in Sticker table
 //            stickerService.deleteAllByTravelId(travelId);
             // delete speech data in Speech table
-            speechService.deleteAllByTravelId(travelId);
+//            speechService.deleteAllByTravelId(travelId);
 
             travelRepository.deleteById(travelId);
 
@@ -220,5 +220,9 @@ public class TravelService {
             );
         });
         return resultList;
+    }
+    
+    public void updateTravelEditable(Long userId, Long travelId) {
+
     }
 }
