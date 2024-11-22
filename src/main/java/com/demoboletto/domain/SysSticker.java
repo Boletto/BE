@@ -1,7 +1,6 @@
 package com.demoboletto.domain;
 
 import com.demoboletto.domain.common.BaseTimeEntity;
-import com.demoboletto.type.ESticker;
 import com.demoboletto.type.EStickerType;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -25,6 +24,7 @@ public class SysSticker extends BaseTimeEntity {
     private String stickerCode;
 
     @Column(name = "sticker_type")
+    @Enumerated(EnumType.STRING)
     private EStickerType stickerType;
 
     @Column(name = "default_provided")

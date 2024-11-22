@@ -1,7 +1,7 @@
 package com.demoboletto.controller;
 
-import com.demoboletto.dto.request.CreateSysFrameDto;
 import com.demoboletto.dto.global.ResponseDto;
+import com.demoboletto.dto.request.CreateSysFrameDto;
 import com.demoboletto.dto.request.CreateSysStickerDto;
 import com.demoboletto.dto.response.GetSysFrameInfoDto;
 import com.demoboletto.dto.response.GetSysStickerInfoDto;
@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,8 +29,11 @@ public class SystemController {
 
     @PostMapping(value = "/stickers", consumes = "multipart/form-data")
     @Operation(summary = "스티커 생성", description = "시스템에서 제공하는 스티커를 생성합니다.")
-    public ResponseDto<?> createSticker(@ModelAttribute CreateSysStickerDto createSysStickerDto) {
-        systemService.saveSticker(createSysStickerDto);
+    public ResponseDto<?> createSticker(
+            @RequestPart CreateSysStickerDto createSysStickerDto,
+            @RequestPart MultipartFile file
+    ) {
+        systemService.saveSticker(createSysStickerDto, file);
         return ResponseDto.created("Create Sticker Success");
     }
 
@@ -41,8 +45,11 @@ public class SystemController {
 
     @PostMapping(value = "/frames", consumes = "multipart/form-data")
     @Operation(summary = "프레임 생성", description = "시스템에서 제공하는 프레임을 생성합니다.")
-    public ResponseDto<?> createFrame(@ModelAttribute CreateSysFrameDto createSysFrameDto) {
-        systemService.saveFrame(createSysFrameDto);
+    public ResponseDto<?> createFrame(
+            @RequestPart CreateSysFrameDto createSysFrameDto,
+            @RequestPart MultipartFile file
+    ) {
+        systemService.saveFrame(createSysFrameDto, file);
         return ResponseDto.created("Create Frame Success");
     }
 

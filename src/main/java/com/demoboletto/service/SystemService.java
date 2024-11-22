@@ -12,7 +12,9 @@ import com.demoboletto.repository.SysFrameRepository;
 import com.demoboletto.repository.SysStickerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -32,10 +34,10 @@ public class SystemService {
     }
 
 
-    public void saveSticker(CreateSysStickerDto createSysStickerDto) {
+    public void saveSticker(CreateSysStickerDto createSysStickerDto, MultipartFile file) {
         String stickerUrl;
         try {
-            stickerUrl = objectStorageService.uploadSystemFile(createSysStickerDto.getFile(), STICKER_PATH);
+            stickerUrl = objectStorageService.uploadSystemFile(file, STICKER_PATH);
         } catch (Exception e) {
             throw new CommonException(ErrorCode.UPLOAD_FILE_ERROR);
         }
@@ -47,17 +49,21 @@ public class SystemService {
                 .stickerUrl(stickerUrl)
                 .description(createSysStickerDto.getDescription())
                 .build();
-        sysStickerRepository.save(sysSticker);
+        try {
+            sysStickerRepository.save(sysSticker);
+        } catch (DataIntegrityViolationException e) {
+            throw new CommonException(ErrorCode.DUPLICATED_SYS_STICKER_CODE);
+        }
     }
 
     public List<GetSysFrameInfoDto> getSystemFrames() {
         return sysFrameRepository.findAll().stream().map(GetSysFrameInfoDto::of).toList();
     }
 
-    public void saveFrame(CreateSysFrameDto createSysFrameDto) {
+    public void saveFrame(CreateSysFrameDto createSysFrameDto, MultipartFile file) {
         String frameUrl;
         try {
-            frameUrl = objectStorageService.uploadSystemFile(createSysFrameDto.getFile(), FRAME_PATH);
+            frameUrl = objectStorageService.uploadSystemFile(file, FRAME_PATH);
         } catch (Exception e) {
             throw new CommonException(ErrorCode.UPLOAD_FILE_ERROR);
         }
@@ -67,6 +73,10 @@ public class SystemService {
                 .frameUrl(frameUrl)
                 .description(createSysFrameDto.getDescription())
                 .build();
-        sysFrameRepository.save(sysFrame);
+        try {
+            sysFrameRepository.save(sysFrame);
+        } catch (DataIntegrityViolationException e) {
+            throw new CommonException(ErrorCode.DUPLICATED_SYS_FRAME_CODE);
+        }
     }
 }

@@ -39,6 +39,7 @@ public class GetSysStickerInfoDto extends BaseTimeDto {
         return GetSysStickerInfoDto.builder()
                 .stickerId(sysSticker.getStickerId())
                 .stickerName(sysSticker.getStickerName())
+                .stickerCode(sysSticker.getStickerCode())
                 .stickerType(sysSticker.getStickerType())
                 .defaultProvided(sysSticker.isDefaultProvided())
                 .stickerUrl(sysSticker.getStickerUrl())

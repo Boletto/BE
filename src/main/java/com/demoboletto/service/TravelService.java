@@ -9,8 +9,8 @@ import com.demoboletto.dto.response.GetTravelDto;
 import com.demoboletto.dto.response.GetUserTravelDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
-import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.UserRepository;
+import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
@@ -33,7 +35,7 @@ public class TravelService {
     private final UserTravelRepository userTravelRepository;
     private final UserRepository userRepository;
     //    private final PictureService pictureService;
-    private final StickerService stickerService;
+//    private final StickerService stickerService;
     private final SpeechService speechService;
     private final ZonedDateTime nowKorea = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
@@ -193,7 +195,7 @@ public class TravelService {
             // delete picture data in Picture table
 //            pictureService.deleteAllByTravelId(travelId);
             // delete sticker data in Sticker table
-            stickerService.deleteAllByTravelId(travelId);
+//            stickerService.deleteAllByTravelId(travelId);
             // delete speech data in Speech table
             speechService.deleteAllByTravelId(travelId);
 

@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -77,6 +79,14 @@ public class ObjectStorageService {
                 .namespaceName(namespace)
                 .objectName(fileName)
                 .build());
+    }
+
+    public List<String> uploadFileList(List<MultipartFile> files, Long userId) throws IOException {
+        List<String> urls = new ArrayList<>();
+        for (MultipartFile file : files) {
+            urls.add(uploadFile(file, userId));
+        }
+        return urls;
     }
 
     private File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
