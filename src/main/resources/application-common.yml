@@ -10,6 +10,11 @@ spring:
       ddl-auto: ${jpa.hibernate.ddl-auto}
     properties:
       hibernate:
+        cache:
+          use_second_level_cache: true
+          use_query_cache: true
+          region.factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+          jcache.provider: org.ehcache.jsr107.EhcacheCachingProvider
         format_sql: ${jpa.properties.hibernate.format_sql}
         show_sql: ${jpa.properties.hibernate.show_sql}
         use_sql_comments: ${jpa.properties.hibernate.use_sql_comments}

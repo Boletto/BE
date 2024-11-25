@@ -1,0 +1,14 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.ehcache.org/v3"
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
+    <cache alias="entityCache">
+        <key-type>java.lang.Object</key-type>
+        <value-type>java.lang.Object</value-type>
+        <expiry>
+            <ttl unit="seconds">86400</ttl> <!-- Time-to-live 설정 -->
+        </expiry>
+        <resources>
+            <heap unit="entries">1000</heap> <!-- 캐시 최대 엔트리 -->
+        </resources>
+    </cache>
+</config>
