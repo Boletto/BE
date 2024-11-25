@@ -42,7 +42,7 @@ public class TravelMemoryService {
         User user = getUser(userId);
 
         // 현재 편집 중인 사람이 맞는지 확인
-        if (travel.isEditable(user)) {
+        if (!travel.isEditable(user)) {
             throw new CommonException(ErrorCode.TRAVEL_ALREADY_EDITING);
         }
 
@@ -87,7 +87,7 @@ public class TravelMemoryService {
         User user = getUser(userId);
 
         // 현재 편집 중인 사람이 맞는지 확인
-        if (travel.isEditable(user)) {
+        if (!travel.isEditable(user)) {
             throw new CommonException(ErrorCode.TRAVEL_ALREADY_EDITING);
         }
 

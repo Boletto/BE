@@ -99,6 +99,11 @@ public class Travel extends BaseTimeEntity {
 
     //현재 편집중인 사람과 동일인 인지 확인
     public boolean isEditable(User user) {
+        if (this.editableUser == null) {
+            this.status = ETravelStatusType.LOCK;
+            this.editableUser = user;
+            return true;
+        }
         return this.editableUser.equals(user);
     }
 

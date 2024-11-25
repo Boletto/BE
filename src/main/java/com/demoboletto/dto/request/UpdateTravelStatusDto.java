@@ -4,12 +4,10 @@ import com.demoboletto.type.ETravelStatusType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
 @Schema(name = "UpdateTravelStatusDto", description = "Update Travel Status")
-@Getter
-@Builder
+@Data
 public class UpdateTravelStatusDto {
 
     @Schema(description = "Travel Status", example = "LOCK")
