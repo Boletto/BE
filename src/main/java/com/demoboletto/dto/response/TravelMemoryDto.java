@@ -1,4 +1,4 @@
-package com.demoboletto.dto.temp;
+package com.demoboletto.dto.response;
 
 import com.demoboletto.domain.Picture;
 import com.demoboletto.domain.TravelMemory;

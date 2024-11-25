@@ -1,4 +1,4 @@
-package com.demoboletto.dto.temp;
+package com.demoboletto.dto.response;
 
 import com.demoboletto.domain.TravelSticker;
 import com.demoboletto.type.EStickerType;

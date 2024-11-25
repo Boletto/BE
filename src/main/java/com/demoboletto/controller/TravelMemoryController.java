@@ -2,9 +2,9 @@ package com.demoboletto.controller;
 
 import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
+import com.demoboletto.dto.request.UpdateTravelEachMemoryDto;
 import com.demoboletto.dto.request.UpdateTravelMemoryStickerDto;
-import com.demoboletto.dto.temp.GetTravelMemoryDto;
-import com.demoboletto.dto.temp.UpdateTravelEachMemoryDto;
+import com.demoboletto.dto.response.GetTravelMemoryDto;
 import com.demoboletto.service.TravelMemoryService;
 import com.demoboletto.service.TravelStickerService;
 import io.swagger.v3.oas.annotations.Operation;

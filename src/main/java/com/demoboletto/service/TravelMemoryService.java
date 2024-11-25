@@ -1,8 +1,8 @@
 package com.demoboletto.service;
 
 import com.demoboletto.domain.*;
-import com.demoboletto.dto.temp.GetTravelMemoryDto;
-import com.demoboletto.dto.temp.UpdateTravelEachMemoryDto;
+import com.demoboletto.dto.request.UpdateTravelEachMemoryDto;
+import com.demoboletto.dto.response.GetTravelMemoryDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.SysFrameRepository;

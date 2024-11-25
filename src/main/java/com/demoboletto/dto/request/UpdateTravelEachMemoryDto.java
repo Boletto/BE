@@ -1,4 +1,4 @@
-package com.demoboletto.dto.temp;
+package com.demoboletto.dto.request;
 
 import com.demoboletto.type.EMemoryType;
 import com.fasterxml.jackson.annotation.JsonProperty;
