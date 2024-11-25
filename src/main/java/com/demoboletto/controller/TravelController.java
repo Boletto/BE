@@ -4,6 +4,7 @@ import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.CreateTravelDto;
 import com.demoboletto.dto.request.UpdateTravelDto;
+import com.demoboletto.dto.request.UpdateTravelStatusDto;
 import com.demoboletto.dto.response.GetTravelDto;
 import com.demoboletto.service.TravelService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,9 +53,12 @@ public class TravelController {
     }
 
     @PutMapping("{travelId}/status")
-    @Operation(summary = "update travel editable", description = "Update travel editable.")
-    public ResponseDto<String> updateTravelEditable(@Parameter(hidden = true) @UserId Long userId, @PathVariable Long travelId) {
-        travelService.updateTravelEditable(userId, travelId);
+    @Operation(summary = "update travel editable", description = "편집 LOCK/UNLOCK")
+    public ResponseDto<String> updateTravelEditable(
+            @Parameter(hidden = true) @UserId Long userId,
+            @PathVariable Long travelId,
+            @RequestBody UpdateTravelStatusDto updateTravelStatusDto) {
+        travelService.updateTravelEditable(userId, travelId, updateTravelStatusDto);
         return ResponseDto.ok("success");
     }
 }

@@ -1,6 +1,6 @@
 package com.demoboletto.dto.response;
 
-import com.demoboletto.type.EStatusType;
+import com.demoboletto.type.ETravelStatusType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -49,6 +49,6 @@ public record GetTravelDto(
         @NotNull(message = "status can not be null")
         @Enumerated(EnumType.STRING)
         @JsonProperty("status") @Schema(description = "travel status", example = "UNLOCK")
-        EStatusType status
+        ETravelStatusType status
 ) {
 }

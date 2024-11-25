@@ -25,6 +25,7 @@ public class TravelMemoryController {
     private final TravelStickerService travelStickerService;
 
     @GetMapping
+    @Operation(summary = "Get Travel Memory", description = "Get Travel Memory")
     public ResponseDto<GetTravelMemoryDto> getTravelMemory(@Parameter(hidden = true) @UserId Long userId, @PathVariable Long travelId) {
         System.out.println("travel_id = " + travelId);
         return ResponseDto.ok(travelMemoryService.getTravelMemory(userId, travelId));
@@ -60,6 +61,7 @@ public class TravelMemoryController {
         travelStickerService.updateTravelMemoryStickers(userId, travelId, stickers);
         return ResponseDto.ok("Update Travel Memory Stickers");
     }
+
 
 //    @DeleteMapping
 //    public String deleteTravelMemory(@Parameter(hidden = true) @UserId Long userId, @PathVariable Long travelId) {

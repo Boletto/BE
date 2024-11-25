@@ -51,6 +51,9 @@ public class SwaggerConfig {
                                 .url("https://boletto.site")
                                 .description("Production Server"),
                         new io.swagger.v3.oas.models.servers.Server()
+                                .url("http://boletto.site:8081")
+                                .description("Development Server"),
+                        new io.swagger.v3.oas.models.servers.Server()
                                 .url("https://3.37.140.217")
                                 .description("Remote Server")));
     }

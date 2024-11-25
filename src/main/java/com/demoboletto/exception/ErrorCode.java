@@ -40,7 +40,8 @@ public enum ErrorCode {
     NOT_MATCH_AUTH_CODE(40301, HttpStatus.FORBIDDEN, "인증 코드가 일치하지 않습니다."),
     NOT_MATCH_USER(40302, HttpStatus.FORBIDDEN, "해당 사용자가 일치하지 않습니다."),
     SIGN_OUT_USER(40303, HttpStatus.FORBIDDEN, "탈퇴한 사용자는 24시간 이내 가입할 수 없습니다."),
-
+    TRAVEL_ALREADY_LOCKED(40304, HttpStatus.FORBIDDEN, "이미 잠긴 여행입니다."),
+    TRAVEL_ALREADY_EDITING(40305, HttpStatus.FORBIDDEN, "이미 편집 중인 여행입니다."),
     // Conflict Error
     ALREADY_COLLECTED_FRAME(40901, HttpStatus.CONFLICT, "이미 수집한 프레임 입니다."),
     ALREADY_COLLECTED_STICKER(40902, HttpStatus.CONFLICT, "이미 수집한 스티커 입니다."),

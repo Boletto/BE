@@ -40,6 +40,12 @@ public class TravelMemoryService {
         SysFrame sysFrame = sysFrameRepository.findByFrameCode(updateTravelEachMemoryDto.getFrameCode())
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_SYS_FRAME));
         User user = getUser(userId);
+
+        // 현재 편집 중인 사람이 맞는지 확인
+        if (travel.isEditable(user)) {
+            throw new CommonException(ErrorCode.TRAVEL_ALREADY_EDITING);
+        }
+
         // TODO: Frame 소유 여부 핸들링 필요?
 
         TravelMemory travelMemory = travelMemoryRepository.findByTravelAndMemoryIdx(travel, memoryIdx)
@@ -78,6 +84,13 @@ public class TravelMemoryService {
     public void deleteTravelEachMemory(Long userId, Long travelId, Long memoryIdx) {
         Travel travel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
                 .orElseThrow(() -> new CommonException(ErrorCode.ACCESS_DENIED));
+        User user = getUser(userId);
+
+        // 현재 편집 중인 사람이 맞는지 확인
+        if (travel.isEditable(user)) {
+            throw new CommonException(ErrorCode.TRAVEL_ALREADY_EDITING);
+        }
+
         TravelMemory travelMemory = travelMemoryRepository.findByTravelAndMemoryIdx(travel, memoryIdx)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MEMORY));
 
@@ -93,12 +106,14 @@ public class TravelMemoryService {
     public GetTravelMemoryDto getTravelMemory(Long userId, Long travelId) {
         Travel travel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_TRAVEL));
+        User user = getUser(userId);
         List<TravelMemory> travelMemories = travelMemoryRepository.findAllByTravel(travel);
         List<TravelSticker> travelStickers = travelStickerRepository.findAllByTravel(travel);
 
         return GetTravelMemoryDto.builder()
                 .memories(travelMemories)
                 .stickers(travelStickers)
+                .status(travel.getStatus())
                 .build();
     }
 }
