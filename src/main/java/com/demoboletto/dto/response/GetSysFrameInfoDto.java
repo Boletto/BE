@@ -20,6 +20,9 @@ public class GetSysFrameInfoDto extends BaseTimeDto {
     @Schema(description = "프레임의 설명", example = "프레임 설명입니다.")
     private String description;
 
+    @Schema(description = "스티커의 기본 제공 여부", example = "true")
+    private boolean defaultProvided;
+
     @Schema(description = "프레임 코드", example = "FRAME1")
     private String frameCode;
 
@@ -35,6 +38,7 @@ public class GetSysFrameInfoDto extends BaseTimeDto {
                 .frameUrl(sysFrame.getFrameUrl())
                 .createdDate(sysFrame.getCreatedDate())
                 .modifiedDate(sysFrame.getModifiedDate())
+                .defaultProvided(sysFrame.isDefaultProvided())
                 .build();
     }
 }
