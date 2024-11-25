@@ -45,6 +45,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
+
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
@@ -96,6 +97,7 @@ dependencies {
     implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage:3.52.1'
     implementation 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey3:3.52.1'
 
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     // Local
     runtimeOnly 'com.h2database:h2'
