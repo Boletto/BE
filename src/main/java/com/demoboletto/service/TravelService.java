@@ -5,13 +5,15 @@ import com.demoboletto.domain.User;
 import com.demoboletto.domain.UserTravel;
 import com.demoboletto.dto.request.CreateTravelDto;
 import com.demoboletto.dto.request.UpdateTravelDto;
+import com.demoboletto.dto.request.UpdateTravelStatusDto;
 import com.demoboletto.dto.response.GetTravelDto;
 import com.demoboletto.dto.response.GetUserTravelDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
-import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.UserRepository;
+import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
+import com.demoboletto.type.ETravelStatusType;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
@@ -32,9 +36,9 @@ public class TravelService {
     private final TravelRepository travelRepository;
     private final UserTravelRepository userTravelRepository;
     private final UserRepository userRepository;
-    private final PictureService pictureService;
-    private final StickerService stickerService;
-    private final SpeechService speechService;
+    //    private final PictureService pictureService;
+//    private final StickerService stickerService;
+//    private final SpeechService speechService;
     private final ZonedDateTime nowKorea = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
     @Transactional
@@ -191,11 +195,11 @@ public class TravelService {
             // delete user data in UserTravel table
             userTravelRepository.deleteAllByTravelId(travelId);
             // delete picture data in Picture table
-            pictureService.deleteAllByTravelId(travelId);
+//            pictureService.deleteAllByTravelId(travelId);
             // delete sticker data in Sticker table
-            stickerService.deleteAllByTravelId(travelId);
+//            stickerService.deleteAllByTravelId(travelId);
             // delete speech data in Speech table
-            speechService.deleteAllByTravelId(travelId);
+//            speechService.deleteAllByTravelId(travelId);
 
             travelRepository.deleteById(travelId);
 
@@ -218,5 +222,21 @@ public class TravelService {
             );
         });
         return resultList;
+    }
+
+    public void updateTravelEditable(Long userId, Long travelId, UpdateTravelStatusDto updateTravelStatusDto) {
+        User user = getUser(userId);
+        Travel travel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
+                .orElseThrow(() -> new CommonException(ErrorCode.ACCESS_DENIED));
+        if (updateTravelStatusDto.getStatus() == ETravelStatusType.LOCK) {
+            travel.lock(user);
+        } else if (updateTravelStatusDto.getStatus() == ETravelStatusType.UNLOCK) {
+            travel.unlock();
+        }
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESOURCE));
     }
 }

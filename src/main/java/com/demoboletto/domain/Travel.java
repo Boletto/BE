@@ -1,8 +1,11 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.domain.common.BaseTimeEntity;
 import com.demoboletto.dto.request.CreateTravelDto;
 import com.demoboletto.dto.request.UpdateTravelDto;
-import com.demoboletto.type.EStatusType;
+import com.demoboletto.exception.CommonException;
+import com.demoboletto.exception.ErrorCode;
+import com.demoboletto.type.ETravelStatusType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +18,7 @@ import java.time.LocalDate;
 @Table(name = "travel")
 @Getter
 @NoArgsConstructor
-public class Travel {
+public class Travel extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,10 +45,14 @@ public class Travel {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private EStatusType status;
+    private ETravelStatusType status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User editableUser;
 
     @Builder
-    public Travel(String departure, String arrive, String keyword, LocalDate startDate, LocalDate endDate, String color, EStatusType status) {
+    public Travel(String departure, String arrive, String keyword, LocalDate startDate, LocalDate endDate, String color, ETravelStatusType status) {
         this.departure = departure;
         this.arrive = arrive;
         this.keyword = keyword;
@@ -63,7 +70,7 @@ public class Travel {
                 .endDate(travelDto.endDate())
                 .keyword(travelDto.keyword())
                 .color(travelDto.color())
-                .status(EStatusType.UNLOCK)
+                .status(ETravelStatusType.UNLOCK)
                 .build();
     }
 
@@ -77,8 +84,22 @@ public class Travel {
         return this;
     }
 
-    public Travel setStatus(EStatusType status) {
-        this.status = status;
-        return this;
+    public void lock(User user) {
+        if (this.status == ETravelStatusType.LOCK) {
+            throw new CommonException(ErrorCode.TRAVEL_ALREADY_LOCKED);
+        }
+        this.status = ETravelStatusType.LOCK;
+        this.editableUser = user;
     }
+
+    public void unlock() {
+        this.status = ETravelStatusType.UNLOCK;
+        this.editableUser = null;
+    }
+
+    //현재 편집중인 사람과 동일인 인지 확인
+    public boolean isEditable(User user) {
+        return this.editableUser.equals(user);
+    }
+
 }

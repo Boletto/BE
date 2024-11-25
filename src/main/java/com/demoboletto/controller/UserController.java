@@ -1,14 +1,15 @@
 package com.demoboletto.controller;
 
 import com.demoboletto.annotation.UserId;
-import com.demoboletto.domain.Collect;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.UserProfileUpdateDto;
+import com.demoboletto.dto.response.GetUserUsableFrameDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
 import com.demoboletto.dto.response.GetUserProfileUpdateDto;
-import com.demoboletto.service.CollectService;
+import com.demoboletto.dto.response.GetUserUsableStickerDto;
+import com.demoboletto.service.UserFrameService;
 import com.demoboletto.service.UserService;
-import com.demoboletto.type.ESticker;
+import com.demoboletto.service.UserStickerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,9 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,7 +27,8 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final CollectService collectService;
+    private final UserFrameService userFrameService;
+    private final UserStickerService userStickerService;
 
     @GetMapping("")
     @Operation(summary = "Get User Info", description = "유저의 닉네임과 이름 정보를 가져오는 API")
@@ -45,36 +45,30 @@ public class UserController {
     }
 
     @GetMapping("/frames")
-    @Operation(summary = "Get User collected Frames", description = "유저가 획득한 프레임과 개수를 가져오는 API")
-    public ResponseDto<?> getCollectedFrames(@Parameter(hidden = true) @UserId Long userId) {
-        List<Map<String, Object>> frames = collectService.getCollectedFrames(userId);
-        Map<String, Object> response = new HashMap<>();
-        response.put("frameCount", frames.size());
-        response.put("frames", frames);
-        return ResponseDto.ok(response);
+    @Operation(summary = "Get User usable frames", description = "유저가 사용할 수 있는 프레임 List")
+    public ResponseDto<List<GetUserUsableFrameDto>> getUsableFrames(@Parameter(hidden = true) @UserId Long userId) {
+        return ResponseDto.ok(userFrameService.getUsableFrames(userId));
+    }
+
+    @PostMapping("/frames/{frameCode}")
+    @Operation(summary = "Post user usable Frames", description = "frame 정보를 받아 유저가 사용할 수 있는 프레임을 저장합니다.")
+    public ResponseDto<?> saveUserFrame(@Parameter(hidden = true) @UserId Long userId, @PathVariable String frameCode) {
+        userFrameService.saveUserFrame(userId, frameCode);
+        return ResponseDto.ok("Success");
     }
 
     @GetMapping("/stickers")
-    @Operation(summary = "Get User collected Stickers", description = "유저가 획득한 스티커와 개수를 가져오는 API")
-    public ResponseDto<?> getCollectedStickers(@Parameter(hidden = true) @UserId Long userId) {
-        List<Map<String, Object>> stickers = collectService.getCollectedStickers(userId);
-        Map<String, Object> response = new HashMap<>();
-        response.put("stickerCount", stickers.size());
-        response.put("stickers", stickers);
-        return ResponseDto.ok(response);
+    @Operation(summary = "Get User usable Stickers", description = "유저가 사용할 수 있는 스티커 List")
+    public ResponseDto<List<GetUserUsableStickerDto>> getUsableStickers(@Parameter(hidden = true) @UserId Long userId) {
+        return ResponseDto.ok(userStickerService.getUsableStickers(userId));
     }
 
-
-    @PostMapping("/collect")
-    @Operation(summary = "Post user collected Stickers & Frames", description = "userId, stickerType 정보를 받아 유저가 획득한 스티커와 프레임을 저장합니다.")
-    public ResponseDto<?> saveCollect(
-            @Parameter(hidden = true) @UserId Long userId,
-            @RequestParam(required = false) ESticker stickerType,
-            @RequestPart(value = "frameFile", required = false) MultipartFile frameFile) {
-        Collect collect = collectService.saveCollect(userId, stickerType, frameFile);
-
-        return ResponseDto.ok("유저가 수집한 항목 저장에 성공했습니달라.");
+    @PostMapping("/stickers/{stickerCode}")
+    public ResponseDto<?> saveUserSticker(@Parameter(hidden = true) @UserId Long userId, @PathVariable String stickerCode) {
+        userStickerService.saveUserSticker(userId, stickerCode);
+        return ResponseDto.ok("Success");
     }
+
 
     @PutMapping("/device-token")
     public ResponseDto<?> updateNotificationToken(@Parameter(hidden = true) @UserId Long userId, @RequestParam String token) {

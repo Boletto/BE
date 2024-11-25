@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -40,6 +42,18 @@ public class ObjectStorageService {
         // Create a unique file name Ex. 1234/20210901/UUID.jpg
         String fileName = String.format("%d/%s/%s.%s", userId, currentDate, UUID.randomUUID(), fileExtension);
 
+        return upload(file, body, fileName);
+    }
+
+    public String uploadSystemFile(MultipartFile file, String path) throws IOException {
+        File body = convertMultipartFileToFile(file);
+        String fileExtension = getFileExtension(file.getOriginalFilename());
+        String fileName = String.format("system/%s/%s.%s", path, UUID.randomUUID(), fileExtension);
+
+        return upload(file, body, fileName);
+    }
+
+    private String upload(MultipartFile file, File body, String fileName) {
         UploadManager uploadManager = new UploadManager(client, uploadConfiguration);
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
@@ -65,6 +79,14 @@ public class ObjectStorageService {
                 .namespaceName(namespace)
                 .objectName(fileName)
                 .build());
+    }
+
+    public List<String> uploadFileList(List<MultipartFile> files, Long userId) throws IOException {
+        List<String> urls = new ArrayList<>();
+        for (MultipartFile file : files) {
+            urls.add(uploadFile(file, userId));
+        }
+        return urls;
     }
 
     private File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {

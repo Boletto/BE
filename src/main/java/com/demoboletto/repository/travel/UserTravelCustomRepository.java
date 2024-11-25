@@ -5,6 +5,7 @@ import com.demoboletto.domain.User;
 import com.demoboletto.domain.UserTravel;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserTravelCustomRepository {
     List<User> findUsersByTravelId(Long id);
@@ -16,4 +17,6 @@ public interface UserTravelCustomRepository {
     void deleteAllByTravelId(Long travelId);
 
     List<String> findUserDeviceTokensByTravelId(Long travelId);
+
+    Optional<Travel> findByUserIdAndTravelId(Long userId, Long travelId);
 }

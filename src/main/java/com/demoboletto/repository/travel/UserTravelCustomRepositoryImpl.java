@@ -5,12 +5,11 @@ import com.demoboletto.domain.User;
 import com.demoboletto.domain.UserTravel;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
-
-import static com.demoboletto.domain.QUserTravel.userTravel;
-
 
 import java.util.List;
+import java.util.Optional;
+
+import static com.demoboletto.domain.QUserTravel.userTravel;
 
 @RequiredArgsConstructor
 public class UserTravelCustomRepositoryImpl implements UserTravelCustomRepository {
@@ -52,5 +51,14 @@ public class UserTravelCustomRepositoryImpl implements UserTravelCustomRepositor
                 .from(userTravel)
                 .where(userTravel.travel.travelId.eq(travelId))
                 .fetch();
+    }
+
+    @Override
+    public Optional<Travel> findByUserIdAndTravelId(Long userId, Long travelId) {
+        return Optional.ofNullable(queryFactory.select(userTravel.travel)
+                .from(userTravel)
+                .where(userTravel.user.id.eq(userId)
+                        .and(userTravel.travel.travelId.eq(travelId)))
+                .fetchOne());
     }
 }
