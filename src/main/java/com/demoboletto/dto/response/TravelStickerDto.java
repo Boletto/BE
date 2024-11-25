@@ -12,6 +12,8 @@ public class TravelStickerDto {
 
     private EStickerType stickerType;
 
+    private String stickerUrl;
+
     private float locX;
 
     private float locY;
@@ -26,6 +28,7 @@ public class TravelStickerDto {
         return TravelStickerDto.builder()
                 .stickerCode(travelSticker.getSysSticker().getStickerCode())
                 .stickerType(travelSticker.getSysSticker().getStickerType())
+                .stickerUrl(travelSticker.getSysSticker().getStickerUrl())
                 .locX(travelSticker.getLocX())
                 .locY(travelSticker.getLocY())
                 .rotation(travelSticker.getRotation())
