@@ -2,8 +2,6 @@ package com.demoboletto.dto.request;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -12,7 +10,6 @@ import lombok.Getter;
 
 @Schema(description = "시스템에서 관리하는 프레임 추가")
 @Getter
-@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CreateSysFrameDto {
     @Schema(description = "프레임의 이름", example = "프레임1")

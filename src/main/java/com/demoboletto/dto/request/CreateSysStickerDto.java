@@ -11,7 +11,6 @@ import lombok.Getter;
 @Schema(description = "시스템 스티커 생성")
 @Getter
 @Builder
-//@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class CreateSysStickerDto {
 
     @Schema(description = "스티커의 이름", example = "스티커1")
