@@ -6,14 +6,9 @@ import com.demoboletto.security.filter.JwtAuthenticationFilter;
 import com.demoboletto.security.filter.JwtExceptionFilter;
 import com.demoboletto.security.handler.exception.CustomAccessDeniedHandler;
 import com.demoboletto.security.handler.exception.CustomAuthenticationEntryPointHandler;
-import com.demoboletto.security.handler.login.DefaultFailureHandler;
-import com.demoboletto.security.handler.login.DefaultSuccessHandler;
-import com.demoboletto.security.handler.login.OAuth2LoginFailureHandler;
-import com.demoboletto.security.handler.login.OAuth2LoginSuccessHandler;
 import com.demoboletto.security.handler.logout.CustomLogoutProcessHandler;
 import com.demoboletto.security.handler.logout.CustomLogoutResultHandler;
 import com.demoboletto.security.provider.JwtAuthenticationManager;
-import com.demoboletto.security.service.CustomOAuth2Service;
 import com.demoboletto.utility.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -33,17 +27,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final DefaultSuccessHandler defaultSuccessHandler;
-    private final DefaultFailureHandler defaultFailureHandler;
-    private final CustomLogoutProcessHandler customSignOutProcessHandler;
-    private final CustomLogoutResultHandler customSignOutResultHandler;
+    private final CustomLogoutProcessHandler customLogoutProcessHandler;
+    private final CustomLogoutResultHandler customLogoutResultHandler;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler;
     private final JwtAuthenticationManager jwtAuthenticationManager;
     private final JwtUtil jwtUtil;
-    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
-    private final CustomOAuth2Service customOAuth2UserService;
 
     @Bean
     protected SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
@@ -70,8 +59,8 @@ public class SecurityConfig {
                 .logout(configurer ->
                         configurer
                                 .logoutUrl("/api/v1/auth/logout")
-                                .addLogoutHandler(customSignOutProcessHandler)
-                                .logoutSuccessHandler(customSignOutResultHandler))
+                                .addLogoutHandler(customLogoutProcessHandler)
+                                .logoutSuccessHandler(customLogoutResultHandler))
 
                 .exceptionHandling(configurer ->
                         configurer
@@ -91,7 +80,6 @@ public class SecurityConfig {
 
                 .getOrBuild();
     }
-
 
 
     @Bean

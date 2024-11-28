@@ -58,6 +58,7 @@ public class User {
     @Column(name = "is_location")
     private boolean isLocation;
 
+    // TODO: Remove this field
     @Column(name = "is_login")
     private boolean isLogin;
 
