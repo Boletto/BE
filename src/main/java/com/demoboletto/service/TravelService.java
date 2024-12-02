@@ -233,6 +233,7 @@ public class TravelService {
         } else if (updateTravelStatusDto.getStatus() == ETravelStatusType.UNLOCK) {
             travel.unlock();
         }
+        travelRepository.save(travel);
     }
 
     private User getUser(Long userId) {
