@@ -190,6 +190,7 @@ public class TravelService {
 
     @Transactional
     public boolean deleteTravelList(Long travelId) {
+        // TODO: 여행 삭제 시 해당 유저만 여행에서 제거
         // delete travel data
         try {
             // delete user data in UserTravel table

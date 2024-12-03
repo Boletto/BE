@@ -4,12 +4,17 @@ package com.demoboletto.dto.response;
 import com.demoboletto.domain.SysFrame;
 import com.demoboletto.domain.UserFrame;
 import com.demoboletto.dto.global.BaseTimeDto;
+import com.demoboletto.type.EFrameType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @Schema(description = "Usable frame information")
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @SuperBuilder
 public class GetUserUsableFrameDto extends BaseTimeDto {
     @Schema(description = "프레임의 기본키", example = "1")
@@ -20,6 +25,10 @@ public class GetUserUsableFrameDto extends BaseTimeDto {
 
     @Schema(description = "프레임의 설명", example = "프레임 설명입니다.")
     private String description;
+
+    @Schema(description = "프레임 타입", example = "SYSTEM, CUSTOM")
+    @Enumerated(EnumType.STRING)
+    private EFrameType frameType;
 
     @Schema(description = "프레임의 소유 여부", example = "true")
     private boolean isOwned;
@@ -35,6 +44,7 @@ public class GetUserUsableFrameDto extends BaseTimeDto {
                 .frameId(sysFrame.getFrameId())
                 .frameName(sysFrame.getFrameName())
                 .description(sysFrame.getDescription())
+                .frameType(EFrameType.SYSTEM)
                 .isOwned(false)
                 .frameCode(sysFrame.getFrameCode())
                 .frameUrl(sysFrame.getFrameUrl())
@@ -44,13 +54,23 @@ public class GetUserUsableFrameDto extends BaseTimeDto {
     }
 
     public static GetUserUsableFrameDto of(UserFrame userFrame) {
-        return GetUserUsableFrameDto.builder()
-                .frameId(userFrame.getFrame().getFrameId())
-                .frameName(userFrame.getFrame().getFrameName())
-                .description(userFrame.getFrame().getDescription())
-                .isOwned(true)
-                .frameCode(userFrame.getFrame().getFrameCode())
-                .frameUrl(userFrame.getFrame().getFrameUrl())
+        GetUserUsableFrameDtoBuilder<?, ?> builder = GetUserUsableFrameDto.builder();
+        if (userFrame.getFrameType() == EFrameType.CUSTOM) {
+            builder.frameId(userFrame.getCustomFrame().getFrameId())
+                    .frameType(EFrameType.CUSTOM)
+                    .isOwned(true)
+                    .frameCode(userFrame.getCustomFrame().getFrameCode())
+                    .frameUrl(userFrame.getCustomFrame().getFrameUrl());
+        } else {
+            builder.frameId(userFrame.getSysFrame().getFrameId())
+                    .frameName(userFrame.getSysFrame().getFrameName())
+                    .description(userFrame.getSysFrame().getDescription())
+                    .frameType(EFrameType.SYSTEM)
+                    .isOwned(true)
+                    .frameCode(userFrame.getSysFrame().getFrameCode())
+                    .frameUrl(userFrame.getSysFrame().getFrameUrl());
+        }
+        return builder
                 .createdDate(userFrame.getCreatedDate())
                 .modifiedDate(userFrame.getModifiedDate())
                 .build();

@@ -1,14 +1,12 @@
 package com.demoboletto.service;
 
 import com.demoboletto.domain.*;
+import com.demoboletto.domain.common.Frame;
 import com.demoboletto.dto.request.UpdateTravelEachMemoryDto;
 import com.demoboletto.dto.response.GetTravelMemoryDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
-import com.demoboletto.repository.SysFrameRepository;
-import com.demoboletto.repository.TravelMemoryRepository;
-import com.demoboletto.repository.TravelStickerRepository;
-import com.demoboletto.repository.UserRepository;
+import com.demoboletto.repository.*;
 import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
 import jakarta.transaction.Transactional;
@@ -31,14 +29,17 @@ public class TravelMemoryService {
     private final SysFrameRepository sysFrameRepository;
     private final UserTravelRepository userTravelRepository;
     private final TravelStickerRepository travelStickerRepository;
+    private final UserCustomFrameRepository userCustomFrameRepository;
 
     @Transactional
     public void createTravelEachMemory(Long userId, Long travelId, Long memoryIdx, UpdateTravelEachMemoryDto updateTravelEachMemoryDto, List<MultipartFile> files) {
         System.out.println("breakpoint");
         Travel travel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
                 .orElseThrow(() -> new CommonException(ErrorCode.ACCESS_DENIED));
-        SysFrame sysFrame = sysFrameRepository.findByFrameCode(updateTravelEachMemoryDto.getFrameCode())
-                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_SYS_FRAME));
+
+        Frame frame = sysFrameRepository.findFrameByFrameCode(updateTravelEachMemoryDto.getFrameCode())
+                .orElseGet(() -> userCustomFrameRepository.findFrameByFrameCode(updateTravelEachMemoryDto.getFrameCode())
+                        .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_SYS_FRAME)));
         User user = getUser(userId);
 
         // 현재 편집 중인 사람이 맞는지 확인
@@ -52,7 +53,7 @@ public class TravelMemoryService {
                 .orElse(TravelMemory.builder()
                         .travel(travel)
                         .memoryIdx(memoryIdx)
-                        .frame(sysFrame)
+                        .frameCode(frame.getFrameCode())
                         .memoryType(updateTravelEachMemoryDto.getMemoryType())
                         .build()
                 );
