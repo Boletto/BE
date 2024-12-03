@@ -53,6 +53,15 @@ public class ObjectStorageService {
         return upload(file, body, fileName);
     }
 
+    public String uploadUserFrameFile(MultipartFile file, Long userId) throws IOException {
+        File body = convertMultipartFileToFile(file);
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String fileExtension = getFileExtension(file.getOriginalFilename());
+        String fileName = String.format("user/%d/frame/%s/%s.%s", userId, currentDate, UUID.randomUUID(), fileExtension);
+
+        return upload(file, body, fileName);
+    }
+
     private String upload(MultipartFile file, File body, String fileName) {
         UploadManager uploadManager = new UploadManager(client, uploadConfiguration);
 

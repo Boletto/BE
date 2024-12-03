@@ -22,9 +22,8 @@ public class TravelMemory {
     @Column(name = "memory_id")
     private Long memoryId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "frame_id", nullable = false)
-    private SysFrame frame;
+    @Column(name = "frame_code")
+    private String frameCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "travel_id", nullable = false)
@@ -42,12 +41,12 @@ public class TravelMemory {
     private List<Picture> pictures = new ArrayList<>();
 
     @Builder
-    public TravelMemory(SysFrame frame, Travel travel, EMemoryType memoryType, Long memoryIdx) {
-        this.frame = frame;
+    public TravelMemory(Travel travel, EMemoryType memoryType, Long memoryIdx, String frameCode) {
         this.travel = travel;
         this.memoryType = memoryType;
         this.memoryIdx = memoryIdx;
         this.pictures = new ArrayList<>();
+        this.frameCode = frameCode;
     }
 
     public void attachPictures(List<Picture> pictures) {

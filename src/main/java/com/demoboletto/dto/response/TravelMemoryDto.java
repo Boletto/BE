@@ -25,7 +25,7 @@ public class TravelMemoryDto {
     public static TravelMemoryDto of(TravelMemory travelMemory) {
         return TravelMemoryDto.builder()
                 .memoryType(travelMemory.getMemoryType())
-                .frameCode(travelMemory.getFrame().getFrameCode())
+                .frameCode(travelMemory.getFrameCode())
                 .pictures(travelMemory.getPictures().stream()
                         .map(Picture::getPictureUrl)
                         .toList()

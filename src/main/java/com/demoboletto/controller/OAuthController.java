@@ -1,6 +1,7 @@
 package com.demoboletto.controller;
 
 import com.demoboletto.annotation.UserId;
+import com.demoboletto.constants.Constants;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.AppleLoginDto;
 import com.demoboletto.dto.request.OauthLoginDto;
@@ -13,8 +14,6 @@ import com.demoboletto.service.AppleService;
 import com.demoboletto.service.KakaoService;
 import com.demoboletto.service.UserService;
 import com.demoboletto.utility.HeaderUtil;
-import com.demoboletto.constants.Constants;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -60,6 +59,7 @@ public class OAuthController {
         return ResponseDto.ok(jwtTokenDto);
     }
 
+    //TODO: 회원탈퇴 수정
     @DeleteMapping("/auth/sign-out")
     @Operation(summary = "회원탈퇴", description = "현재 로그인된 사용자를 탈퇴 처리하고 DB에서 삭제합니다.")
     public ResponseDto<?> signout(@Parameter(hidden = true) @UserId Long userId) {

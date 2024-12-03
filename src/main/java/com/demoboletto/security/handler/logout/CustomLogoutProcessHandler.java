@@ -27,6 +27,7 @@ public class CustomLogoutProcessHandler implements LogoutHandler {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         //TODO: Refactor this line
+        //TODO: 디바이스 토큰 제거
         userRepository.updateRefreshTokenAndLoginStatus(userPrincipal.getUserId(), null, true);
     }
 }

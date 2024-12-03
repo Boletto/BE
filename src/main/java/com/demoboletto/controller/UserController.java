@@ -3,9 +3,9 @@ package com.demoboletto.controller;
 import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.request.UserProfileUpdateDto;
-import com.demoboletto.dto.response.GetUserUsableFrameDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
 import com.demoboletto.dto.response.GetUserProfileUpdateDto;
+import com.demoboletto.dto.response.GetUserUsableFrameDto;
 import com.demoboletto.dto.response.GetUserUsableStickerDto;
 import com.demoboletto.service.UserFrameService;
 import com.demoboletto.service.UserService;
@@ -55,6 +55,13 @@ public class UserController {
     public ResponseDto<?> saveUserFrame(@Parameter(hidden = true) @UserId Long userId, @PathVariable String frameCode) {
         userFrameService.saveUserFrame(userId, frameCode);
         return ResponseDto.ok("Success");
+    }
+
+    @PostMapping(value = "/frames", consumes = "multipart/form-data")
+    @Operation(summary = "Create User Custom Frame", description = "유저가 사용할 수 있는 커스텀 프레임을 추가합니다.")
+    public ResponseDto<GetUserUsableFrameDto> createUserCustomFrame(@Parameter(hidden = true) @UserId Long userId,
+                                                                    @RequestPart MultipartFile file) {
+        return ResponseDto.created(userFrameService.createUserCustomFrame(userId, file));
     }
 
     @GetMapping("/stickers")

@@ -1,6 +1,6 @@
 package com.demoboletto.domain;
 
-import com.demoboletto.domain.common.BaseTimeEntity;
+import com.demoboletto.domain.common.Frame;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,20 +12,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NoArgsConstructor
 @Getter
-public class SysFrame extends BaseTimeEntity {
+public class SysFrame extends Frame {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "frame_id")
     private Long frameId;
 
-    @Column(name = "frame_code", unique = true)
-    private String frameCode;
 
     @Column(name = "frame_name")
     private String frameName;
 
-    @Column(name = "frame_url")
-    private String frameUrl;
 
     @Column(name = "default_provided")
     private boolean defaultProvided;
