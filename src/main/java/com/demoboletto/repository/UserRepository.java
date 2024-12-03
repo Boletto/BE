@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
+    //TODO: Refactor this repository
     @Query("SELECT u FROM User u WHERE u.id = :userId")
     Optional<User> findByUserId(@Param("userId") Long userId);
 
@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsBySerialId(String serialId);
 
     Optional<User> findByProviderAndSerialId(EProvider provider, String serialId);
-
+    // TODO: Remove this method
     Optional<User> findByEmail(String email);
 
     Optional<User> findByIdAndRefreshTokenAndIsLogin(Long id, String refreshToken, Boolean isLogin);
@@ -29,6 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u.id as id, u.role as role, u.password as password from User u where u.serialId = :serialId")
     Optional<UserSecurityForm> findSecurityFormBySerialId(String serialId);
 
+    //TODO: Refactor this query
     @Query("select u.id as id, u.role as role, u.password as password from User u where u.id = :id and u.isLogin = true")
     Optional<UserSecurityForm> findSecurityFormById(Long id);
 
