@@ -14,9 +14,9 @@ public class TravelStickerDto {
 
     private String stickerUrl;
 
-    private float locX;
+    private String locX;
 
-    private float locY;
+    private String locY;
 
     private int rotation;
 
@@ -29,8 +29,8 @@ public class TravelStickerDto {
                 .stickerCode(travelSticker.getSysSticker().getStickerCode())
                 .stickerType(travelSticker.getSysSticker().getStickerType())
                 .stickerUrl(travelSticker.getSysSticker().getStickerUrl())
-                .locX(travelSticker.getLocX())
-                .locY(travelSticker.getLocY())
+                .locX(String.format("%.2f", travelSticker.getLocX()))  // locX 소수점 2자리로 포맷
+                .locY(String.format("%.2f", travelSticker.getLocY()))
                 .rotation(travelSticker.getRotation())
                 .scale(travelSticker.getScale())
                 .content(travelSticker.getContent())
