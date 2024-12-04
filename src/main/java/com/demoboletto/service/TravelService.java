@@ -89,16 +89,6 @@ public class TravelService {
         return true;
     }
 
-
-    public GetTravelDto getTravelList(Long id) {
-        Optional<Travel> travel = travelRepository.findById(id);
-        if (travel.isPresent()) {
-            return convertToGetTravelDto(travel.get());
-        } else {
-            return null;    // return empty object
-        }
-    }
-
     public List<GetTravelDto> getAllTravelList(Long userId) {
         List<Travel> travel = userTravelRepository.findTravelsByUserId(userId);
         List<GetTravelDto> travelList = new ArrayList<>();
@@ -135,9 +125,9 @@ public class TravelService {
     }
 
     @Transactional
-    public GetTravelDto updateTravelList(UpdateTravelDto travelDto) {
+    public GetTravelDto updateTravelList(Long travelId, UpdateTravelDto travelDto) {
         // get travel data from db
-        Travel preTravel = travelRepository.findById(travelDto.travelId())
+        Travel preTravel = travelRepository.findById(travelId)
                 .orElseThrow(() -> new EntityNotFoundException("travel data not found"));
 
         for (Long memberId : travelDto.members()) {
@@ -157,7 +147,7 @@ public class TravelService {
                     continue;
                 }
                 // 일정이 겹치는지 확인하고, 다른 여행과 겹치면 예외 던짐
-                if (!travel.getTravelId().equals(travelDto.travelId())) {
+                if (!travel.getTravelId().equals(travelId)) {
                     if (isOverlapping(travel.getStartDate(), travel.getEndDate(), travelDto.startDate(), travelDto.endDate())) {
                         throw new IllegalArgumentException("The travel period overlaps with an existing travel for userId: " + memberId);
                     }
@@ -168,7 +158,7 @@ public class TravelService {
         Travel postTravel = travelRepository.save(preTravel.update(travelDto));
 
         // 기존 멤버 리스트 가져오기
-        List<UserTravel> existingUserTravels = userTravelRepository.findAllByTravelId(travelDto.travelId());
+        List<UserTravel> existingUserTravels = userTravelRepository.findAllByTravelId(travelId);
 
         // 1. 기존 멤버 삭제
         existingUserTravels.forEach(existingUserTravel -> {
@@ -189,7 +179,7 @@ public class TravelService {
     }
 
     @Transactional
-    public boolean deleteTravelList(Long travelId) {
+    public void deleteTravelList(Long travelId) {
         // TODO: 여행 삭제 시 해당 유저만 여행에서 제거
         // delete travel data
         try {
@@ -205,9 +195,8 @@ public class TravelService {
             travelRepository.deleteById(travelId);
 
         } catch (Exception e) {
-            return false;
+            throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-        return true;
     }
 
     private List<GetUserTravelDto> convertUser(List<User> userList) {
