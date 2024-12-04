@@ -2,7 +2,6 @@ package com.demoboletto.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -11,9 +10,6 @@ import java.util.List;
 @Builder
 @Schema(name = "UpdateTravelDto", description = "request for updating new travel list")
 public record UpdateTravelDto(
-        @NotNull(message = "travelId can not be null")
-        @JsonProperty("travel_id") @Schema(description = "travel unique id", example = "1234")
-        Long travelId,
         @JsonProperty("departure") @Schema(description = "location where to departure", example = "서울")
         String departure,
         @JsonProperty("arrive") @Schema(description = "location where to arrive", example = "전주")

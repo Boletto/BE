@@ -18,5 +18,8 @@ public interface UserTravelCustomRepository {
 
     List<String> findUserDeviceTokensByTravelId(Long travelId);
 
-    Optional<Travel> findByUserIdAndTravelId(Long userId, Long travelId);
+    Optional<UserTravel> findByUserIdAndTravelId(Long userId, Long travelId);
+
+//    Optional<Travel> findByUserIdAndTravelId(Long userId, Long travelId);
+
 }

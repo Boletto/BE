@@ -54,9 +54,8 @@ public class UserTravelCustomRepositoryImpl implements UserTravelCustomRepositor
     }
 
     @Override
-    public Optional<Travel> findByUserIdAndTravelId(Long userId, Long travelId) {
-        return Optional.ofNullable(queryFactory.select(userTravel.travel)
-                .from(userTravel)
+    public Optional<UserTravel> findByUserIdAndTravelId(Long userId, Long travelId) {
+        return Optional.ofNullable(queryFactory.selectFrom(userTravel)
                 .where(userTravel.user.id.eq(userId)
                         .and(userTravel.travel.travelId.eq(travelId)))
                 .fetchOne());

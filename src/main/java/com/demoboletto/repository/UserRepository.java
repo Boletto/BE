@@ -12,17 +12,16 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>, UserCustomRepository {
     //TODO: Refactor this repository
     @Query("SELECT u FROM User u WHERE u.id = :userId")
     Optional<User> findByUserId(@Param("userId") Long userId);
 
     Optional<User> findBySerialId(String serialId);
+
     Boolean existsBySerialId(String serialId);
 
     Optional<User> findByProviderAndSerialId(EProvider provider, String serialId);
-    // TODO: Remove this method
-    Optional<User> findByEmail(String email);
 
     Optional<User> findByIdAndRefreshTokenAndIsLogin(Long id, String refreshToken, Boolean isLogin);
 
@@ -41,9 +40,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByProviderAndProviderId(@Param("provider") EProvider provider, @Param("providerId") String providerId);
 
     interface UserSecurityForm {
-        Long getId();
-        ERole getRole();
-        String getPassword();
         static UserSecurityForm invoke(User user) {
             return new UserSecurityForm() {
                 @Override
@@ -62,6 +58,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 }
             };
         }
+
+        Long getId();
+
+        ERole getRole();
+
+        String getPassword();
     }
 }
 
