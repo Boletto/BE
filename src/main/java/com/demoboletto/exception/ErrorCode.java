@@ -35,6 +35,7 @@ public enum ErrorCode {
     EXPIRED_FRIEND_CODE(40010, HttpStatus.BAD_REQUEST, "만료된 친구 코드입니다."),
     USED_FRIEND_CODE(40011, HttpStatus.BAD_REQUEST, "이미 사용된 친구 코드입니다."),
     SELF_FRIEND_CODE(40012, HttpStatus.BAD_REQUEST, "자신의 친구 코드는 사용할 수 없습니다."),
+    TRAVEL_OVERLAP(40013, HttpStatus.BAD_REQUEST, "여행 일정이 중복됩니다."),
     // Access Denied Error
     ACCESS_DENIED(40300, HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     NOT_MATCH_AUTH_CODE(40301, HttpStatus.FORBIDDEN, "인증 코드가 일치하지 않습니다."),

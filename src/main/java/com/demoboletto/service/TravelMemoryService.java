@@ -34,7 +34,7 @@ public class TravelMemoryService {
     @Transactional
     public void createTravelEachMemory(Long userId, Long travelId, Long memoryIdx, UpdateTravelEachMemoryDto updateTravelEachMemoryDto, List<MultipartFile> files) {
         System.out.println("breakpoint");
-        Travel travel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
+        Travel travel = travelRepository.findByUserIdAndTravelId(userId, travelId)
                 .orElseThrow(() -> new CommonException(ErrorCode.ACCESS_DENIED));
 
         Frame frame = sysFrameRepository.findFrameByFrameCode(updateTravelEachMemoryDto.getFrameCode())
@@ -83,7 +83,7 @@ public class TravelMemoryService {
 
     @Transactional
     public void deleteTravelEachMemory(Long userId, Long travelId, Long memoryIdx) {
-        Travel travel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
+        Travel travel = travelRepository.findByUserIdAndTravelId(userId, travelId)
                 .orElseThrow(() -> new CommonException(ErrorCode.ACCESS_DENIED));
         User user = getUser(userId);
 
@@ -105,7 +105,7 @@ public class TravelMemoryService {
     }
 
     public GetTravelMemoryDto getTravelMemory(Long userId, Long travelId) {
-        Travel travel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
+        Travel travel = travelRepository.findByUserIdAndTravelId(userId, travelId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_TRAVEL));
         User user = getUser(userId);
         List<TravelMemory> travelMemories = travelMemoryRepository.findAllByTravel(travel);

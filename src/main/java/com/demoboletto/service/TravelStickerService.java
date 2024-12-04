@@ -8,7 +8,7 @@ import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.SysStickerRepository;
 import com.demoboletto.repository.TravelStickerRepository;
-import com.demoboletto.repository.travel.UserTravelRepository;
+import com.demoboletto.repository.travel.TravelRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,13 +19,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TravelStickerService {
-    private final UserTravelRepository userTravelRepository;
+    private final TravelRepository travelRepository;
     private final TravelStickerRepository travelStickerRepository;
     private final SysStickerRepository sysStickerRepository;
 
     @Transactional
     public void updateTravelMemoryStickers(Long userId, Long travelId, List<UpdateTravelMemoryStickerDto> stickers) {
-        Travel travel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
+        Travel travel = travelRepository.findByUserIdAndTravelId(userId, travelId)
                 .orElseThrow(() -> new CommonException(ErrorCode.ACCESS_DENIED));
         System.out.println("break point");
         List<TravelSticker> prevStickers = travelStickerRepository.findAllByTravel(travel);

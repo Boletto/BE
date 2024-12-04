@@ -188,7 +188,7 @@ public class TravelService {
 
     public void updateTravelEditable(Long userId, Long travelId, UpdateTravelStatusDto updateTravelStatusDto) {
         User user = getUser(userId);
-        Travel travel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
+        Travel travel = travelRepository.findByUserIdAndTravelId(userId, travelId)
                 .orElseThrow(() -> new CommonException(ErrorCode.ACCESS_DENIED));
         if (updateTravelStatusDto.getStatus() == ETravelStatusType.LOCK) {
             travel.lock(user);
@@ -201,5 +201,30 @@ public class TravelService {
     private User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESOURCE));
+    }
+
+    public GetTravelDto getTravel(Long travelId) {
+        Travel travel = travelRepository.findById(travelId)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESOURCE));
+        return convertToGetTravelDto(travel);
+    }
+
+    public void acceptTravel(Long travelId, Long userId) {
+        UserTravel userTravel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESOURCE));
+        Travel travel = userTravel.getTravel();
+        LocalDate startDate = travel.getStartDate();
+        LocalDate endDate = travel.getEndDate();
+        if (travelRepository.existsByTravelDates(userId, startDate, endDate)) {
+            throw new CommonException(ErrorCode.TRAVEL_OVERLAP);
+        }
+        userTravel.acceptInvite();
+        userTravelRepository.save(userTravel);
+    }
+
+    public void rejectTravel(Long travelId, Long userId) {
+        UserTravel userTravel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESOURCE));
+        userTravelRepository.delete(userTravel);
     }
 }

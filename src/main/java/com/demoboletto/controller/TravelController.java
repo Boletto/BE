@@ -35,11 +35,33 @@ public class TravelController {
         return ResponseDto.ok(travelService.getAllTravelList(userId));
     }
 
+    @GetMapping("/{travelId}")
+    @Operation(summary = "get travel", description = "Get travel")
+    public ResponseDto<GetTravelDto> getTravel(@PathVariable Long travelId) {
+        return ResponseDto.ok(travelService.getTravel(travelId));
+    }
+
+
     @PatchMapping("/{travelId}")
     @Operation(summary = "update travel", description = "Update travel list.")
     public ResponseDto<GetTravelDto> updateTravelList(@PathVariable Long travelId, @RequestBody UpdateTravelDto travelDto) {
         return ResponseDto.ok(travelService.updateTravelList(travelId, travelDto));
     }
+
+    @PatchMapping("/{travelId}/accept")
+    @Operation(summary = "여행 수락", description = "여행 수락")
+    public ResponseDto<?> acceptTravel(@PathVariable Long travelId, @Parameter(hidden = true) @UserId Long userId) {
+        travelService.acceptTravel(travelId, userId);
+        return ResponseDto.ok("Travel invitation accepted.");
+    }
+
+    @PatchMapping("/{travelId}/reject")
+    @Operation(summary = "여행 거부", description = "여행 거부")
+    public ResponseDto<?> rejectTravel(@PathVariable Long travelId, @Parameter(hidden = true) @UserId Long userId) {
+        travelService.rejectTravel(travelId, userId);
+        return ResponseDto.ok("Travel invitation rejected.");
+    }
+
 
     @DeleteMapping("/{travelId}")
     @Operation(summary = "delete travel", description = "Delete travel list.")
