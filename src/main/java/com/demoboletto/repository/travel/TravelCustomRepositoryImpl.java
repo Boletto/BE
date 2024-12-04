@@ -47,9 +47,9 @@ public class TravelCustomRepositoryImpl implements TravelCustomRepository {
         return queryFactory.selectOne()
                 .from(userTravel)
                 .where(
-                        userTravel.user.id.eq(userId),
-                        userTravel.travel.startDate.eq(startDate),
-                        userTravel.travel.endDate.eq(endDate)
+                        userTravel.user.id.eq(userId), // 특정 사용자 ID
+                        userTravel.travel.startDate.loe(endDate), // 여행 시작 <= 주어진 종료
+                        userTravel.travel.endDate.goe(startDate) // 여행 종료 >= 주어진 시작
                 )
                 .fetchFirst() != null;
     }
