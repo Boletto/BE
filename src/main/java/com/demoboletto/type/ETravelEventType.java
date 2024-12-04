@@ -10,5 +10,5 @@ package com.demoboletto.type;
  **/
 public enum ETravelEventType {
     TRAVEL_START,
-    TRAVEL_END
+    TRAVEL_INVITE, TRAVEL_END
 }

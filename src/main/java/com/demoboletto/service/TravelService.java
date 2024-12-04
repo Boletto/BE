@@ -21,8 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,57 +34,31 @@ public class TravelService {
     private final TravelRepository travelRepository;
     private final UserTravelRepository userTravelRepository;
     private final UserRepository userRepository;
-    //    private final PictureService pictureService;
-//    private final StickerService stickerService;
-//    private final SpeechService speechService;
-    private final ZonedDateTime nowKorea = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+    private final AlarmService alarmService;
 
     @Transactional
-    public boolean createTravelList(CreateTravelDto travelDto, Long userId) {
+    public void createTravel(CreateTravelDto travelDto, Long userId) {
         log.info("createTravelList: {}", travelDto);
-
-        travelDto.members().add(userId);
-
-        // check if travel data exists
-        for (Long memberId : travelDto.members()) {
-            Optional<User> user = userRepository.findById(memberId);
-            if (user.isEmpty()) {
-                throw new CommonException(ErrorCode.NOT_FOUND_USER);
-            }
-
-            // 기존 여행 기록을 가져옴
-            List<Travel> travels = userTravelRepository.findTravelsByUserId(memberId);
-            if (travels == null || travels.isEmpty()) {
-                continue; // 여행 기록이 없으면 다음 멤버로 넘어감
-            }
-
-            for (Travel travel : travels) {
-                if (travel.getStartDate() == null || travel.getEndDate() == null) {
-                    continue;
-                }
-
-                if (isOverlapping(travel.getStartDate(), travel.getEndDate(), travelDto.startDate(), travelDto.endDate())) {
-                    return false;
-                }
-            }
-        }
 
         // insert new travel data in db
         Travel travel = travelRepository.save(Travel.create(travelDto));
 
-        // get member id from travelDto, and insert into UserTravel table
-        travelDto.members().forEach(memberId -> {
-            Optional<User> user = userRepository.findById(memberId);
-            user.ifPresent(u -> userTravelRepository.save(UserTravel.create(u, travel)));
-        });
+        List<Long> members = travelDto.members();
+        members.add(userId);
+        List<UserTravel> userTravels = members.stream().map(memberId -> {
+            User user = userRepository.findById(memberId)
+                    .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
+            return UserTravel.create(user, travel);
+        }).toList();
 
-//        // 친구들에게 알림 전송
-//        travelDto.members().forEach(memberId -> {
-//            if (!memberId.equals(userId)) {
-//                alarmService.sendFriendInviteAlarm(userId, memberId, travel);  // 친구들에게 알림 전송
-//            }
-//        });
-        return true;
+        userTravelRepository.saveAll(userTravels);
+
+        // remove self
+        members.remove(userId);
+
+        // 여행 초대 알림 전송
+        alarmService.travelInviteFriends(travel, userId, members);
+
     }
 
     public List<GetTravelDto> getAllTravelList(Long userId) {

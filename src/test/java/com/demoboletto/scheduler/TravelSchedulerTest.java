@@ -1,10 +1,10 @@
 package com.demoboletto.scheduler;
 
+import com.demoboletto.components.NotificationComponent;
 import com.demoboletto.domain.Travel;
 import com.demoboletto.dto.push.DispatchTravelEventDto;
 import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
-import com.demoboletto.service.NotificationService;
 import com.demoboletto.type.ETravelEventType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author : hyunwoopark
@@ -32,7 +30,7 @@ class TravelSchedulerTest {
     @Autowired
     UserTravelRepository userTravelRepository;
     @Autowired
-    NotificationService notificationService;
+    NotificationComponent notificationComponent;
 
     @Test
     void startTravel() {
@@ -44,7 +42,7 @@ class TravelSchedulerTest {
                     .eventType(ETravelEventType.TRAVEL_START)
                     .arriveArea(travel.getArrive())
                     .build();
-            notificationService.dispatchMessageToGroup(dispatchTravelEventDto.toMap(), deviceTokens);
+            notificationComponent.dispatchMessageToGroup(dispatchTravelEventDto.toMap(), deviceTokens);
         });
     }
 

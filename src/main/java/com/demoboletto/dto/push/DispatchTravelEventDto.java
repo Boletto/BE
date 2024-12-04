@@ -3,7 +3,6 @@ package com.demoboletto.dto.push;
 import com.demoboletto.type.ETravelEventType;
 import lombok.Builder;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class DispatchTravelEventDto {
@@ -17,9 +16,9 @@ public class DispatchTravelEventDto {
     }
 
     public Map<String, String> toMap() {
-        Map<String, String> map = new HashMap<>();
-        map.put("eventType", eventType.name());
-        map.put("arriveArea", arriveArea);
-        return map;
+        return Map.of(
+                "eventType", eventType.name(),
+                "arriveArea", arriveArea
+        );
     }
 }

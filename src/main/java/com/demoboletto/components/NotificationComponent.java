@@ -1,4 +1,4 @@
-package com.demoboletto.service;
+package com.demoboletto.components;
 
 import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class NotificationService {
+public class NotificationComponent {
     private final FirebaseMessaging firebaseMessaging;
 
     //send for ios apns
@@ -68,10 +68,11 @@ public class NotificationService {
     }
 
     @Async
-    public void pushMessageToGroup(String title, String body, List<String> tokens) {
+    public void pushMessageToGroup(String title, String body, Map<String, String> data, List<String> tokens) {
         MulticastMessage messages = MulticastMessage.builder()
                 .setNotification(createNotification(title, body))
                 .addAllTokens(tokens)
+                .putAllData(data)
                 .build();
         try {
             firebaseMessaging.sendEachForMulticast(messages);
