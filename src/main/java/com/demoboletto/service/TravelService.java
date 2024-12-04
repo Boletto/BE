@@ -151,24 +151,10 @@ public class TravelService {
     }
 
     @Transactional
-    public void deleteTravelList(Long travelId) {
-        // TODO: 여행 삭제 시 해당 유저만 여행에서 제거
-        // delete travel data
-        try {
-            // delete user data in UserTravel table
-            userTravelRepository.deleteAllByTravelId(travelId);
-            // delete picture data in Picture table
-//            pictureService.deleteAllByTravelId(travelId);
-            // delete sticker data in Sticker table
-//            stickerService.deleteAllByTravelId(travelId);
-            // delete speech data in Speech table
-//            speechService.deleteAllByTravelId(travelId);
-
-            travelRepository.deleteById(travelId);
-
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
+    public void deleteTravel(Long userId, Long travelId) {
+        UserTravel userTravel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESOURCE));
+        userTravelRepository.delete(userTravel);
     }
 
     private List<GetUserTravelDto> convertUser(List<User> userList) {

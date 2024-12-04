@@ -65,8 +65,8 @@ public class TravelController {
 
     @DeleteMapping("/{travelId}")
     @Operation(summary = "delete travel", description = "Delete travel list.")
-    public ResponseDto<?> deleteTravelList(@PathVariable Long travelId) {
-        travelService.deleteTravelList(travelId);
+    public ResponseDto<?> deleteTravel(@Parameter(hidden = true) @UserId Long userId, @PathVariable Long travelId) {
+        travelService.deleteTravel(userId, travelId);
         return ResponseDto.ok("success");
     }
 
