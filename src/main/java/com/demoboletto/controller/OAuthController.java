@@ -1,22 +1,14 @@
 package com.demoboletto.controller;
 
-import com.demoboletto.constants.Constants;
 import com.demoboletto.dto.global.ResponseDto;
-import com.demoboletto.dto.oauth.AppleLoginDto;
-import com.demoboletto.dto.oauth.JwtTokenDto;
-import com.demoboletto.dto.oauth.KakaoLoginInformation;
-import com.demoboletto.dto.oauth.OAuthLoginResponseDto;
+import com.demoboletto.dto.oauth.*;
 import com.demoboletto.dto.response.AppleLoginResponseDto;
-import com.demoboletto.exception.CommonException;
-import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.service.AppleService;
 import com.demoboletto.service.KakaoService;
 import com.demoboletto.service.UserService;
-import com.demoboletto.utility.HeaderUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,11 +41,8 @@ public class OAuthController {
 
     @PostMapping("/auth/reissue")
     @Operation(summary = "Access 토큰 재발급", description = "Access 토큰을 재발급합니다.")
-    public ResponseDto<JwtTokenDto> reissue(HttpServletRequest request) {
-        String refreshToken = HeaderUtil.refineHeader(request, Constants.AUTHORIZATION_HEADER, Constants.BEARER_PREFIX)
-                .orElseThrow(() -> new CommonException(ErrorCode.MISSING_REQUEST_HEADER));
-
-        JwtTokenDto jwtTokenDto = kakaoService.reissue(refreshToken);
+    public ResponseDto<JwtTokenDto> reissue(@RequestBody TokenRefreshDto tokenRefreshDto) {
+        JwtTokenDto jwtTokenDto = kakaoService.reissue(tokenRefreshDto.refreshToken());
 
         return ResponseDto.ok(jwtTokenDto);
     }
