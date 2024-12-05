@@ -105,6 +105,8 @@ public class AppleService {
                 .orElseGet(() -> User.signUp(userInformation));
 
         JwtTokenDto tokens = jwtUtil.generateTokens(user.getId(), user.getRole());
+        user.updateRefreshToken(tokens.refreshToken());
+        userRepository.save(user);
 
         return new AppleLoginResponseDto(
                 tokens.accessToken(),
