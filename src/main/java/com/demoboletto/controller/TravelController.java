@@ -22,14 +22,14 @@ import java.util.List;
 public class TravelController {
     private final TravelService travelService;
 
-    @PostMapping("/")
+    @PostMapping("")
     @Operation(summary = "create new travel list", description = "Create new travel list if there are enough data to create travel data.")
     public ResponseDto<?> createTravel(@RequestBody CreateTravelDto travelDto, @Parameter(hidden = true) @UserId Long userId) {
         travelService.createTravel(travelDto, userId);
         return ResponseDto.ok("success");
     }
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "")
     @Operation(summary = "get all travel list", description = "Get all travel list.")
     public ResponseDto<List<GetTravelDto>> getAllTravelList(
             @Parameter(hidden = true) @UserId Long userId,
