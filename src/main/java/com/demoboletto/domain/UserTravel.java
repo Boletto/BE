@@ -23,14 +23,14 @@ public class UserTravel {
     @JoinColumn(name = "travel_id", referencedColumnName = "travel_id")
     private Travel travel;
 
-    @Column(name = "is_accepted")
-    private boolean isAccepted;
+    @Column(name = "accepted")
+    private boolean accepted;
 
     @Builder
     public UserTravel(User user, Travel travel) {
         this.user = user;
         this.travel = travel;
-        this.isAccepted = false;
+        this.accepted = false;
     }
 
     public static UserTravel create(User user, Travel travel) {
@@ -41,6 +41,6 @@ public class UserTravel {
     }
 
     public void acceptInvite() {
-        this.isAccepted = true;
+        this.accepted = true;
     }
 }

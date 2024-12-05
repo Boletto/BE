@@ -43,10 +43,11 @@ public class TravelCustomRepositoryImpl implements TravelCustomRepository {
     }
 
     @Override
-    public boolean existsByTravelDates(Long userId, LocalDate startDate, LocalDate endDate) {
+    public boolean existsAcceptedTravelByTravelDates(Long userId, LocalDate startDate, LocalDate endDate) {
         return queryFactory.selectOne()
                 .from(userTravel)
                 .where(
+                        userTravel.accepted.isTrue(), // 수락된 여행
                         userTravel.user.id.eq(userId), // 특정 사용자 ID
                         userTravel.travel.startDate.loe(endDate), // 여행 시작 <= 주어진 종료
                         userTravel.travel.endDate.goe(startDate) // 여행 종료 >= 주어진 시작

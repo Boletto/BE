@@ -31,8 +31,11 @@ public class TravelController {
 
     @GetMapping(value = "/")
     @Operation(summary = "get all travel list", description = "Get all travel list.")
-    public ResponseDto<List<GetTravelDto>> getAllTravelList(@Parameter(hidden = true) @UserId Long userId) {
-        return ResponseDto.ok(travelService.getAllTravelList(userId));
+    public ResponseDto<List<GetTravelDto>> getAllTravelList(
+            @Parameter(hidden = true) @UserId Long userId,
+            @RequestParam boolean isAccepted
+    ) {
+        return ResponseDto.ok(travelService.getAllTravels(userId, isAccepted));
     }
 
     @GetMapping("/{travelId}")

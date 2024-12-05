@@ -61,13 +61,11 @@ public class TravelService {
 
     }
 
-    public List<GetTravelDto> getAllTravelList(Long userId) {
-        List<Travel> travel = userTravelRepository.findTravelsByUserId(userId);
-        List<GetTravelDto> travelList = new ArrayList<>();
-        for (Travel t : travel) {
-            travelList.add(convertToGetTravelDto(t));
-        }
-        return travelList;
+    public List<GetTravelDto> getAllTravels(Long userId, boolean isAccepted) {
+        List<UserTravel> userTravels = userTravelRepository.findUserTravelsByUserIdAndAccepted(userId, isAccepted);
+        List<Travel> travels = userTravels.stream().map(UserTravel::getTravel).toList();
+
+        return travels.stream().map(this::convertToGetTravelDto).toList();
     }
 
     private boolean isOverlapping(LocalDate preStartDate, LocalDate preEndDate, LocalDate startDate, LocalDate endDate) {
@@ -198,10 +196,13 @@ public class TravelService {
     public void acceptTravel(Long travelId, Long userId) {
         UserTravel userTravel = userTravelRepository.findByUserIdAndTravelId(userId, travelId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESOURCE));
+        if (userTravel.isAccepted()) {
+            throw new CommonException(ErrorCode.ALREADY_ACCEPTED_TRAVEL);
+        }
         Travel travel = userTravel.getTravel();
         LocalDate startDate = travel.getStartDate();
         LocalDate endDate = travel.getEndDate();
-        if (travelRepository.existsByTravelDates(userId, startDate, endDate)) {
+        if (travelRepository.existsAcceptedTravelByTravelDates(userId, startDate, endDate)) {
             throw new CommonException(ErrorCode.TRAVEL_OVERLAP);
         }
         userTravel.acceptInvite();

@@ -14,5 +14,5 @@ public interface TravelCustomRepository {
 
     Optional<Travel> findByUserIdAndTravelId(Long userId, Long travelId);
 
-    boolean existsByTravelDates(Long userId, LocalDate startDate, LocalDate endDate);
+    boolean existsAcceptedTravelByTravelDates(Long userId, LocalDate startDate, LocalDate endDate);
 }
