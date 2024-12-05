@@ -1,5 +1,6 @@
 package com.demoboletto.security.handler.logout;
 
+import com.demoboletto.domain.User;
 import com.demoboletto.repository.UserRepository;
 import com.demoboletto.security.info.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +29,9 @@ public class CustomLogoutProcessHandler implements LogoutHandler {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         //TODO: Refactor this line
         //TODO: 디바이스 토큰 제거
-        userRepository.updateRefreshTokenAndLoginStatus(userPrincipal.getUserId(), null, true);
+        User user = userRepository.findByUserId(userPrincipal.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.updateDeviceToken(null);
+        user.invalidateRefreshToken();
     }
 }

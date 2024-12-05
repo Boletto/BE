@@ -121,4 +121,8 @@ public class User {
     public void updateDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
     }
+
+    public void invalidateRefreshToken() {
+        this.refreshToken = null;
+    }
 }
