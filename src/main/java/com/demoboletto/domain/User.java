@@ -58,10 +58,6 @@ public class User {
     @Column(name = "is_location")
     private boolean isLocation;
 
-    // TODO: Remove this field
-    @Column(name = "is_login")
-    private boolean isLogin;
-
     @Column(name = "user_profile")
     private String userProfile;
 
@@ -82,7 +78,6 @@ public class User {
         this.isFrame = true;
         this.isFriendApply = true;
         this.isLocation = true;
-        this.isLogin = true;
         this.userProfile = userProfile != null ? userProfile : "default";
     }
 
@@ -115,7 +110,6 @@ public class User {
 
     public void updateSignOutUser() {
         this.role = ERole.DELETED;
-        this.isLogin = false;
     }
 
     public void updateDeviceToken(String deviceToken) {
