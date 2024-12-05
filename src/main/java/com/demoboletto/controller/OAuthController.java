@@ -39,8 +39,8 @@ public class OAuthController {
     @PostMapping("/oauth/login")
     @Operation(summary = "소셜로그인", description = "클라이언트 사이드 인증을 통한 소셜 로그인")
     @Schema(name = "login", description = "소셜로그인")
-    public ResponseDto<OAuthLoginResponseDto> login(@RequestBody OauthLoginDto userloginDto) {
-        return ResponseDto.ok(kakaoService.login(userloginDto));
+    public ResponseDto<OAuthLoginResponseDto> login(@RequestBody OauthLoginDto userLoginDto) {
+        return ResponseDto.ok(kakaoService.login(userLoginDto));
     }
 
     @PostMapping("/oauth2/login/apple")
