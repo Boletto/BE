@@ -1,5 +1,6 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.domain.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "travel_sticker")
 @NoArgsConstructor
 @Getter
-public class TravelSticker {
+public class TravelSticker extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "travel_sticker_id")

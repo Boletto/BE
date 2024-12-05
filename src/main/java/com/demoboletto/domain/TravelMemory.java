@@ -1,5 +1,6 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.domain.common.BaseTimeEntity;
 import com.demoboletto.type.EMemoryType;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import java.util.List;
 @Table(name = "travel_memory", uniqueConstraints = {
         @UniqueConstraint(name = "unique_travel_memory_idx", columnNames = {"travel_id", "memory_idx"})
 })
-public class TravelMemory {
+public class TravelMemory extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,6 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.domain.common.BaseTimeEntity;
 import com.demoboletto.type.EProvider;
 import com.demoboletto.type.ERole;
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Table(name = "member")
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

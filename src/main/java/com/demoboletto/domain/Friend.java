@@ -1,7 +1,6 @@
 package com.demoboletto.domain;
 
-import com.demoboletto.type.EFriendType;
-import com.demoboletto.type.EProfile;
+import com.demoboletto.domain.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Getter
 @Table(name = "friend")
-public class Friend {
+public class Friend extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
