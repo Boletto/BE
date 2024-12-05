@@ -1,13 +1,12 @@
 package com.demoboletto.controller;
 
-import com.demoboletto.annotation.UserId;
 import com.demoboletto.constants.Constants;
 import com.demoboletto.dto.global.ResponseDto;
-import com.demoboletto.dto.request.AppleLoginDto;
-import com.demoboletto.dto.request.OauthLoginDto;
+import com.demoboletto.dto.oauth.AppleLoginDto;
+import com.demoboletto.dto.oauth.JwtTokenDto;
+import com.demoboletto.dto.oauth.KakaoLoginInformation;
+import com.demoboletto.dto.oauth.OAuthLoginResponseDto;
 import com.demoboletto.dto.response.AppleLoginResponseDto;
-import com.demoboletto.dto.response.JwtTokenDto;
-import com.demoboletto.dto.response.OAuthLoginResponseDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.service.AppleService;
@@ -15,11 +14,9 @@ import com.demoboletto.service.KakaoService;
 import com.demoboletto.service.UserService;
 import com.demoboletto.utility.HeaderUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,8 +36,8 @@ public class OAuthController {
     @PostMapping("/oauth/login")
     @Operation(summary = "소셜로그인", description = "클라이언트 사이드 인증을 통한 소셜 로그인")
     @Schema(name = "login", description = "소셜로그인")
-    public ResponseDto<OAuthLoginResponseDto> login(@RequestBody OauthLoginDto userLoginDto) {
-        return ResponseDto.ok(kakaoService.login(userLoginDto));
+    public ResponseDto<OAuthLoginResponseDto> login(@RequestBody KakaoLoginInformation kakaoLoginInformation) {
+        return ResponseDto.ok(kakaoService.login(kakaoLoginInformation));
     }
 
     @PostMapping("/oauth2/login/apple")
@@ -52,12 +49,11 @@ public class OAuthController {
 
     @PostMapping("/auth/reissue")
     @Operation(summary = "Access 토큰 재발급", description = "Access 토큰을 재발급합니다.")
-    public ResponseDto<JwtTokenDto> reissue(HttpServletRequest request, HttpServletResponse response,
-                                            @Parameter(hidden = true) @UserId Long userId) {
+    public ResponseDto<JwtTokenDto> reissue(HttpServletRequest request) {
         String refreshToken = HeaderUtil.refineHeader(request, Constants.AUTHORIZATION_HEADER, Constants.BEARER_PREFIX)
                 .orElseThrow(() -> new CommonException(ErrorCode.MISSING_REQUEST_HEADER));
 
-        JwtTokenDto jwtTokenDto = kakaoService.reissue(userId, refreshToken);
+        JwtTokenDto jwtTokenDto = kakaoService.reissue(refreshToken);
 
         return ResponseDto.ok(jwtTokenDto);
     }

@@ -1,7 +1,7 @@
 package com.demoboletto.utility;
 
 import com.demoboletto.constants.Constants;
-import com.demoboletto.dto.response.JwtTokenDto;
+import com.demoboletto.dto.oauth.JwtTokenDto;
 import com.demoboletto.type.ERole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
@@ -39,7 +39,8 @@ public class JwtUtil implements InitializingBean {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
-    public Claims validateToken(String token){
+
+    public Claims validateToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -47,7 +48,7 @@ public class JwtUtil implements InitializingBean {
                 .getBody();
     }
 
-    public String generateToken(Long id, ERole role, Integer expiration){
+    public String generateToken(Long id, ERole role, Integer expiration) {
         Claims claims = Jwts.claims();
         claims.put(Constants.CLAIM_USER_ID, id);
         if (role != null)
@@ -61,7 +62,8 @@ public class JwtUtil implements InitializingBean {
                 .signWith(key)
                 .compact();
     }
-    public JwtTokenDto generateTokens(Long id, ERole role){
+
+    public JwtTokenDto generateTokens(Long id, ERole role) {
         return JwtTokenDto.of(
                 generateToken(id, role, accessExpiration),
                 generateToken(id, role, refreshExpiration),

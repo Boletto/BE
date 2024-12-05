@@ -12,23 +12,19 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, UserCustomRepository {
-    //TODO: Refactor this repository
-    @Query("SELECT u FROM User u WHERE u.id = :userId")
-    Optional<User> findByUserId(@Param("userId") Long userId);
+    Optional<User> findUserById(Long id);
 
     Optional<User> findBySerialId(String serialId);
 
-    Boolean existsBySerialId(String serialId);
-
     Optional<User> findByProviderAndSerialId(EProvider provider, String serialId);
 
-    Optional<User> findByIdAndRefreshTokenAndIsLogin(Long id, String refreshToken, Boolean isLogin);
+    Optional<User> findUserByRefreshToken(String refreshToken);
 
     @Query("select u.id as id, u.role as role, u.password as password from User u where u.serialId = :serialId")
     Optional<UserSecurityForm> findSecurityFormBySerialId(String serialId);
 
     //TODO: Refactor this query
-    @Query("select u.id as id, u.role as role, u.password as password from User u where u.id = :id and u.isLogin = true")
+    @Query("select u.id as id, u.role as role, u.password as password from User u where u.id = :id")
     Optional<UserSecurityForm> findSecurityFormById(Long id);
 
 

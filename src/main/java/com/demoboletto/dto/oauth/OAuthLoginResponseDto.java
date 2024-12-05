@@ -1,4 +1,4 @@
-package com.demoboletto.dto.response;
+package com.demoboletto.dto.oauth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;

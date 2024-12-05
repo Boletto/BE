@@ -29,7 +29,7 @@ public class CustomLogoutProcessHandler implements LogoutHandler {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         //TODO: Refactor this line
         //TODO: 디바이스 토큰 제거
-        User user = userRepository.findByUserId(userPrincipal.getUserId())
+        User user = userRepository.findUserById(userPrincipal.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.updateDeviceToken(null);
         user.invalidateRefreshToken();

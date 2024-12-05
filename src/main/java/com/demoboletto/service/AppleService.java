@@ -2,13 +2,16 @@ package com.demoboletto.service;
 
 import com.demoboletto.client.AppleFeignClient;
 import com.demoboletto.domain.User;
-import com.demoboletto.dto.request.AppleLoginDto;
-import com.demoboletto.dto.response.*;
+import com.demoboletto.dto.oauth.AppleLoginDto;
+import com.demoboletto.dto.oauth.AppleLoginInformation;
+import com.demoboletto.dto.oauth.JwtTokenDto;
+import com.demoboletto.dto.oauth.Keys;
+import com.demoboletto.dto.oauth.common.OAuthUserInformation;
+import com.demoboletto.dto.response.AppleLoginResponseDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.UserRepository;
 import com.demoboletto.type.EProvider;
-
 import com.demoboletto.type.ERole;
 import com.demoboletto.utility.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,32 +20,26 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.RSAKey;
-
-
-import lombok.*;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
-
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class AppleService {
+    private static final String EMAIL_CLAIM = "email";
     private final AppleFeignClient appleAuthKeyFeignClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-
-    private static final String EMAIL_CLAIM = "email";
 
     public EProvider getProvider() {
         return EProvider.APPLE;
@@ -86,7 +83,7 @@ public class AppleService {
     // 개별 키에 대해 서명을 검증
     private boolean verifySignature(Keys.Key key, SignedJWT signedJWT) {
         try {
-            RSAKey rsaKey = (RSAKey)JWK.parse(objectMapper.writeValueAsString(key));
+            RSAKey rsaKey = (RSAKey) JWK.parse(objectMapper.writeValueAsString(key));
             RSAPublicKey publicKey = rsaKey.toRSAPublicKey();
             RSASSAVerifier verifier = new RSASSAVerifier(publicKey);
 

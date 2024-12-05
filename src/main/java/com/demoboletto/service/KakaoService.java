@@ -1,9 +1,9 @@
 package com.demoboletto.service;
 
 import com.demoboletto.domain.User;
-import com.demoboletto.dto.request.OauthLoginDto;
-import com.demoboletto.dto.response.JwtTokenDto;
-import com.demoboletto.dto.response.OAuthLoginResponseDto;
+import com.demoboletto.dto.oauth.JwtTokenDto;
+import com.demoboletto.dto.oauth.KakaoLoginInformation;
+import com.demoboletto.dto.oauth.OAuthLoginResponseDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.UserRepository;
@@ -28,9 +28,9 @@ public class KakaoService {
     }
 
     @Transactional
-    public JwtTokenDto reissue(Long userId, String refreshToken) {
-        User user = userRepository.findByIdAndRefreshTokenAndIsLogin(userId, refreshToken, true)
-                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_LOGIN_USER));
+    public JwtTokenDto reissue(String refreshToken) {
+        User user = userRepository.findUserByRefreshToken(refreshToken)
+                .orElseThrow(() -> new CommonException(ErrorCode.INVALID_TOKEN_ERROR));
 
         JwtTokenDto jwtTokenDto = jwtUtil.generateTokens(user.getId(), user.getRole());
         user.updateRefreshToken(jwtTokenDto.refreshToken());
@@ -39,9 +39,9 @@ public class KakaoService {
     }
 
     @Transactional
-    public OAuthLoginResponseDto login(OauthLoginDto userLoginDto) {
-        User user = userRepository.findBySerialId(userLoginDto.serialId())
-                .orElseGet(() -> userRepository.save(User.signUp(userLoginDto.serialId(), userLoginDto.provider(), userLoginDto.nickname())));
+    public OAuthLoginResponseDto login(KakaoLoginInformation kakaoLoginInformation) {
+        User user = userRepository.findBySerialId(kakaoLoginInformation.serialId())
+                .orElseGet(() -> userRepository.save(User.signUp(kakaoLoginInformation.serialId(), kakaoLoginInformation.provider(), kakaoLoginInformation.nickname())));
 
         JwtTokenDto jwtTokenDto = jwtUtil.generateTokens(user.getId(), ERole.USER);
         user.updateRefreshToken(jwtTokenDto.refreshToken());
