@@ -1,6 +1,7 @@
 package com.demoboletto.domain;
 
 import com.demoboletto.domain.common.BaseTimeEntity;
+import com.demoboletto.dto.oauth.common.OAuthUserInformation;
 import com.demoboletto.type.EProvider;
 import com.demoboletto.type.ERole;
 import jakarta.persistence.*;
@@ -83,13 +84,13 @@ public class User extends BaseTimeEntity {
     }
 
     // 소셜 로그인
-    public static User signUp(String serialId, EProvider provider, String nickname) {
+    public static User signUp(OAuthUserInformation info) {
         return User.builder()
-                .serialId(serialId)
-                .provider(provider)
-                .password(null)
-                .nickname(nickname)
-                .name(null)
+                .email(info.getEmail())
+                .name(info.getNickname())
+                .provider(info.getProvider())
+                .serialId(info.getSerialId())
+                .userProfile(info.getProfileImgUrl())
                 .role(ERole.USER)
                 .build();
     }

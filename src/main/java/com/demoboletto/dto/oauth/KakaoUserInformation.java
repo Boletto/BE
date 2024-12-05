@@ -9,7 +9,7 @@ import lombok.Builder;
 
 @Builder
 @Schema(name = "OauthLoginDto", description = "소셜 로그인 요청")
-public record KakaoLoginInformation(
+public record KakaoUserInformation(
         @NotNull(message = "providerId는 null 값이 될 수 없습니다.")
         @JsonProperty("serialId") @Schema(description = "시리얼 아이디로 삼을 수 있는 사용자 ID를 담는다.", example = "203912941")
         String serialId,
@@ -27,7 +27,7 @@ public record KakaoLoginInformation(
     }
 
     @Override
-    public String getProviderId() {
+    public String getSerialId() {
         return serialId;
     }
 

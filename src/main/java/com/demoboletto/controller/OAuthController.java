@@ -5,7 +5,6 @@ import com.demoboletto.dto.oauth.*;
 import com.demoboletto.dto.response.AppleLoginResponseDto;
 import com.demoboletto.service.AppleService;
 import com.demoboletto.service.KakaoService;
-import com.demoboletto.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,13 +22,12 @@ public class OAuthController {
 
     private final AppleService appleService;
     private final KakaoService kakaoService;
-    private final UserService userService;
 
     @PostMapping("/oauth/login")
     @Operation(summary = "소셜로그인", description = "클라이언트 사이드 인증을 통한 소셜 로그인")
     @Schema(name = "login", description = "소셜로그인")
-    public ResponseDto<OAuthLoginResponseDto> login(@RequestBody KakaoLoginInformation kakaoLoginInformation) {
-        return ResponseDto.ok(kakaoService.login(kakaoLoginInformation));
+    public ResponseDto<OAuthLoginResponseDto> login(@RequestBody KakaoUserInformation kakaoUserInformation) {
+        return ResponseDto.ok(kakaoService.login(kakaoUserInformation));
     }
 
     @PostMapping("/oauth2/login/apple")
@@ -46,13 +44,5 @@ public class OAuthController {
 
         return ResponseDto.ok(jwtTokenDto);
     }
-
-//    //TODO: 회원탈퇴 수정
-//    @DeleteMapping("/auth/sign-out")
-//    @Operation(summary = "회원탈퇴", description = "현재 로그인된 사용자를 탈퇴 처리하고 DB에서 삭제합니다.")
-//    public ResponseDto<?> signout(@Parameter(hidden = true) @UserId Long userId) {
-//        userService.deleteUser(userId);
-//        return ResponseDto.ok("회원 탈퇴가 완료되었습니다.");
-//    }
 
 }

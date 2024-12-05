@@ -2,7 +2,7 @@ package com.demoboletto.service;
 
 import com.demoboletto.domain.User;
 import com.demoboletto.dto.oauth.JwtTokenDto;
-import com.demoboletto.dto.oauth.KakaoLoginInformation;
+import com.demoboletto.dto.oauth.KakaoUserInformation;
 import com.demoboletto.dto.oauth.OAuthLoginResponseDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
@@ -39,9 +39,9 @@ public class KakaoService {
     }
 
     @Transactional
-    public OAuthLoginResponseDto login(KakaoLoginInformation kakaoLoginInformation) {
-        User user = userRepository.findBySerialId(kakaoLoginInformation.serialId())
-                .orElseGet(() -> userRepository.save(User.signUp(kakaoLoginInformation.serialId(), kakaoLoginInformation.provider(), kakaoLoginInformation.nickname())));
+    public OAuthLoginResponseDto login(KakaoUserInformation kakaoUserInformation) {
+        User user = userRepository.findBySerialId(kakaoUserInformation.serialId())
+                .orElseGet(() -> User.signUp(kakaoUserInformation));
 
         JwtTokenDto jwtTokenDto = jwtUtil.generateTokens(user.getId(), ERole.USER);
         user.updateRefreshToken(jwtTokenDto.refreshToken());

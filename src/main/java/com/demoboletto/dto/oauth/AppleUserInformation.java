@@ -9,7 +9,7 @@ import lombok.Builder;
 
 
 @Builder
-public record AppleLoginInformation(
+public record AppleUserInformation(
         @NotNull
         @JsonProperty("providerId")
         @Schema(description = "Apple에서 제공한 id", example = "abc123")
@@ -27,7 +27,7 @@ public record AppleLoginInformation(
     }
 
     @Override
-    public String getProviderId() {
+    public String getSerialId() {
         return providerId;  // record에서 자동 생성된 providerId() 메서드를 호출
     }
 

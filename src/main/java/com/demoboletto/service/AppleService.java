@@ -3,7 +3,7 @@ package com.demoboletto.service;
 import com.demoboletto.client.AppleFeignClient;
 import com.demoboletto.domain.User;
 import com.demoboletto.dto.oauth.AppleLoginDto;
-import com.demoboletto.dto.oauth.AppleLoginInformation;
+import com.demoboletto.dto.oauth.AppleUserInformation;
 import com.demoboletto.dto.oauth.JwtTokenDto;
 import com.demoboletto.dto.oauth.Keys;
 import com.demoboletto.dto.oauth.common.OAuthUserInformation;
@@ -11,8 +11,6 @@ import com.demoboletto.dto.response.AppleLoginResponseDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.UserRepository;
-import com.demoboletto.type.EProvider;
-import com.demoboletto.type.ERole;
 import com.demoboletto.utility.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,10 +38,6 @@ public class AppleService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-
-    public EProvider getProvider() {
-        return EProvider.APPLE;
-    }
 
     public OAuthUserInformation requestUserInformation(String token) {
         try {
@@ -97,7 +91,7 @@ public class AppleService {
     // JWT에서 사용자 정보를 추출
     private OAuthUserInformation extractUserInfo(SignedJWT signedJWT) throws ParseException {
         JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
-        return AppleLoginInformation.builder()
+        return AppleUserInformation.builder()
                 .providerId(jwtClaimsSet.getSubject())
                 .email(jwtClaimsSet.getStringClaim(EMAIL_CLAIM))
                 .build();
@@ -107,19 +101,10 @@ public class AppleService {
     public AppleLoginResponseDto login(AppleLoginDto appleLoginDto) {
         String token = appleLoginDto.identityToken();
         OAuthUserInformation userInformation = requestUserInformation(token);
-        User user;
+        User user = userRepository.findBySerialId(userInformation.getSerialId())
+                .orElseGet(() -> User.signUp(userInformation));
 
-        if (isExistsByProviderAndSerialId(EProvider.APPLE, userInformation.getProviderId())) {
-            log.info("[UserService] login, response: {}", userInformation);
-            user = findBySerialId(userInformation.getProviderId());
-        } else {
-            log.info("User logged in for the first time, response: {}", userInformation);
-            user = saveUser(userInformation);
-        }
-
-//        user.updateDeviceToken(appleLoginDto.deviceToken());
-//        userRepository.save(user);
-        JwtTokenDto tokens = jwtUtil.generateTokens(user.getId(), ERole.USER);
+        JwtTokenDto tokens = jwtUtil.generateTokens(user.getId(), user.getRole());
 
         return new AppleLoginResponseDto(
                 tokens.accessToken(),
@@ -129,29 +114,6 @@ public class AppleService {
                 user.getNickname(),
                 user.getUserProfile()
         );
-    }
-
-    private User saveUser(OAuthUserInformation userInformation) {
-        User user = User.builder()
-                .email(userInformation.getEmail())
-                .name(userInformation.getNickname())
-                .provider(userInformation.getProvider())
-                .serialId(userInformation.getProviderId())
-                .userProfile(userInformation.getProfileImgUrl())
-                .role(ERole.USER)
-                .build();
-        userRepository.save(user);
-
-        return user;
-    }
-
-    private boolean isExistsByProviderAndSerialId(EProvider provider, String serialId) {
-        return userRepository.existsByProviderAndProviderId(provider, serialId);
-    }
-
-    private User findBySerialId(String providerId) {
-        return userRepository.findBySerialId(providerId)
-                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
     }
 
 }
