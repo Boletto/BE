@@ -1,4 +1,4 @@
-package com.demoboletto.dto.response;
+package com.demoboletto.dto.oauth.common;
 
 import com.demoboletto.type.EProvider;
 

@@ -1,10 +1,9 @@
-package com.demoboletto.dto.response;
+package com.demoboletto.dto.oauth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.Getter;
 
 import java.io.Serializable;
 
@@ -22,7 +21,7 @@ public record JwtTokenDto(
         @JsonProperty("user_id")
         Long userId
 ) implements Serializable {
-    public static JwtTokenDto of(String accessToken, String refreshToken,Long userId) {
+    public static JwtTokenDto of(String accessToken, String refreshToken, Long userId) {
         return JwtTokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

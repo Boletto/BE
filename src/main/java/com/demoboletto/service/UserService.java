@@ -9,8 +9,7 @@ import com.demoboletto.dto.response.GetUserInfoDto;
 import com.demoboletto.dto.response.GetUserProfileUpdateDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
-import com.demoboletto.repository.UserAlarmRepository;
-import com.demoboletto.repository.UserRepository;
+import com.demoboletto.repository.*;
 import com.demoboletto.repository.friend.FriendRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +26,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final UserFrameRepository userFrameRepository;
+    private final UserCustomFrameRepository userCustomFrameRepository;
+    private final PictureRepository pictureRepository;
 
     private final UserRepository userRepository;
     private final UserTravelRepository userTravelRepository;
@@ -86,15 +88,8 @@ public class UserService {
         }
 
 
-        // Picture는 soft delete로 처리 (User와의 관계만 끊음, 실제 삭제는 안 함)
-//        List<Picture> pictures = pictureRepository.findByUserId(userId);
-//        if (!pictures.isEmpty()) {
-//            pictures.forEach(picture -> {
-//                picture.setDeleted(true);  // soft delete
-//                picture.setUser(null);  // User와의 관계만 끊음
-//                pictureRepository.save(picture);
-//            });
-//        }
+        // Picture soft delete
+        pictureRepository.detachPicturesByUserId(userId);
 
         // Friend 관련 데이터 삭제 (친구 목록 삭제)
         List<Friend> friends = friendRepository.findByUserId(userId);
@@ -113,6 +108,9 @@ public class UserService {
         if (!userAlarms.isEmpty()) {
             userAlarmRepository.deleteAll(userAlarms);
         }
+
+        // 유저 커스텀 프레임 삭제
+        userFrameRepository.deleteUserFramesByUserId(userId);
 
         // 마지막으로 유저 삭제
         User user = userRepository.findById(userId)

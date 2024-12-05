@@ -1,13 +1,12 @@
 package com.demoboletto.controller;
 
-import com.demoboletto.annotation.UserId;
 import com.demoboletto.constants.Constants;
 import com.demoboletto.dto.global.ResponseDto;
-import com.demoboletto.dto.request.AppleLoginDto;
-import com.demoboletto.dto.request.OauthLoginDto;
+import com.demoboletto.dto.oauth.AppleLoginDto;
+import com.demoboletto.dto.oauth.JwtTokenDto;
+import com.demoboletto.dto.oauth.KakaoLoginInformation;
+import com.demoboletto.dto.oauth.OAuthLoginResponseDto;
 import com.demoboletto.dto.response.AppleLoginResponseDto;
-import com.demoboletto.dto.response.JwtTokenDto;
-import com.demoboletto.dto.response.OAuthLoginResponseDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.service.AppleService;
@@ -15,13 +14,14 @@ import com.demoboletto.service.KakaoService;
 import com.demoboletto.service.UserService;
 import com.demoboletto.utility.HeaderUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,8 +36,8 @@ public class OAuthController {
     @PostMapping("/oauth/login")
     @Operation(summary = "소셜로그인", description = "클라이언트 사이드 인증을 통한 소셜 로그인")
     @Schema(name = "login", description = "소셜로그인")
-    public ResponseDto<OAuthLoginResponseDto> login(@RequestBody OauthLoginDto userloginDto) {
-        return ResponseDto.ok(kakaoService.login(userloginDto));
+    public ResponseDto<OAuthLoginResponseDto> login(@RequestBody KakaoLoginInformation kakaoLoginInformation) {
+        return ResponseDto.ok(kakaoService.login(kakaoLoginInformation));
     }
 
     @PostMapping("/oauth2/login/apple")
@@ -49,22 +49,21 @@ public class OAuthController {
 
     @PostMapping("/auth/reissue")
     @Operation(summary = "Access 토큰 재발급", description = "Access 토큰을 재발급합니다.")
-    public ResponseDto<JwtTokenDto> reissue(HttpServletRequest request, HttpServletResponse response,
-                                            @Parameter(hidden = true) @UserId Long userId) {
+    public ResponseDto<JwtTokenDto> reissue(HttpServletRequest request) {
         String refreshToken = HeaderUtil.refineHeader(request, Constants.AUTHORIZATION_HEADER, Constants.BEARER_PREFIX)
                 .orElseThrow(() -> new CommonException(ErrorCode.MISSING_REQUEST_HEADER));
 
-        JwtTokenDto jwtTokenDto = kakaoService.reissue(userId, refreshToken);
+        JwtTokenDto jwtTokenDto = kakaoService.reissue(refreshToken);
 
         return ResponseDto.ok(jwtTokenDto);
     }
 
-    //TODO: 회원탈퇴 수정
-    @DeleteMapping("/auth/sign-out")
-    @Operation(summary = "회원탈퇴", description = "현재 로그인된 사용자를 탈퇴 처리하고 DB에서 삭제합니다.")
-    public ResponseDto<?> signout(@Parameter(hidden = true) @UserId Long userId) {
-        userService.deleteUser(userId);
-        return ResponseDto.ok("회원 탈퇴가 완료되었습니다.");
-    }
+//    //TODO: 회원탈퇴 수정
+//    @DeleteMapping("/auth/sign-out")
+//    @Operation(summary = "회원탈퇴", description = "현재 로그인된 사용자를 탈퇴 처리하고 DB에서 삭제합니다.")
+//    public ResponseDto<?> signout(@Parameter(hidden = true) @UserId Long userId) {
+//        userService.deleteUser(userId);
+//        return ResponseDto.ok("회원 탈퇴가 완료되었습니다.");
+//    }
 
 }

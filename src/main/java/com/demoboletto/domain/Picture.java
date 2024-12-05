@@ -1,5 +1,6 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.domain.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @Table(name = "picture", uniqueConstraints = {
         @UniqueConstraint(name = "unique_memory_id_picture_idx", columnNames = {"memory_id", "picture_idx"})
 })
-public class Picture {
+public class Picture extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "picture_id")

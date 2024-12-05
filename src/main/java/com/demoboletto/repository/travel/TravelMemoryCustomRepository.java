@@ -1,4 +1,4 @@
-package com.demoboletto.repository;
+package com.demoboletto.repository.travel;
 
 import com.demoboletto.domain.TravelMemory;
 

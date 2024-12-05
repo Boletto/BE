@@ -1,5 +1,6 @@
 package com.demoboletto.domain;
 
+import com.demoboletto.domain.common.BaseTimeEntity;
 import com.demoboletto.type.EProvider;
 import com.demoboletto.type.ERole;
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Table(name = "member")
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,10 +59,6 @@ public class User {
     @Column(name = "is_location")
     private boolean isLocation;
 
-    // TODO: Remove this field
-    @Column(name = "is_login")
-    private boolean isLogin;
-
     @Column(name = "user_profile")
     private String userProfile;
 
@@ -82,7 +79,6 @@ public class User {
         this.isFrame = true;
         this.isFriendApply = true;
         this.isLocation = true;
-        this.isLogin = true;
         this.userProfile = userProfile != null ? userProfile : "default";
     }
 
@@ -115,10 +111,13 @@ public class User {
 
     public void updateSignOutUser() {
         this.role = ERole.DELETED;
-        this.isLogin = false;
     }
 
     public void updateDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
+    }
+
+    public void invalidateRefreshToken() {
+        this.refreshToken = null;
     }
 }
