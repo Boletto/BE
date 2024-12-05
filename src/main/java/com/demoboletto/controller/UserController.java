@@ -78,9 +78,17 @@ public class UserController {
 
 
     @PutMapping("/device-token")
+    @Operation(summary = "Update Notification Token", description = "유저의 푸시 알림 토큰을 업데이트합니다.")
     public ResponseDto<?> updateNotificationToken(@Parameter(hidden = true) @UserId Long userId, @RequestParam String token) {
         userService.updateDeviceToken(userId, token);
         return ResponseDto.ok("유저의 푸시 알림 토큰이 업데이트 되었습니다.");
+    }
+
+    @DeleteMapping("/me")
+    @Operation(summary = "Delete User", description = "유저 정보를 삭제합니다.")
+    public ResponseDto<?> deleteUser(@Parameter(hidden = true) @UserId Long userId) {
+        userService.deleteUser(userId);
+        return ResponseDto.ok("유저 정보가 삭제되었습니다.");
     }
 
 }

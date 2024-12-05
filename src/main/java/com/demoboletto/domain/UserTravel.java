@@ -24,7 +24,7 @@ public class UserTravel {
     private Travel travel;
 
     @Column(name = "accepted")
-    private boolean accepted;
+    private Boolean accepted;
 
     @Builder
     public UserTravel(User user, Travel travel) {
@@ -42,5 +42,9 @@ public class UserTravel {
 
     public void acceptInvite() {
         this.accepted = true;
+    }
+
+    public boolean isAccepted() {
+        return this.accepted;
     }
 }

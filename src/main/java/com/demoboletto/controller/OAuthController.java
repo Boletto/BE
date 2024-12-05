@@ -21,7 +21,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,12 +62,12 @@ public class OAuthController {
         return ResponseDto.ok(jwtTokenDto);
     }
 
-    //TODO: 회원탈퇴 수정
-    @DeleteMapping("/auth/sign-out")
-    @Operation(summary = "회원탈퇴", description = "현재 로그인된 사용자를 탈퇴 처리하고 DB에서 삭제합니다.")
-    public ResponseDto<?> signout(@Parameter(hidden = true) @UserId Long userId) {
-        userService.deleteUser(userId);
-        return ResponseDto.ok("회원 탈퇴가 완료되었습니다.");
-    }
+//    //TODO: 회원탈퇴 수정
+//    @DeleteMapping("/auth/sign-out")
+//    @Operation(summary = "회원탈퇴", description = "현재 로그인된 사용자를 탈퇴 처리하고 DB에서 삭제합니다.")
+//    public ResponseDto<?> signout(@Parameter(hidden = true) @UserId Long userId) {
+//        userService.deleteUser(userId);
+//        return ResponseDto.ok("회원 탈퇴가 완료되었습니다.");
+//    }
 
 }
