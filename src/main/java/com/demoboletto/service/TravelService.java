@@ -56,6 +56,8 @@ public class TravelService {
         // remove self
         members.remove(userId);
 
+        acceptTravel(travel.getTravelId(), userId);
+
         // 여행 초대 알림 전송
         alarmService.travelInviteFriends(travel, userId, members);
 
