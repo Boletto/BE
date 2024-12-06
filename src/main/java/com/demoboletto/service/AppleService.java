@@ -38,6 +38,7 @@ public class AppleService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final AuthService authService;
 
     public OAuthUserInformation requestUserInformation(String token) {
         try {
@@ -102,7 +103,7 @@ public class AppleService {
         String token = appleLoginDto.identityToken();
         OAuthUserInformation userInformation = requestUserInformation(token);
         User user = userRepository.findBySerialId(userInformation.getSerialId())
-                .orElseGet(() -> User.signUp(userInformation));
+                .orElseGet(() -> authService.signUp(userInformation));
 
         JwtTokenDto tokens = jwtUtil.generateTokens(user.getId(), user.getRole());
         user.updateRefreshToken(tokens.refreshToken());

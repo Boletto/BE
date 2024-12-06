@@ -22,6 +22,7 @@ public class KakaoService {
 
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final AuthService authService;
 
     public EProvider getProvider() {
         return EProvider.KAKAO;
@@ -41,7 +42,7 @@ public class KakaoService {
     @Transactional
     public OAuthLoginResponseDto login(KakaoUserInformation kakaoUserInformation) {
         User user = userRepository.findBySerialId(kakaoUserInformation.serialId())
-                .orElseGet(() -> User.signUp(kakaoUserInformation));
+                .orElseGet(() -> authService.signUp(kakaoUserInformation));
 
         JwtTokenDto jwtTokenDto = jwtUtil.generateTokens(user.getId(), ERole.USER);
         user.updateRefreshToken(jwtTokenDto.refreshToken());
