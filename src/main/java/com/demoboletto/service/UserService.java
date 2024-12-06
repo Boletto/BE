@@ -127,4 +127,13 @@ public class UserService {
         user.updateDeviceToken(token);
         userRepository.save(user);
     }
+
+    public void logout(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        
+        user.invalidateRefreshToken();
+        user.invalidateDeviceToken();
+        userRepository.save(user);
+    }
 }

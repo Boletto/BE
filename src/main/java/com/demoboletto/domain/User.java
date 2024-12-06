@@ -121,4 +121,8 @@ public class User extends BaseTimeEntity {
     public void invalidateRefreshToken() {
         this.refreshToken = null;
     }
+
+    public void invalidateDeviceToken() {
+        this.deviceToken = null;
+    }
 }

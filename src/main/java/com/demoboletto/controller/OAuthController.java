@@ -1,11 +1,14 @@
 package com.demoboletto.controller;
 
+import com.demoboletto.annotation.UserId;
 import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.oauth.*;
 import com.demoboletto.dto.response.AppleLoginResponseDto;
 import com.demoboletto.service.AppleService;
 import com.demoboletto.service.KakaoService;
+import com.demoboletto.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ public class OAuthController {
 
     private final AppleService appleService;
     private final KakaoService kakaoService;
+    private final UserService userService;
 
     @PostMapping("/oauth/login")
     @Operation(summary = "소셜로그인", description = "클라이언트 사이드 인증을 통한 소셜 로그인")
@@ -43,6 +47,13 @@ public class OAuthController {
         JwtTokenDto jwtTokenDto = kakaoService.reissue(tokenRefreshDto.refreshToken());
 
         return ResponseDto.ok(jwtTokenDto);
+    }
+
+    @PostMapping("/auth/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃")
+    public ResponseDto<String> logout(@Parameter(hidden = true) @UserId Long userId) {
+        userService.logout(userId);
+        return ResponseDto.ok("Logout Success");
     }
 
 }

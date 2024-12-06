@@ -6,8 +6,6 @@ import com.demoboletto.security.filter.JwtAuthenticationFilter;
 import com.demoboletto.security.filter.JwtExceptionFilter;
 import com.demoboletto.security.handler.exception.CustomAccessDeniedHandler;
 import com.demoboletto.security.handler.exception.CustomAuthenticationEntryPointHandler;
-import com.demoboletto.security.handler.logout.CustomLogoutProcessHandler;
-import com.demoboletto.security.handler.logout.CustomLogoutResultHandler;
 import com.demoboletto.security.provider.JwtAuthenticationManager;
 import com.demoboletto.utility.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +25,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final CustomLogoutProcessHandler customLogoutProcessHandler;
-    private final CustomLogoutResultHandler customLogoutResultHandler;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler;
     private final JwtAuthenticationManager jwtAuthenticationManager;
@@ -46,21 +42,6 @@ public class SecurityConfig {
                         registry
                                 .requestMatchers(Constants.NO_NEED_AUTH_URLS.toArray(String[]::new)).permitAll()
                                 .anyRequest().authenticated())
-
-                // 소셜 로그인 설정
-//                .oauth2Login(oauth2 -> oauth2
-//                        .successHandler(oAuth2LoginSuccessHandler)  // 성공 시 핸들러
-//                        .failureHandler(oAuth2LoginFailureHandler)  // 실패 시 핸들러
-//                        .userInfoEndpoint(userInfo -> userInfo
-//                                .userService(customOAuth2UserService))  // 사용자 정보 처리
-//                )
-
-                // 로그아웃 처리
-                .logout(configurer ->
-                        configurer
-                                .logoutUrl("/api/v1/auth/logout")
-                                .addLogoutHandler(customLogoutProcessHandler)
-                                .logoutSuccessHandler(customLogoutResultHandler))
 
                 .exceptionHandling(configurer ->
                         configurer
