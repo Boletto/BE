@@ -65,7 +65,9 @@ apple:
 jwt:
   secret-key: ${secret.jwt.secret-key}
   access-token:
-    expire-period: 304800000
+    #    expire-period: 304800000
+    expire-period: 30000
   refresh-token:
-    expire-period: 604800000
+    #    expire-period: 604800000
+    expire-period: 90000
 
