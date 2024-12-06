@@ -5,6 +5,7 @@ import com.demoboletto.dto.global.ResponseDto;
 import com.demoboletto.dto.oauth.*;
 import com.demoboletto.dto.response.AppleLoginResponseDto;
 import com.demoboletto.service.AppleService;
+import com.demoboletto.service.AuthService;
 import com.demoboletto.service.KakaoService;
 import com.demoboletto.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,7 @@ public class OAuthController {
     private final AppleService appleService;
     private final KakaoService kakaoService;
     private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping("/oauth/login")
     @Operation(summary = "소셜로그인", description = "클라이언트 사이드 인증을 통한 소셜 로그인")
@@ -44,7 +46,7 @@ public class OAuthController {
     @PostMapping("/auth/reissue")
     @Operation(summary = "Access 토큰 재발급", description = "Access 토큰을 재발급합니다.")
     public ResponseDto<JwtTokenDto> reissue(@RequestBody TokenRefreshDto tokenRefreshDto) {
-        JwtTokenDto jwtTokenDto = kakaoService.reissue(tokenRefreshDto.refreshToken());
+        JwtTokenDto jwtTokenDto = authService.reissue(tokenRefreshDto.refreshToken());
 
         return ResponseDto.ok(jwtTokenDto);
     }
