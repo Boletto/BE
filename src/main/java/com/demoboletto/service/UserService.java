@@ -1,9 +1,6 @@
 package com.demoboletto.service;
 
-import com.demoboletto.domain.Friend;
-import com.demoboletto.domain.User;
-import com.demoboletto.domain.UserAlarm;
-import com.demoboletto.domain.UserTravel;
+import com.demoboletto.domain.*;
 import com.demoboletto.dto.request.UserProfileUpdateDto;
 import com.demoboletto.dto.response.GetUserInfoDto;
 import com.demoboletto.dto.response.GetUserProfileUpdateDto;
@@ -11,6 +8,7 @@ import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.*;
 import com.demoboletto.repository.friend.FriendRepository;
+import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +33,8 @@ public class UserService {
     private final FriendRepository friendRepository;
     private final ObjectStorageService objectStorageService;
     private final UserAlarmRepository userAlarmRepository;
+    private final TravelRepository travelRepository;
+    private final FriendCodeRepository friendCodeRepository;
 
     // 유저의 이름과 닉네임을 조회
     public GetUserInfoDto getUserNameAndNickname(Long userId) {
@@ -81,12 +81,18 @@ public class UserService {
     public void deleteUser(Long userId) {
         log.info("User ID: " + userId);
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
+
         // UserTravel 삭제 (User는 삭제해도 되지만 Travel은 삭제되면 안 됨)
         List<UserTravel> userTravels = userTravelRepository.findByUserId(userId);
+
         if (!userTravels.isEmpty()) {
             userTravelRepository.deleteAll(userTravels);
         }
 
+        // 현재 수정중인 Travel에서 유저 제거
+        travelRepository.detachUser(userId);
 
         // Picture soft delete
         pictureRepository.detachPicturesByUserId(userId);
@@ -96,6 +102,10 @@ public class UserService {
         if (!friends.isEmpty()) {
             friendRepository.deleteAll(friends);
         }
+
+        List<FriendCode> friendCodes = friendCodeRepository.findFriendCodesByUserId(userId);
+
+        friendCodeRepository.deleteAll(friendCodes);
 
         // 다른 유저의 친구 목록에서 해당 유저 삭제
         List<Friend> friendsOfOthers = friendRepository.findByFriendUserId(userId);
@@ -112,11 +122,6 @@ public class UserService {
         // 유저 커스텀 프레임 삭제
         userFrameRepository.deleteUserFramesByUserId(userId);
 
-        // 마지막으로 유저 삭제
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
-
-        log.info("Deleting user: " + user.toString());
         userRepository.delete(user);
     }
 
@@ -131,7 +136,7 @@ public class UserService {
     public void logout(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        
+
         user.invalidateRefreshToken();
         user.invalidateDeviceToken();
         userRepository.save(user);

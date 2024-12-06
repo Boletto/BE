@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface FriendCodeRepository extends JpaRepository<FriendCode, Long> {
+public interface FriendCodeRepository extends JpaRepository<FriendCode, Long>, FriendCodeCustomRepository {
     boolean existsByFriendCode(String friendCode);
 
     Optional<FriendCode> findByFriendCode(String friendCode);

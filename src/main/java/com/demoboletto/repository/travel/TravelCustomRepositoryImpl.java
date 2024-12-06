@@ -1,6 +1,8 @@
 package com.demoboletto.repository.travel;
 
 import com.demoboletto.domain.Travel;
+import com.demoboletto.domain.User;
+import com.demoboletto.type.ETravelStatusType;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,5 +55,15 @@ public class TravelCustomRepositoryImpl implements TravelCustomRepository {
                         userTravel.travel.endDate.goe(startDate) // 여행 종료 >= 주어진 시작
                 )
                 .fetchFirst() != null;
+    }
+
+    @Override
+    public void detachUser(Long userId) {
+        queryFactory
+                .update(travel)
+                .set(travel.editableUser, (User) null)
+                .set(travel.status, ETravelStatusType.UNLOCK)
+                .where(travel.editableUser.id.eq(userId))
+                .execute();
     }
 }
