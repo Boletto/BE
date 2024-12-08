@@ -100,6 +100,7 @@ public class TravelMemoryService {
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MEMORY));
 
         travelMemory.detachPictures();
+        travelMemoryRepository.save(travelMemory);
         travelMemoryRepository.delete(travelMemory);
     }
 
