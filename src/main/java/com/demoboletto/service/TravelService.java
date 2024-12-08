@@ -93,6 +93,7 @@ public class TravelService {
                 .endDate(travel.getEndDate())
                 .members(convertUser(userTravelRepository.findUsersByTravelId(travel.getTravelId())))
                 .color(travel.getColor())
+                .currentEditUserId(travel.getEditableUser().getId())
                 .build();
     }
 
