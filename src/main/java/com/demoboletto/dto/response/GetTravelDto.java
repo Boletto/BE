@@ -49,6 +49,9 @@ public record GetTravelDto(
         @NotNull(message = "status can not be null")
         @Enumerated(EnumType.STRING)
         @JsonProperty("status") @Schema(description = "travel status", example = "UNLOCK")
-        ETravelStatusType status
+        ETravelStatusType status,
+
+        @JsonProperty("editable_user_id") @Schema(description = "editable user id", example = "1234")
+        Long currentEditUserId
 ) {
 }
