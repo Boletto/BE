@@ -12,9 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Getter
 @Setter
-@Table(name = "picture", uniqueConstraints = {
-        @UniqueConstraint(name = "unique_memory_id_picture_idx", columnNames = {"memory_id", "picture_idx"})
-})
+@Table(name = "picture")
 public class Picture extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
