@@ -65,9 +65,10 @@ public class TravelService {
 
     public List<GetTravelDto> getAllTravels(Long userId, boolean isAccepted) {
         List<UserTravel> userTravels = userTravelRepository.findUserTravelsByUserIdAndAccepted(userId, isAccepted);
-        List<Travel> travels = userTravels.stream().map(UserTravel::getTravel).toList();
-
-        return travels.stream().map(this::convertToGetTravelDto).toList();
+        return userTravels.stream().map(this::convertToGetTravelDto).toList();
+//        List<Travel> travels = userTravels.stream().map(UserTravel::getTravel).toList();
+//
+//        return travels.stream().map(this::convertToGetTravelDto).toList();
     }
 
     private boolean isOverlapping(LocalDate preStartDate, LocalDate preEndDate, LocalDate startDate, LocalDate endDate) {
@@ -83,6 +84,22 @@ public class TravelService {
         }
     }
 
+    private GetTravelDto convertToGetTravelDto(UserTravel userTravel) {
+        Travel travel = userTravel.getTravel();
+        return GetTravelDto.builder()
+                .travelId(travel.getTravelId())
+                .departure(travel.getDeparture())
+                .arrive(travel.getArrive())
+                .keyword(travel.getKeyword())
+                .startDate(travel.getStartDate())
+                .endDate(travel.getEndDate())
+                .createdDate(userTravel.getCreatedDate())
+                .members(convertUser(userTravelRepository.findUsersByTravelId(travel.getTravelId())))
+                .color(travel.getColor())
+                .currentEditUserId(travel.getEditableUser() == null ? null : travel.getEditableUser().getId())
+                .build();
+    }
+
     private GetTravelDto convertToGetTravelDto(Travel travel) {
         return GetTravelDto.builder()
                 .travelId(travel.getTravelId())
@@ -91,14 +108,16 @@ public class TravelService {
                 .keyword(travel.getKeyword())
                 .startDate(travel.getStartDate())
                 .endDate(travel.getEndDate())
+                .createdDate(travel.getCreatedDate())
                 .members(convertUser(userTravelRepository.findUsersByTravelId(travel.getTravelId())))
                 .color(travel.getColor())
                 .currentEditUserId(travel.getEditableUser().getId())
+                .status(travel.getStatus())
                 .build();
     }
 
     @Transactional
-    public GetTravelDto updateTravelList(Long travelId, UpdateTravelDto travelDto) {
+    public void updateTravelList(Long travelId, UpdateTravelDto travelDto) {
         // get travel data from db
         Travel preTravel = travelRepository.findById(travelId)
                 .orElseThrow(() -> new EntityNotFoundException("travel data not found"));
@@ -147,8 +166,6 @@ public class TravelService {
                 userTravelRepository.save(UserTravel.create(user.get(), postTravel));
             }
         });
-
-        return convertToGetTravelDto(postTravel);
     }
 
     @Transactional

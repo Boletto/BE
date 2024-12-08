@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -52,6 +53,10 @@ public record GetTravelDto(
         ETravelStatusType status,
 
         @JsonProperty("editable_user_id") @Schema(description = "editable user id", example = "1234")
-        Long currentEditUserId
+        Long currentEditUserId,
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonProperty("created_date") @Schema(description = "user travel created date", example = "2024-09-09 12:00:00")
+        LocalDateTime createdDate
 ) {
 }
