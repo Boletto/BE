@@ -42,7 +42,7 @@ public class SysSticker extends BaseTimeEntity {
 
     //이벤트로 지급되는건지 여부
     @Column(name = "event_provided")
-    private boolean eventProvided;
+    private Boolean eventProvided;
 
     @Column(name = "event_start_date")
     private LocalDate eventStartDate;
