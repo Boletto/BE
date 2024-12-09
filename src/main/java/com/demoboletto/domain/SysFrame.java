@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "sys_frame")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -18,10 +20,8 @@ public class SysFrame extends Frame {
     @Column(name = "frame_id")
     private Long frameId;
 
-
     @Column(name = "frame_name")
     private String frameName;
-
 
     @Column(name = "default_provided")
     private boolean defaultProvided;
@@ -29,12 +29,26 @@ public class SysFrame extends Frame {
     @Column(name = "description")
     private String description;
 
+    //이벤트로 지급되는건지 여부
+    @Column(name = "event_provided")
+    private boolean eventProvided;
+
+    @Column(name = "event_start_date")
+    private LocalDate eventStartDate;
+
+    @Column(name = "event_end_date")
+    private LocalDate eventEndDate;
+
     @Builder
-    public SysFrame(String frameCode, String frameName, String frameUrl, boolean defaultProvided, String description) {
+    public SysFrame(String frameCode, String frameName, String frameUrl, boolean defaultProvided, String description, boolean eventProvided, LocalDate eventStartDate, LocalDate eventEndDate) {
         this.frameCode = frameCode;
         this.frameName = frameName;
         this.frameUrl = frameUrl;
         this.defaultProvided = defaultProvided;
         this.description = description;
+        this.eventProvided = eventProvided;
+        this.eventStartDate = eventStartDate;
+        this.eventEndDate = eventEndDate;
     }
+
 }

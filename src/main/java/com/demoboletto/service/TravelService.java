@@ -14,7 +14,6 @@ import com.demoboletto.repository.UserRepository;
 import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
 import com.demoboletto.type.ETravelStatusType;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Slf4j
@@ -117,55 +115,67 @@ public class TravelService {
     }
 
     @Transactional
-    public void updateTravelList(Long travelId, UpdateTravelDto travelDto) {
+    public void updateTravel(Long userId, Long travelId, UpdateTravelDto travelDto) {
         // get travel data from db
-        Travel preTravel = travelRepository.findById(travelId)
-                .orElseThrow(() -> new EntityNotFoundException("travel data not found"));
+        Travel travel = travelRepository.findById(travelId)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_TRAVEL));
 
-        for (Long memberId : travelDto.members()) {
-            Optional<User> user = userRepository.findById(memberId);
-            if (user.isEmpty()) {
-                throw new CommonException(ErrorCode.NOT_FOUND_USER);
-            }
-
-            // 기존 여행 기록을 가져옴
-            List<Travel> travels = userTravelRepository.findTravelsByUserId(memberId);
-            if (travels == null || travels.isEmpty()) {
-                continue;
-            }
-
-            for (Travel travel : travels) {
-                if (travel.getStartDate() == null || travel.getEndDate() == null) {
-                    continue;
-                }
-                // 일정이 겹치는지 확인하고, 다른 여행과 겹치면 예외 던짐
-                if (!travel.getTravelId().equals(travelId)) {
-                    if (isOverlapping(travel.getStartDate(), travel.getEndDate(), travelDto.startDate(), travelDto.endDate())) {
-                        throw new IllegalArgumentException("The travel period overlaps with an existing travel for userId: " + memberId);
-                    }
-                }
-            }
-        }
+//        for (Long memberId : travelDto.members()) {
+//            Optional<User> user = userRepository.findById(memberId);
+//            if (user.isEmpty()) {
+//                throw new CommonException(ErrorCode.NOT_FOUND_USER);
+//            }
+//
+//            // 기존 여행 기록을 가져옴
+//            List<Travel> travels = userTravelRepository.findTravelsByUserId(memberId);
+//            if (travels == null || travels.isEmpty()) {
+//                continue;
+//            }
+//
+//            for (Travel travel : travels) {
+//                if (travel.getStartDate() == null || travel.getEndDate() == null) {
+//                    continue;
+//                }
+//                // 일정이 겹치는지 확인하고, 다른 여행과 겹치면 예외 던짐
+//                if (!travel.getTravelId().equals(travelId)) {
+//                    if (isOverlapping(travel.getStartDate(), travel.getEndDate(), travelDto.startDate(), travelDto.endDate())) {
+//                        throw new IllegalArgumentException("The travel period overlaps with an existing travel for userId: " + memberId);
+//                    }
+//                }
+//            }
+//        }
         // 여행 데이터 업데이트
-        Travel postTravel = travelRepository.save(preTravel.update(travelDto));
-
+        travel.update(travelDto);
+        travelDto.members().add(userId);
         // 기존 멤버 리스트 가져오기
-        List<UserTravel> existingUserTravels = userTravelRepository.findAllByTravelId(travelId);
+        List<UserTravel> userTravels = userTravelRepository.findAllByTravelId(travelId);
 
-        // 1. 기존 멤버 삭제
-        existingUserTravels.forEach(existingUserTravel -> {
-            if (!travelDto.members().contains(existingUserTravel.getUser().getId())) {
-                userTravelRepository.delete(existingUserTravel);
+        userTravels.forEach(userTravel -> {
+            if (!travelDto.members().contains(userTravel.getUser().getId())) {
+                userTravelRepository.delete(userTravel);
             }
         });
 
-        // 2. 새로운 멤버 추가
+        List<Long> newMembers = new ArrayList<>();
+
         travelDto.members().forEach(memberId -> {
-            Optional<User> user = userRepository.findById(memberId);
-            if (user.isPresent() && existingUserTravels.stream().noneMatch(ut -> ut.getUser().getId().equals(memberId))) {
-                userTravelRepository.save(UserTravel.create(user.get(), postTravel));
-            }
+            User user = userRepository.findById(memberId)
+                    .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
+            UserTravel userTravel = userTravelRepository.findByUserIdAndTravelId(memberId, travelId)
+                    .orElseGet(() -> {
+                        newMembers.add(memberId);
+                        return UserTravel.create(user, travel);
+                    });
+            userTravelRepository.save(userTravel);
         });
+        alarmService.travelInviteFriends(travel, userId, newMembers);
+//        // 2. 새로운 멤버 추가
+//        travelDto.members().forEach(memberId -> {
+//            Optional<User> user = userRepository.findById(memberId);
+//            if (user.isPresent() && userTravels.stream().noneMatch(ut -> ut.getUser().getId().equals(memberId))) {
+//                userTravelRepository.save(UserTravel.create(user.get(), postTravel));
+//            }
+//        });
     }
 
     @Transactional

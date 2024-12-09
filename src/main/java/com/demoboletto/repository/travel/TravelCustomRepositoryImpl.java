@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,5 +66,14 @@ public class TravelCustomRepositoryImpl implements TravelCustomRepository {
                 .set(travel.status, ETravelStatusType.UNLOCK)
                 .where(travel.editableUser.id.eq(userId))
                 .execute();
+    }
+
+    @Override
+    public List<Travel> findLockedTravels() {
+//        System.out.println("LocalDateTime. = " + LocalDateTime.);
+        return queryFactory.selectFrom(travel)
+                .where(travel.status.eq(ETravelStatusType.LOCK))
+                .where(travel.modifiedDate.before(LocalDateTime.now().minusMinutes(10)))
+                .fetch();
     }
 }

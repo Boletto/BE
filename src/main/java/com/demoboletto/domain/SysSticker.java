@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "sys_sticker")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -38,14 +40,27 @@ public class SysSticker extends BaseTimeEntity {
     @Column(name = "description")
     private String description;
 
+    //이벤트로 지급되는건지 여부
+    @Column(name = "event_provided")
+    private boolean eventProvided;
+
+    @Column(name = "event_start_date")
+    private LocalDate eventStartDate;
+
+    @Column(name = "event_end_date")
+    private LocalDate eventEndDate;
+
     @Builder
-    SysSticker(String stickerCode, String stickerName, EStickerType stickerType, boolean defaultProvided, String stickerUrl, String description) {
+    SysSticker(String stickerCode, String stickerName, EStickerType stickerType, boolean defaultProvided, String stickerUrl, String description, boolean eventProvided, LocalDate eventStartDate, LocalDate eventEndDate) {
         this.stickerCode = stickerCode;
         this.stickerName = stickerName;
         this.stickerType = stickerType;
         this.defaultProvided = defaultProvided;
         this.stickerUrl = stickerUrl;
         this.description = description;
+        this.eventProvided = eventProvided;
+        this.eventStartDate = eventStartDate;
+        this.eventEndDate = eventEndDate;
     }
 
 }

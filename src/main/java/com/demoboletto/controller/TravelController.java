@@ -47,8 +47,11 @@ public class TravelController {
 
     @PatchMapping("/{travelId}")
     @Operation(summary = "update travel", description = "Update travel list.")
-    public ResponseDto<String> updateTravel(@PathVariable Long travelId, @RequestBody UpdateTravelDto travelDto) {
-        travelService.updateTravelList(travelId, travelDto);
+    public ResponseDto<String> updateTravel(
+            @Parameter(hidden = true) @UserId Long userId,
+            @PathVariable Long travelId,
+            @RequestBody UpdateTravelDto travelDto) {
+        travelService.updateTravel(userId, travelId, travelDto);
         return ResponseDto.ok("Update travel success.");
     }
 

@@ -23,7 +23,7 @@ import java.util.List;
  * @modifyed : $
  **/
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("prod")
 class TravelSchedulerTest {
     @Autowired
     TravelRepository travelRepository;
@@ -49,5 +49,12 @@ class TravelSchedulerTest {
     @Test
     void endTravel() {
 //        travelScheduler.endTravel();
+    }
+
+    @Test
+    void unlockTravel() {
+        List<Travel> travels = travelRepository.findLockedTravels();
+        travels.forEach(Travel::unlock);
+        travelRepository.saveAll(travels);
     }
 }

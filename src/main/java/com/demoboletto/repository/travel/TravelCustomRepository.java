@@ -17,4 +17,6 @@ public interface TravelCustomRepository {
     boolean existsAcceptedTravelByTravelDates(Long userId, LocalDate startDate, LocalDate endDate);
 
     void detachUser(Long userId);
+
+    List<Travel> findLockedTravels();
 }

@@ -53,6 +53,19 @@ spring:
       max-request-size: 10MB
   jackson:
     property-naming-strategy: SNAKE_CASE
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+    properties:
+      org:
+        quartz:
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+          scheduler:
+            instanceId: AUTO
 
 springdoc:
   swagger-ui:

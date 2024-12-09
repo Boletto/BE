@@ -105,6 +105,9 @@ dependencies {
     implementation 'org.hibernate:hibernate-jcache:6.5.2.Final'
     implementation 'org.ehcache:ehcache:3.10.8'
 
+    // Quartz
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+
 }
 
 test {
@@ -114,5 +117,5 @@ tasks.named('jar') {
     enabled = false
 }
 tasks.named('test') {
-    enabled = false
+    enabled = true
 }
