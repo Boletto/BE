@@ -30,6 +30,10 @@ public class AlarmService {
     public void travelInviteFriends(Travel travel, Long senderId, List<Long> members) {
         log.debug("tarvelInviteFriends: {}", travel);
         log.debug("members: {}", members);
+        if (members.isEmpty()) {
+            return;
+        }
+
         List<String> deviceTokens = userRepository.findDeviceTokensByUserIds(members);
 
         User sender = userRepository.findById(senderId)
