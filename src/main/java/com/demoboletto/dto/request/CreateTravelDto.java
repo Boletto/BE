@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -29,9 +28,6 @@ public record CreateTravelDto(
         LocalDate endDate,
         @NotNull(message = "members can not be null")
         @JsonProperty("members") @Schema(description = "travel members list", example = "[12323,24234234]")
-        List<Long> members,
-        @NotNull(message = "color can not be null")
-        @JsonProperty("color") @Schema(description = "travel list color", example = "#FF0000")
-        String color
+        List<Long> members
 ) {
 }

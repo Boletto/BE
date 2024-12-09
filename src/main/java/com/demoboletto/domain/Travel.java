@@ -40,9 +40,6 @@ public class Travel extends BaseTimeEntity {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Column(name = "color")
-    private String color;
-
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ETravelStatusType status;
@@ -51,15 +48,19 @@ public class Travel extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User editableUser;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticket_id")
+    private SysTicket sysTicket;
+
     @Builder
-    public Travel(String departure, String arrive, String keyword, LocalDate startDate, LocalDate endDate, String color, ETravelStatusType status) {
+    public Travel(String departure, String arrive, String keyword, LocalDate startDate, LocalDate endDate, String color, ETravelStatusType status, SysTicket sysTicket) {
         this.departure = departure;
         this.arrive = arrive;
         this.keyword = keyword;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.color = color;
         this.status = status;
+        this.sysTicket = sysTicket;
     }
 
     public static Travel create(CreateTravelDto travelDto) {
@@ -69,7 +70,6 @@ public class Travel extends BaseTimeEntity {
                 .startDate(travelDto.startDate())
                 .endDate(travelDto.endDate())
                 .keyword(travelDto.keyword())
-                .color(travelDto.color())
                 .status(ETravelStatusType.UNLOCK)
                 .build();
     }
@@ -80,7 +80,6 @@ public class Travel extends BaseTimeEntity {
         this.keyword = travelDto.keyword() != null ? travelDto.keyword() : this.keyword;
         this.startDate = travelDto.startDate() != null ? travelDto.startDate() : this.startDate;
         this.endDate = travelDto.endDate() != null ? travelDto.endDate() : this.endDate;
-        this.color = travelDto.color() != null ? travelDto.color() : this.color;
         return this;
     }
 
@@ -105,6 +104,10 @@ public class Travel extends BaseTimeEntity {
             return true;
         }
         return this.editableUser.equals(user);
+    }
+
+    public void setSysTicket(SysTicket sysTicket) {
+        this.sysTicket = sysTicket;
     }
 
 }

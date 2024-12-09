@@ -21,6 +21,7 @@ public enum ErrorCode {
     NOT_FOUND_MEMORY(40401, HttpStatus.NOT_FOUND, "해당 메모리가 존재하지 않습니다."),
     NOT_FOUND_SYS_FRAME(40490, HttpStatus.NOT_FOUND, "해당 시스템 프레임이 존재하지 않습니다,"),
     NOT_FOUND_SYS_STICKER(40091, HttpStatus.NOT_FOUND, "해당 시스템 스티커가 존재하지 않습니다."),
+    NOT_FOUND_TICKET(40492, HttpStatus.NOT_FOUND, "사용 가능한 티켓이 존재하지 않습니다."),
     // Invalid Argument Error
     MISSING_REQUEST_PARAMETER(40000, HttpStatus.BAD_REQUEST, "필수 요청 파라미터가 누락되었습니다."),
     INVALID_ARGUMENT(40001, HttpStatus.BAD_REQUEST, "요청에 유효하지 않은 인자입니다."),
@@ -61,8 +62,7 @@ public enum ErrorCode {
 
     // Internal Server Error
     INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다."),
-    UPLOAD_FILE_ERROR(50001, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다."),
-    ;
+    UPLOAD_FILE_ERROR(50001, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다.");
 
 
     private final Integer code;

@@ -1,5 +1,6 @@
 package com.demoboletto.service;
 
+import com.demoboletto.domain.SysTicket;
 import com.demoboletto.domain.Travel;
 import com.demoboletto.domain.User;
 import com.demoboletto.domain.UserTravel;
@@ -8,8 +9,10 @@ import com.demoboletto.dto.request.UpdateTravelDto;
 import com.demoboletto.dto.request.UpdateTravelStatusDto;
 import com.demoboletto.dto.response.GetTravelDto;
 import com.demoboletto.dto.response.GetUserTravelDto;
+import com.demoboletto.dto.response.TicketInfoDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
+import com.demoboletto.repository.SysTicketRepository;
 import com.demoboletto.repository.UserRepository;
 import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
@@ -20,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,13 +35,19 @@ public class TravelService {
     private final UserTravelRepository userTravelRepository;
     private final UserRepository userRepository;
     private final AlarmService alarmService;
+    private final SysTicketRepository sysTicketRepository;
 
     @Transactional
     public void createTravel(CreateTravelDto travelDto, Long userId) {
         log.info("createTravelList: {}", travelDto);
 
         // insert new travel data in db
-        Travel travel = travelRepository.save(Travel.create(travelDto));
+        Travel travel = Travel.create(travelDto);
+        SysTicket sysTicket = sysTicketRepository.randomEventTicket()
+                .orElseGet(() -> sysTicketRepository.randomTicket()
+                        .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_TICKET)));
+        travel.setSysTicket(sysTicket);
+        travelRepository.save(travel);
 
         List<Long> members = travelDto.members();
         members.add(userId);
@@ -64,28 +72,14 @@ public class TravelService {
     public List<GetTravelDto> getAllTravels(Long userId, boolean isAccepted) {
         List<UserTravel> userTravels = userTravelRepository.findUserTravelsByUserIdAndAccepted(userId, isAccepted);
         return userTravels.stream().map(this::convertToGetTravelDto).toList();
-//        List<Travel> travels = userTravels.stream().map(UserTravel::getTravel).toList();
-//
-//        return travels.stream().map(this::convertToGetTravelDto).toList();
     }
 
-    private boolean isOverlapping(LocalDate preStartDate, LocalDate preEndDate, LocalDate startDate, LocalDate endDate) {
-        try {
-            if (preStartDate == null || preEndDate == null || startDate == null || endDate == null) {
-                return false;  // 또는 적절한 예외 처리
-            }
-
-            return (startDate.isBefore(preEndDate) && endDate.isAfter(preStartDate));
-        } catch (DateTimeParseException e) {
-            System.err.println("Invalid date format: " + e.getMessage());  // 로그 출력
-            return false;  // 또는 예외를 던지거나 다른 방식으로 처리
-        }
-    }
 
     private GetTravelDto convertToGetTravelDto(UserTravel userTravel) {
         Travel travel = userTravel.getTravel();
         return GetTravelDto.builder()
                 .travelId(travel.getTravelId())
+                .ticketInfo(TicketInfoDto.of(travel.getSysTicket()))
                 .departure(travel.getDeparture())
                 .arrive(travel.getArrive())
                 .keyword(travel.getKeyword())
@@ -93,7 +87,6 @@ public class TravelService {
                 .endDate(travel.getEndDate())
                 .createdDate(userTravel.getCreatedDate())
                 .members(convertUser(userTravelRepository.findUsersByTravelId(travel.getTravelId())))
-                .color(travel.getColor())
                 .currentEditUserId(travel.getEditableUser() == null ? null : travel.getEditableUser().getId())
                 .build();
     }
@@ -101,6 +94,7 @@ public class TravelService {
     private GetTravelDto convertToGetTravelDto(Travel travel) {
         return GetTravelDto.builder()
                 .travelId(travel.getTravelId())
+                .ticketInfo(TicketInfoDto.of(travel.getSysTicket()))
                 .departure(travel.getDeparture())
                 .arrive(travel.getArrive())
                 .keyword(travel.getKeyword())
@@ -108,7 +102,6 @@ public class TravelService {
                 .endDate(travel.getEndDate())
                 .createdDate(travel.getCreatedDate())
                 .members(convertUser(userTravelRepository.findUsersByTravelId(travel.getTravelId())))
-                .color(travel.getColor())
                 .currentEditUserId(travel.getEditableUser().getId())
                 .status(travel.getStatus())
                 .build();
@@ -120,31 +113,6 @@ public class TravelService {
         Travel travel = travelRepository.findById(travelId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_TRAVEL));
 
-//        for (Long memberId : travelDto.members()) {
-//            Optional<User> user = userRepository.findById(memberId);
-//            if (user.isEmpty()) {
-//                throw new CommonException(ErrorCode.NOT_FOUND_USER);
-//            }
-//
-//            // 기존 여행 기록을 가져옴
-//            List<Travel> travels = userTravelRepository.findTravelsByUserId(memberId);
-//            if (travels == null || travels.isEmpty()) {
-//                continue;
-//            }
-//
-//            for (Travel travel : travels) {
-//                if (travel.getStartDate() == null || travel.getEndDate() == null) {
-//                    continue;
-//                }
-//                // 일정이 겹치는지 확인하고, 다른 여행과 겹치면 예외 던짐
-//                if (!travel.getTravelId().equals(travelId)) {
-//                    if (isOverlapping(travel.getStartDate(), travel.getEndDate(), travelDto.startDate(), travelDto.endDate())) {
-//                        throw new IllegalArgumentException("The travel period overlaps with an existing travel for userId: " + memberId);
-//                    }
-//                }
-//            }
-//        }
-        // 여행 데이터 업데이트
         travel.update(travelDto);
         travelDto.members().add(userId);
         // 기존 멤버 리스트 가져오기
@@ -169,13 +137,6 @@ public class TravelService {
             userTravelRepository.save(userTravel);
         });
         alarmService.travelInviteFriends(travel, userId, newMembers);
-//        // 2. 새로운 멤버 추가
-//        travelDto.members().forEach(memberId -> {
-//            Optional<User> user = userRepository.findById(memberId);
-//            if (user.isPresent() && userTravels.stream().noneMatch(ut -> ut.getUser().getId().equals(memberId))) {
-//                userTravelRepository.save(UserTravel.create(user.get(), postTravel));
-//            }
-//        });
     }
 
     @Transactional
