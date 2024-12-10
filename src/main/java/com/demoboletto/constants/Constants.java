@@ -25,6 +25,7 @@ public class Constants {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/app/**",
+            "/invite/**",
             "/subscribe/**");
 
     public static List<String> USER_URLS = List.of(
