@@ -105,10 +105,16 @@ public class User extends BaseTimeEntity {
         this.refreshToken = refreshToken;
     }
 
-    public void updateProfile(String nickname, String name, String profileUrl) {
-        this.nickname = nickname;
+    public void updateProfile(String userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    public void updateName(String name) {
         this.name = name;
-        this.userProfile = profileUrl;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public void updateSignOutUser() {

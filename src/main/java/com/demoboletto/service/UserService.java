@@ -52,20 +52,25 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
 
-        String profileUrl = null;
-        if (file != null && !file.isEmpty()) {
-            try {
-                profileUrl = objectStorageService.uploadFile(file, userId);
-            } catch (IOException e) {
-                throw new CommonException(ErrorCode.UPLOAD_FILE_ERROR);
+        if (userProfileUpdateDto.profileDefault()) {
+            user.updateProfile(null);
+        } else {
+            String profileUrl = null;
+            if (file != null && !file.isEmpty()) {
+                try {
+                    profileUrl = objectStorageService.uploadFile(file, userId);
+                } catch (IOException e) {
+                    throw new CommonException(ErrorCode.UPLOAD_FILE_ERROR);
+                }
             }
+            user.updateProfile(profileUrl);
         }
-
-        user.updateProfile(
-                userProfileUpdateDto.nickName(),
-                userProfileUpdateDto.name(),
-                profileUrl
-        );
+        if (userProfileUpdateDto.name() != null) {
+            user.updateName(userProfileUpdateDto.name());
+        }
+        if (userProfileUpdateDto.nickName() != null) {
+            user.updateNickname(userProfileUpdateDto.nickName());
+        }
 
         userRepository.save(user);
 
