@@ -1,5 +1,6 @@
 package com.demoboletto.dto.push;
 
+import com.demoboletto.dto.push.common.NotiDto;
 import com.demoboletto.type.ETravelEventType;
 import lombok.Builder;
 
@@ -13,7 +14,7 @@ import java.util.Map;
  * @date : 2024. 12. 4. 오후 11:22
  * @modifyed : $
  **/
-public class DispatchTravelInviteDto {
+public class DispatchTravelInviteDto implements NotiDto {
     private final ETravelEventType eventType;
     private final Long travelId;
     private final String senderNickName;
@@ -25,14 +26,17 @@ public class DispatchTravelInviteDto {
         this.senderNickName = senderNickName;
     }
 
+    @Override
     public String getMessage() {
         return senderNickName + "님께서 여행에 초대했어요! 수락 후 함께 여행의 추억을 꾸며보세요.";
     }
 
+    @Override
     public String getTitle() {
         return "여행 티켓 도착 ✉️";
     }
 
+    @Override
     public Map<String, String> toMap() {
         return Map.of(
                 "eventType", eventType.name(),

@@ -5,6 +5,7 @@ import com.demoboletto.domain.Travel;
 import com.demoboletto.domain.User;
 import com.demoboletto.domain.UserAlarm;
 import com.demoboletto.dto.push.DispatchTravelInviteDto;
+import com.demoboletto.dto.push.NotiFriendAcceptDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.UserAlarmRepository;
@@ -39,6 +40,12 @@ public class AlarmService {
         User sender = userRepository.findById(senderId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
 
+        DispatchTravelInviteDto dispatchTravelEventDto = DispatchTravelInviteDto.builder()
+                .eventType(ETravelEventType.TRAVEL_INVITE)
+                .senderNickName(sender.getNickname())
+                .travelId(travel.getTravelId())
+                .build();
+
         List<UserAlarm> userAlarms = members.stream()
                 .map(member -> UserAlarm.builder()
                         .user(userRepository.findById(member)
@@ -46,22 +53,41 @@ public class AlarmService {
                         )
                         .alarmType(EAlarmType.TRAVEL_TICKET)
                         .value(travel.getTravelId().toString())
+                        .message(dispatchTravelEventDto.getMessage())
                         .build()
                 )
                 .toList();
 
         userAlarmRepository.saveAll(userAlarms);
 
-        DispatchTravelInviteDto dispatchTravelEventDto = DispatchTravelInviteDto.builder()
-                .eventType(ETravelEventType.TRAVEL_INVITE)
-                .senderNickName(sender.getNickname())
-                .travelId(travel.getTravelId())
-                .build();
+
         notificationComponent.pushMessageToGroup(
                 dispatchTravelEventDto.getTitle(),
                 dispatchTravelEventDto.getMessage(),
                 dispatchTravelEventDto.toMap(),
                 deviceTokens
+        );
+    }
+
+    public void sendFriendAcceptAlarm(User send, User to) {
+        log.debug("sendFriendAcceptAlarm: sender: {}, to: {}", send, to);
+        log.debug("to deviceToken: {}", to.getDeviceToken());
+        log.debug("to userNickName: {}", to.getNickname());
+        NotiFriendAcceptDto notiFriendAcceptDto = NotiFriendAcceptDto.builder()
+                .senderNickName(send.getNickname())
+                .build();
+        UserAlarm userAlarm = UserAlarm.builder()
+                .user(to)
+                .alarmType(EAlarmType.FRIEND_ACCEPT)
+                .value(send.getId().toString())
+                .message(notiFriendAcceptDto.getMessage())
+                .build();
+        userAlarmRepository.save(userAlarm);
+
+        notificationComponent.pushMessageToUser(
+                notiFriendAcceptDto.getTitle(),
+                notiFriendAcceptDto.getMessage(),
+                to.getDeviceToken()
         );
     }
 }

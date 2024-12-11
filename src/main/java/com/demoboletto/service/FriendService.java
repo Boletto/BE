@@ -27,6 +27,7 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final FriendCodeRepository friendCodeRepository;
     private final UserRepository userRepository;
+    private final AlarmService alarmService;
     private final int EXPIRED_DAYS = 2;
 
     public List<FriendResponseDto> getAllFriends(Long userId) {
@@ -80,6 +81,8 @@ public class FriendService {
         code.setUsed(true);
         friendCodeRepository.save(code);
         saveFriends(user, code.getUser());
+
+        alarmService.sendFriendAcceptAlarm(user, code.getUser());
     }
 
     private void validateFriendCode(FriendCode code, User user) {

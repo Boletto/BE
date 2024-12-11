@@ -2,8 +2,8 @@ package com.demoboletto.dto.response;
 
 import com.demoboletto.domain.UserAlarm;
 import com.demoboletto.type.EAlarmType;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -46,7 +46,7 @@ public class UserAlarmDto {
     public static UserAlarmDto of(UserAlarm alarm) {
         return UserAlarmDto.builder()
                 .id(alarm.getId())
-                .message(alarm.getAlarmType().getTemplate())
+                .message(alarm.getMessage())
                 .value(alarm.getValue())
                 .createdAt(alarm.getCreatedDate())
                 .read(alarm.getIsRead())

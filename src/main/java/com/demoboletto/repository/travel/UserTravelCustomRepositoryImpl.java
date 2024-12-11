@@ -19,7 +19,10 @@ public class UserTravelCustomRepositoryImpl implements UserTravelCustomRepositor
     public List<User> findUsersByTravelId(Long id) {
         return queryFactory.select(userTravel.user)
                 .from(userTravel)
-                .where(userTravel.travel.travelId.eq(id))
+                .where(
+                        userTravel.travel.travelId.eq(id),
+                        userTravel.accepted.isTrue()
+                )
                 .fetch();
     }
 

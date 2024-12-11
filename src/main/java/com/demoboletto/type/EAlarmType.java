@@ -6,11 +6,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum EAlarmType {
-    STICKER_ACQUISITION("{value} 스티커를 획득했어요."),
-    REGION_ACTIVATION("'{value}' 네컷 제작이 활성화되었어요."),
-    REGION_DEACTIVATION("'{value}' 네컷 제작이 비활성화되었어요."),
-    TRAVEL_TICKET("여행 티켓이 도착했어요!"),
-    FRIEND_INVITE_SENT("친구에게 초대를 전송했어요");
-
-    private final String template;
+    STICKER_ACQUISITION,
+    REGION_ACTIVATION,
+    REGION_DEACTIVATION,
+    TRAVEL_TICKET,
+    FRIEND_INVITE_SENT,
+    FRIEND_ACCEPT,
 }

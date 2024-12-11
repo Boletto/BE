@@ -21,6 +21,9 @@ public class UserAlarm extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "message")
+    private String message;
+
     @Column(name = "alarm_type")
     private EAlarmType alarmType;
 
@@ -31,10 +34,11 @@ public class UserAlarm extends BaseTimeEntity {
     private String value;
 
     @Builder
-    public UserAlarm(User user, EAlarmType alarmType, String value) {
+    public UserAlarm(User user, EAlarmType alarmType, String value, String message) {
         this.user = user;
         this.alarmType = alarmType;
         this.value = value;
+        this.message = message;
     }
 
     // 알림 읽음 처리

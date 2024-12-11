@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -51,6 +53,9 @@ public class Travel extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id")
     private SysTicket sysTicket;
+
+    @OneToMany
+    private final List<UserTravel> userTravels = new ArrayList<>();
 
     @Builder
     public Travel(String departure, String arrive, String keyword, LocalDate startDate, LocalDate endDate, String color, ETravelStatusType status, SysTicket sysTicket) {
