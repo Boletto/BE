@@ -88,6 +88,7 @@ public class AlarmService {
         notificationComponent.pushMessageToUser(
                 notiFriendAcceptDto.getTitle(),
                 notiFriendAcceptDto.getMessage(),
+                notiFriendAcceptDto.toMap(),
                 to.getDeviceToken()
         );
     }

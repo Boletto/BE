@@ -17,10 +17,11 @@ public class NotificationComponent {
 
     //send for ios apns
     @Async
-    public void pushMessageToUser(String title, String body, String token) {
+    public void pushMessageToUser(String title, String body, Map<String, String> data, String token) {
         Message message = Message.builder()
                 .setToken(token)
                 .setNotification(createNotification(title, body))
+                .putAllData(data)
                 .build();
         try {
             firebaseMessaging.send(message);

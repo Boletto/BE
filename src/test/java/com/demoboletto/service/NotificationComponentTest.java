@@ -9,13 +9,13 @@ import java.util.Map;
 
 @SpringBootTest
 class NotificationComponentTest {
-    private final String token = "dEBtBVqa6kfAqyMs-IpFIj:APA91bH9Aan2_udupW1GxHg3EU3hM7LPiPJhBiMgCqiJXHrAx2Vgri7cx5sUKm8DJQwa5k1WSEz1S3mi-hiIxGY53wVxovonsMF-7ZdzPvCUGDRFxotVfco";
+    private final String token = "eAwci3ZL9UMIo_suBpM39t:APA91bHgCA-luXtol0OkCSUm8WX5cCQ-ssgiQjzOj9wcLBHPHAucf1cRVy35T6N9b7eb5KTzoue-hl8d4GgzOD5EjWmx6e_XOSJRD7qtlvdJvv1-XjDJyVU";
     @Autowired
     private NotificationComponent notificationComponent;
 
     @Test
     void pushMessageToUser() {
-        notificationComponent.pushMessageToUser("Push Notification Test Sender: Server", "is Normal Notification", token);
+        notificationComponent.pushMessageToUser("Push Notification Test Sender: Server", "is Normal Notification", null, token);
     }
 
     @Test
