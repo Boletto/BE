@@ -102,7 +102,7 @@ public class TravelService {
                 .endDate(travel.getEndDate())
                 .createdDate(travel.getCreatedDate())
                 .members(convertUser(userTravelRepository.findUsersByTravelId(travel.getTravelId())))
-                .currentEditUserId(travel.getEditableUser().getId())
+                .currentEditUserId(travel.getEditableUser() == null ? null : travel.getEditableUser().getId())
                 .status(travel.getStatus())
                 .build();
     }
