@@ -75,6 +75,7 @@ public class AlarmService {
         log.debug("to userNickName: {}", to.getNickname());
         NotiFriendAcceptDto notiFriendAcceptDto = NotiFriendAcceptDto.builder()
                 .senderNickName(send.getNickname())
+                .eventType(EAlarmType.FRIEND_ACCEPT)
                 .build();
         UserAlarm userAlarm = UserAlarm.builder()
                 .user(to)

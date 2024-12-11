@@ -1,16 +1,19 @@
 package com.demoboletto.dto.push;
 
 import com.demoboletto.dto.push.common.NotiDto;
+import com.demoboletto.type.EAlarmType;
 import lombok.Builder;
 
 import java.util.Map;
 
 public class NotiFriendAcceptDto implements NotiDto {
     private final String senderNickName;
+    private final EAlarmType eventType;
 
     @Builder
-    public NotiFriendAcceptDto(String senderNickName) {
+    public NotiFriendAcceptDto(String senderNickName, EAlarmType eventType) {
         this.senderNickName = senderNickName;
+        this.eventType = eventType;
     }
 
     @Override
@@ -25,6 +28,9 @@ public class NotiFriendAcceptDto implements NotiDto {
 
     @Override
     public Map<String, String> toMap() {
-        return null;
+        return Map.of(
+                "eventType", eventType.name()
+        );
+
     }
 }
