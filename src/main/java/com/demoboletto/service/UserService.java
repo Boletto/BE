@@ -63,7 +63,9 @@ public class UserService {
                     throw new CommonException(ErrorCode.UPLOAD_FILE_ERROR);
                 }
             }
-            user.updateProfile(profileUrl);
+            if (profileUrl != null) {
+                user.updateProfile(profileUrl);
+            }
         }
         if (userProfileUpdateDto.name() != null) {
             user.updateName(userProfileUpdateDto.name());
