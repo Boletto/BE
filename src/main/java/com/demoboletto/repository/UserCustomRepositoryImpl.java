@@ -18,4 +18,12 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
                 .where(user.id.in(userIds))
                 .fetch();
     }
+
+    @Override
+    public List<String> findDeviceTokensByAllUsers() {
+        return queryFactory.select(user.deviceToken)
+                .from(user)
+                .where(user.deviceToken.isNotNull())
+                .fetch();
+    }
 }

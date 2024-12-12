@@ -45,8 +45,8 @@ public class UserAlarmService {
         User user = getUser(userId);
         UserAlarm alarm = UserAlarm.builder()
                 .user(user)
-                .alarmType(userAlarmDto.getAlarmType())
-                .value(userAlarmDto.getValue())
+                .alarmType(userAlarmDto.alarmType())
+                .value(userAlarmDto.value())
                 .build();
         userAlarmRepository.save(alarm);
     }

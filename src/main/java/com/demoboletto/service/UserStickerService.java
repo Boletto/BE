@@ -1,13 +1,14 @@
 package com.demoboletto.service;
 
-import com.demoboletto.domain.*;
+import com.demoboletto.domain.SysSticker;
+import com.demoboletto.domain.User;
+import com.demoboletto.domain.UserSticker;
 import com.demoboletto.dto.response.GetUserUsableStickerDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.SysStickerRepository;
 import com.demoboletto.repository.UserRepository;
 import com.demoboletto.repository.UserStickerRepository;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -51,6 +52,10 @@ public class UserStickerService {
     public void saveUserSticker(Long userId, String stickerCode) {
         SysSticker sysSticker = sysStickerRepository.findByStickerCode(stickerCode)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_SYS_STICKER));
+        if (sysSticker.isEventExpired()) {
+            throw new CommonException(ErrorCode.EVENT_EXPIRED);
+        }
+
         User user = getUser(userId);
         UserSticker userSticker = UserSticker.builder()
                 .sticker(sysSticker)

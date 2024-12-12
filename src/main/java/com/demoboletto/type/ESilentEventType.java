@@ -8,7 +8,11 @@ package com.demoboletto.type;
  * @date : 2024. 11. 14. 오후 5:45
  * @modifyed : $
  **/
-public enum ETravelEventType {
+public enum ESilentEventType {
     TRAVEL_START,
-    TRAVEL_INVITE, TRAVEL_END
+    TRAVEL_END,
+    SYSTEM_FRAME_UPDATE,
+    SYSTEM_STICKER_UPDATE,
+    SYSTEM_EVENT_STICKER_UPDATE,
+    SYSTEM_EVENT_FRAME_UPDATE,
 }

@@ -1,7 +1,7 @@
 package com.demoboletto.dto.push;
 
 import com.demoboletto.dto.push.common.NotiDto;
-import com.demoboletto.type.ETravelEventType;
+import com.demoboletto.type.EAlarmType;
 import lombok.Builder;
 
 import java.util.Map;
@@ -15,20 +15,25 @@ import java.util.Map;
  * @modifyed : $
  **/
 public class DispatchTravelInviteDto implements NotiDto {
-    private final ETravelEventType eventType;
+    private final EAlarmType eventType;
     private final Long travelId;
-    private final String senderNickName;
+    private final String value;
 
     @Builder
-    public DispatchTravelInviteDto(ETravelEventType eventType, Long travelId, String senderNickName) {
+    public DispatchTravelInviteDto(EAlarmType eventType, Long travelId, String value) {
         this.eventType = eventType;
         this.travelId = travelId;
-        this.senderNickName = senderNickName;
+        this.value = value;
+    }
+
+    @Override
+    public String getValue() {
+        return value;
     }
 
     @Override
     public String getMessage() {
-        return senderNickName + "님께서 여행에 초대했어요! 수락 후 함께 여행의 추억을 꾸며보세요.";
+        return value + "님께서 여행에 초대했어요! 수락 후 함께 여행의 추억을 꾸며보세요.";
     }
 
     @Override

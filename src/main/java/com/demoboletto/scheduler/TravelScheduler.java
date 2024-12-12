@@ -5,7 +5,7 @@ import com.demoboletto.domain.Travel;
 import com.demoboletto.dto.push.DispatchTravelEventDto;
 import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
-import com.demoboletto.type.ETravelEventType;
+import com.demoboletto.type.ESilentEventType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class TravelScheduler {
         travels.forEach(travel -> {
             List<String> deviceTokens = userTravelRepository.findUserDeviceTokensByTravelId(travel.getTravelId());
             DispatchTravelEventDto dispatchTravelEventDto = DispatchTravelEventDto.builder()
-                    .eventType(ETravelEventType.TRAVEL_START)
+                    .eventType(ESilentEventType.TRAVEL_START)
                     .arriveArea(travel.getArrive())
                     .build();
             notificationComponent.dispatchMessageToGroup(dispatchTravelEventDto.toMap(), deviceTokens);
@@ -39,7 +39,7 @@ public class TravelScheduler {
         travels.forEach(travel -> {
             List<String> deviceTokens = userTravelRepository.findUserDeviceTokensByTravelId(travel.getTravelId());
             DispatchTravelEventDto dispatchTravelEventDto = DispatchTravelEventDto.builder()
-                    .eventType(ETravelEventType.TRAVEL_END)
+                    .eventType(ESilentEventType.TRAVEL_END)
                     .arriveArea(travel.getArrive())
                     .build();
             notificationComponent.dispatchMessageToGroup(dispatchTravelEventDto.toMap(), deviceTokens);

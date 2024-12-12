@@ -5,20 +5,17 @@ import lombok.Builder;
 
 import java.util.Map;
 
-public class DispatchTravelEventDto {
+public class DispatchSystemEventDto {
     public ESilentEventType eventType;
-    public String arriveArea;
 
     @Builder
-    public DispatchTravelEventDto(ESilentEventType eventType, String arriveArea) {
+    public DispatchSystemEventDto(ESilentEventType eventType) {
         this.eventType = eventType;
-        this.arriveArea = arriveArea;
     }
 
     public Map<String, String> toMap() {
         return Map.of(
-                "eventType", eventType.name(),
-                "arriveArea", arriveArea
+                "eventType", eventType.name()
         );
     }
 }

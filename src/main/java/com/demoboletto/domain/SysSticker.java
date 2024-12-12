@@ -31,7 +31,7 @@ public class SysSticker extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private EStickerType stickerType;
 
-    @Column(name = "default_provided")
+    @Column(name = "default_provided", nullable = false)
     private boolean defaultProvided;
 
     @Column(name = "sticker_url")
@@ -40,9 +40,8 @@ public class SysSticker extends BaseTimeEntity {
     @Column(name = "description")
     private String description;
 
-    //이벤트로 지급되는건지 여부
-    @Column(name = "event_provided")
-    private Boolean eventProvided;
+    @Column(name = "is_event", nullable = false)
+    private Boolean isEvent;
 
     @Column(name = "event_start_date")
     private LocalDate eventStartDate;
@@ -51,16 +50,21 @@ public class SysSticker extends BaseTimeEntity {
     private LocalDate eventEndDate;
 
     @Builder
-    SysSticker(String stickerCode, String stickerName, EStickerType stickerType, boolean defaultProvided, String stickerUrl, String description, boolean eventProvided, LocalDate eventStartDate, LocalDate eventEndDate) {
-        this.stickerCode = stickerCode;
+    public SysSticker(Long stickerId, String stickerName, String stickerCode, EStickerType stickerType, boolean defaultProvided, String stickerUrl, String description, Boolean isEvent, LocalDate eventStartDate, LocalDate eventEndDate) {
+        this.stickerId = stickerId;
         this.stickerName = stickerName;
+        this.stickerCode = stickerCode;
         this.stickerType = stickerType;
         this.defaultProvided = defaultProvided;
         this.stickerUrl = stickerUrl;
         this.description = description;
-        this.eventProvided = eventProvided;
+        this.isEvent = isEvent;
         this.eventStartDate = eventStartDate;
         this.eventEndDate = eventEndDate;
     }
 
+    public boolean isEventExpired() {
+        LocalDate now = LocalDate.now();
+        return isEvent && eventEndDate.isBefore(now);
+    }
 }

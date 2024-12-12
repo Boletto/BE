@@ -7,18 +7,23 @@ import lombok.Builder;
 import java.util.Map;
 
 public class NotiFriendAcceptDto implements NotiDto {
-    private final String senderNickName;
+    private final String value;
     private final EAlarmType eventType;
 
     @Builder
-    public NotiFriendAcceptDto(String senderNickName, EAlarmType eventType) {
-        this.senderNickName = senderNickName;
+    public NotiFriendAcceptDto(String value, EAlarmType eventType) {
+        this.value = value;
         this.eventType = eventType;
     }
 
     @Override
+    public String getValue() {
+        return value;
+    }
+
+    @Override
     public String getMessage() {
-        return senderNickName + "님께서 친구 신청을 수락했어요! 이제 함께 볼레또를 즐겨보세요.";
+        return value + "님께서 친구 신청을 수락했어요! 이제 함께 볼레또를 즐겨보세요.";
     }
 
     @Override

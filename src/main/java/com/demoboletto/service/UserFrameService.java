@@ -37,6 +37,10 @@ public class UserFrameService {
     public void saveUserFrame(Long userId, String frameCode) {
         SysFrame sysFrame = sysFrameRepository.findByFrameCode(frameCode)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_SYS_FRAME));
+        if (sysFrame.isEventExpired()) {
+            throw new CommonException(ErrorCode.EVENT_EXPIRED);
+
+        }
         User user = getUser(userId);
         UserFrame userFrame = UserFrame.builder()
                 .frameType(EFrameType.SYSTEM)

@@ -7,6 +7,7 @@ import com.demoboletto.dto.response.GetSysFrameInfoDto;
 import com.demoboletto.dto.response.GetSysStickerInfoDto;
 import com.demoboletto.service.SystemService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,12 @@ public class SystemController {
 
     @GetMapping("/stickers")
     @Operation(summary = "스티커 목록 조회", description = "시스템에서 제공하는 스티커 목록을 조회합니다.")
-    public ResponseDto<List<GetSysStickerInfoDto>> getStickers() {
+    public ResponseDto<List<GetSysStickerInfoDto>> getStickers(
+            @Parameter(description = "이벤트 여부", example = "true")
+            @RequestParam(required = false) boolean isEvent) {
+        if (isEvent) {
+            return ResponseDto.ok(systemService.getEventStickers());
+        }
         return ResponseDto.ok(systemService.getSystemStickers());
     }
 
@@ -39,7 +45,12 @@ public class SystemController {
 
     @GetMapping("/frames")
     @Operation(summary = "프레임 목록 조회", description = "시스템에서 제공하는 프레임 목록을 조회합니다.")
-    public ResponseDto<List<GetSysFrameInfoDto>> getFrames() {
+    public ResponseDto<List<GetSysFrameInfoDto>> getFrames(
+            @Parameter(description = "이벤트 여부", example = "true")
+            @RequestParam(required = false) boolean isEvent) {
+        if (isEvent) {
+            return ResponseDto.ok(systemService.getEventFrames());
+        }
         return ResponseDto.ok(systemService.getSystemFrames());
     }
 

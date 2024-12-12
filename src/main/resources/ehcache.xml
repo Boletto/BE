@@ -11,4 +11,64 @@
             <heap unit="entries">1000</heap> <!-- 캐시 최대 엔트리 -->
         </resources>
     </cache>
+    <cache alias="systemStickerRegion">
+        <key-type>java.lang.Object</key-type>
+        <value-type>java.lang.Object</value-type>
+        <expiry>
+            <ttl unit="seconds">86400</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">200</heap>
+        </resources>
+    </cache>
+    <cache alias="eventStickerRegion">
+        <key-type>java.lang.Object</key-type>
+        <value-type>java.lang.Object</value-type>
+        <expiry>
+            <ttl unit="seconds">86400</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">200</heap>
+        </resources>
+    </cache>
+    <cache alias="systemFrameRegion">
+        <key-type>java.lang.Object</key-type>
+        <value-type>java.lang.Object</value-type>
+        <expiry>
+            <ttl unit="seconds">86400</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">200</heap>
+        </resources>
+    </cache>
+    <cache alias="eventFrameRegion">
+        <key-type>java.lang.Object</key-type>
+        <value-type>java.lang.Object</value-type>
+        <expiry>
+            <ttl unit="seconds">86400</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">200</heap>
+        </resources>
+    </cache>
+    <cache alias="defaultStickerRegion">
+        <key-type>java.lang.Object</key-type>
+        <value-type>java.lang.Object</value-type>
+        <expiry>
+            <ttl unit="seconds">86400</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">200</heap>
+        </resources>
+    </cache>
+    <cache alias="defaultFrameRegion">
+        <key-type>java.lang.Object</key-type>
+        <value-type>java.lang.Object</value-type>
+        <expiry>
+            <ttl unit="seconds">86400</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">200</heap>
+        </resources>
+    </cache>
 </config>

@@ -23,15 +23,14 @@ public class SysFrame extends Frame {
     @Column(name = "frame_name")
     private String frameName;
 
-    @Column(name = "default_provided")
+    @Column(name = "default_provided", nullable = false)
     private boolean defaultProvided;
 
     @Column(name = "description")
     private String description;
 
-    //이벤트로 지급되는건지 여부
-    @Column(name = "event_provided")
-    private Boolean eventProvided;
+    @Column(name = "is_event", nullable = false)
+    private Boolean isEvent;
 
     @Column(name = "event_start_date")
     private LocalDate eventStartDate;
@@ -40,15 +39,20 @@ public class SysFrame extends Frame {
     private LocalDate eventEndDate;
 
     @Builder
-    public SysFrame(String frameCode, String frameName, String frameUrl, boolean defaultProvided, String description, boolean eventProvided, LocalDate eventStartDate, LocalDate eventEndDate) {
+    public SysFrame(String frameCode, String frameName, String frameUrl, boolean defaultProvided, String description, LocalDate eventStartDate, LocalDate eventEndDate, Boolean isEvent) {
         this.frameCode = frameCode;
         this.frameName = frameName;
         this.frameUrl = frameUrl;
         this.defaultProvided = defaultProvided;
         this.description = description;
-        this.eventProvided = eventProvided;
+        this.isEvent = isEvent;
         this.eventStartDate = eventStartDate;
         this.eventEndDate = eventEndDate;
     }
 
+
+    public boolean isEventExpired() {
+        LocalDate now = LocalDate.now();
+        return isEvent && eventEndDate.isBefore(now);
+    }
 }

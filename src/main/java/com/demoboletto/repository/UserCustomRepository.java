@@ -13,4 +13,5 @@ import java.util.List;
 public interface UserCustomRepository {
     List<String> findDeviceTokensByUserIds(List<Long> userIds);
 
+    List<String> findDeviceTokensByAllUsers();
 }

@@ -5,7 +5,7 @@ import com.demoboletto.domain.Travel;
 import com.demoboletto.dto.push.DispatchTravelEventDto;
 import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
-import com.demoboletto.type.ETravelEventType;
+import com.demoboletto.type.ESilentEventType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,7 +39,7 @@ class TravelSchedulerTest {
             List<String> deviceTokens = userTravelRepository.findUserDeviceTokensByTravelId(travel.getTravelId());
             System.out.println("deviceTokens = " + deviceTokens);
             DispatchTravelEventDto dispatchTravelEventDto = DispatchTravelEventDto.builder()
-                    .eventType(ETravelEventType.TRAVEL_START)
+                    .eventType(ESilentEventType.TRAVEL_START)
                     .arriveArea(travel.getArrive())
                     .build();
             notificationComponent.dispatchMessageToGroup(dispatchTravelEventDto.toMap(), deviceTokens);

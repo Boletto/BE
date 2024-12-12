@@ -4,6 +4,7 @@ import com.demoboletto.components.NotificationComponent;
 import com.demoboletto.domain.Travel;
 import com.demoboletto.domain.User;
 import com.demoboletto.domain.UserAlarm;
+import com.demoboletto.dto.push.DispatchSystemEventDto;
 import com.demoboletto.dto.push.DispatchTravelInviteDto;
 import com.demoboletto.dto.push.NotiFriendAcceptDto;
 import com.demoboletto.exception.CommonException;
@@ -11,7 +12,7 @@ import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.UserAlarmRepository;
 import com.demoboletto.repository.UserRepository;
 import com.demoboletto.type.EAlarmType;
-import com.demoboletto.type.ETravelEventType;
+import com.demoboletto.type.ESilentEventType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +42,8 @@ public class AlarmService {
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER));
 
         DispatchTravelInviteDto dispatchTravelEventDto = DispatchTravelInviteDto.builder()
-                .eventType(ETravelEventType.TRAVEL_INVITE)
-                .senderNickName(sender.getNickname())
+                .eventType(EAlarmType.TRAVEL_TICKET)
+                .value(sender.getNickname())
                 .travelId(travel.getTravelId())
                 .build();
 
@@ -52,8 +53,7 @@ public class AlarmService {
                                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_USER))
                         )
                         .alarmType(EAlarmType.TRAVEL_TICKET)
-                        .value(travel.getTravelId().toString())
-                        .message(dispatchTravelEventDto.getMessage())
+                        .value(dispatchTravelEventDto.getValue())
                         .build()
                 )
                 .toList();
@@ -74,14 +74,13 @@ public class AlarmService {
         log.debug("to deviceToken: {}", to.getDeviceToken());
         log.debug("to userNickName: {}", to.getNickname());
         NotiFriendAcceptDto notiFriendAcceptDto = NotiFriendAcceptDto.builder()
-                .senderNickName(send.getNickname())
+                .value(send.getNickname())
                 .eventType(EAlarmType.FRIEND_ACCEPT)
                 .build();
         UserAlarm userAlarm = UserAlarm.builder()
                 .user(to)
                 .alarmType(EAlarmType.FRIEND_ACCEPT)
-                .value(send.getId().toString())
-                .message(notiFriendAcceptDto.getMessage())
+                .value(notiFriendAcceptDto.getValue())
                 .build();
         userAlarmRepository.save(userAlarm);
 
@@ -91,5 +90,13 @@ public class AlarmService {
                 notiFriendAcceptDto.toMap(),
                 to.getDeviceToken()
         );
+    }
+
+    public void dispatchSystemEvent(ESilentEventType eventType) {
+        DispatchSystemEventDto dispatchSystemEventDto = DispatchSystemEventDto.builder()
+                .eventType(eventType)
+                .build();
+        List<String> deviceTokens = userRepository.findDeviceTokensByAllUsers();
+        notificationComponent.dispatchMessageToGroup(dispatchSystemEventDto.toMap(), deviceTokens);
     }
 }

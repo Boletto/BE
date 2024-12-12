@@ -40,13 +40,13 @@ public class UserAlarmDto {
 
     @JsonProperty("created_date")
     @Schema(description = "created date", example = "2021-08-01T00:00:00")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
 
     public static UserAlarmDto of(UserAlarm alarm) {
         return UserAlarmDto.builder()
                 .id(alarm.getId())
-                .message(alarm.getMessage())
+                .message(alarm.getAlarmType().getTemplate().replace("{value}", alarm.getValue()))
                 .value(alarm.getValue())
                 .createdAt(alarm.getCreatedDate())
                 .read(alarm.getIsRead())
