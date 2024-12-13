@@ -16,7 +16,7 @@ public class TravelMemoryDto {
     @Enumerated(value = EnumType.STRING)
     private EMemoryType memoryType;
 
-    private String frameCode;
+    private String frameUrl;
 
     private List<String> pictures;
 
@@ -25,7 +25,7 @@ public class TravelMemoryDto {
     public static TravelMemoryDto of(TravelMemory travelMemory) {
         return TravelMemoryDto.builder()
                 .memoryType(travelMemory.getMemoryType())
-                .frameCode(travelMemory.getFrameCode())
+                .frameUrl(travelMemory.getFrameUrl())
                 .pictures(travelMemory.getPictures().stream()
                         .map(Picture::getPictureUrl)
                         .toList()

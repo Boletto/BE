@@ -1,6 +1,7 @@
 package com.demoboletto.domain;
 
 import com.demoboletto.domain.common.BaseTimeEntity;
+import com.demoboletto.domain.common.Frame;
 import com.demoboletto.type.EMemoryType;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -23,8 +24,13 @@ public class TravelMemory extends BaseTimeEntity {
     @Column(name = "memory_id")
     private Long memoryId;
 
-    @Column(name = "frame_code")
-    private String frameCode;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "frame_id")
+    private SysFrame sysFrame;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "custom_frame_id")
+    private UserCustomFrame customFrame;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "travel_id", nullable = false)
@@ -42,12 +48,17 @@ public class TravelMemory extends BaseTimeEntity {
     private List<Picture> pictures = new ArrayList<>();
 
     @Builder
-    public TravelMemory(Travel travel, EMemoryType memoryType, Long memoryIdx, String frameCode) {
+    public TravelMemory(Long memoryId, Frame frame, Travel travel, EMemoryType memoryType, Long memoryIdx, List<Picture> pictures) {
+        this.memoryId = memoryId;
         this.travel = travel;
         this.memoryType = memoryType;
         this.memoryIdx = memoryIdx;
-        this.pictures = new ArrayList<>();
-        this.frameCode = frameCode;
+        this.pictures = pictures;
+        if (frame instanceof SysFrame) {
+            this.sysFrame = (SysFrame) frame;
+        } else {
+            this.customFrame = (UserCustomFrame) frame;
+        }
     }
 
     public void attachPictures(List<Picture> pictures) {
@@ -62,6 +73,10 @@ public class TravelMemory extends BaseTimeEntity {
     public void detachPictures() {
         this.pictures.forEach(Picture::detachMemory);
         this.pictures.clear();
+    }
+
+    public String getFrameUrl() {
+        return this.sysFrame != null ? sysFrame.getFrameUrl() : customFrame.getFrameUrl();
     }
 
 }

@@ -35,6 +35,7 @@ public class TravelMemoryService {
     private final TravelStickerRepository travelStickerRepository;
     private final UserCustomFrameRepository userCustomFrameRepository;
 
+
     @Transactional
     public void createTravelEachMemory(Long userId, Long travelId, Long memoryIdx, UpdateTravelEachMemoryDto updateTravelEachMemoryDto, List<MultipartFile> files) {
         System.out.println("breakpoint");
@@ -57,7 +58,7 @@ public class TravelMemoryService {
                 .orElse(TravelMemory.builder()
                         .travel(travel)
                         .memoryIdx(memoryIdx)
-                        .frameCode(frame.getFrameCode())
+                        .frame(frame)
                         .memoryType(updateTravelEachMemoryDto.getMemoryType())
                         .build()
                 );
