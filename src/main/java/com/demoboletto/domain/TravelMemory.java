@@ -48,12 +48,12 @@ public class TravelMemory extends BaseTimeEntity {
     private List<Picture> pictures = new ArrayList<>();
 
     @Builder
-    public TravelMemory(Long memoryId, Frame frame, Travel travel, EMemoryType memoryType, Long memoryIdx, List<Picture> pictures) {
+    public TravelMemory(Long memoryId, Frame frame, Travel travel, EMemoryType memoryType, Long memoryIdx) {
         this.memoryId = memoryId;
         this.travel = travel;
         this.memoryType = memoryType;
         this.memoryIdx = memoryIdx;
-        this.pictures = pictures;
+        this.pictures = new ArrayList<>();
         if (frame instanceof SysFrame) {
             this.sysFrame = (SysFrame) frame;
         } else {
