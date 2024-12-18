@@ -3,8 +3,10 @@ package com.demoboletto.scheduler;
 import com.demoboletto.components.NotificationComponent;
 import com.demoboletto.domain.Travel;
 import com.demoboletto.dto.push.DispatchTravelEventDto;
+import com.demoboletto.dto.push.NotiTravelStartDto;
 import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
+import com.demoboletto.type.EAlarmType;
 import com.demoboletto.type.ESilentEventType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,6 +36,23 @@ public class TravelScheduler {
     }
 
     @Scheduled(cron = "0 0 0 * * *")
+    public void startTravelNotification() {
+        List<Travel> travels = travelRepository.findTravelsByStartDate(LocalDate.now());
+        travels.forEach(travel -> {
+            List<String> deviceTokens = userTravelRepository.findUserDeviceTokensByTravelId(travel.getTravelId());
+            NotiTravelStartDto notiTravelStartDto = NotiTravelStartDto.builder()
+                    .eventType(EAlarmType.TRAVEL_START)
+                    .build();
+            notificationComponent.pushMessageToGroup(
+                    notiTravelStartDto.getTitle(),
+                    notiTravelStartDto.getMessage(),
+                    notiTravelStartDto.toMap(),
+                    deviceTokens
+            );
+        });
+    }
+
+    @Scheduled(cron = "0 0 11 * * *")
     public void endTravel() {
         List<Travel> travels = travelRepository.findTravelsByEndDate(LocalDate.now());
         travels.forEach(travel -> {
