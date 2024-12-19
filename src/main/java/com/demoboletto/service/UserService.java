@@ -24,6 +24,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final UserStickerRepository userStickerRepository;
     private final UserFrameRepository userFrameRepository;
     private final UserCustomFrameRepository userCustomFrameRepository;
     private final PictureRepository pictureRepository;
@@ -128,6 +129,8 @@ public class UserService {
 
         // 유저 커스텀 프레임 삭제
         userFrameRepository.deleteUserFramesByUserId(userId);
+
+        userStickerRepository.deleteUserStickersByUserId(userId);
 
         userRepository.delete(user);
     }

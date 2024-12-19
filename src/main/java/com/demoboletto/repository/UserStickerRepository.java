@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface UserStickerRepository extends JpaRepository<UserSticker, Long> {
     List<UserSticker> findAllByUserId(Long userId);
+
+    void deleteUserStickersByUserId(Long userId);
 }
