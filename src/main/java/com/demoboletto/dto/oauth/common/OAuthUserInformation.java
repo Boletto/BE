@@ -9,7 +9,7 @@ public interface OAuthUserInformation {
 
     String getProfileImgUrl();
 
-    String getNickname();
+    String getName();
 
     String getEmail();
 }

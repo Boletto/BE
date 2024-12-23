@@ -33,7 +33,6 @@ import java.text.ParseException;
 @RequiredArgsConstructor
 @Service
 public class AppleService {
-    private static final String EMAIL_CLAIM = "email";
     private final AppleFeignClient appleAuthKeyFeignClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final JwtUtil jwtUtil;
@@ -94,7 +93,8 @@ public class AppleService {
         JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
         return AppleUserInformation.builder()
                 .providerId(jwtClaimsSet.getSubject())
-                .email(jwtClaimsSet.getStringClaim(EMAIL_CLAIM))
+                .email(jwtClaimsSet.getStringClaim("email"))
+                .name(jwtClaimsSet.getStringClaim("name"))
                 .build();
     }
 

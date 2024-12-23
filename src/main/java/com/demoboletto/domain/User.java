@@ -88,7 +88,7 @@ public class User extends BaseTimeEntity {
     public static User signUp(OAuthUserInformation info) {
         return User.builder()
                 .email(info.getEmail())
-                .name(info.getNickname())
+                .name(info.getName())
                 .provider(info.getProvider())
                 .serialId(info.getSerialId())
                 .userProfile(info.getProfileImgUrl())

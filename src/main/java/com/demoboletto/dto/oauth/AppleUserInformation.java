@@ -4,21 +4,22 @@ import com.demoboletto.dto.oauth.common.OAuthUserInformation;
 import com.demoboletto.type.EProvider;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 
 @Builder
 public record AppleUserInformation(
-        @NotNull
         @JsonProperty("providerId")
         @Schema(description = "Apple에서 제공한 id", example = "abc123")
         String providerId,
 
-        @NotNull
         @JsonProperty("email")
         @Schema(description = "애플에서 제공한 이메일", example = "user@example.com")
-        String email
+        String email,
+
+        @Schema(description = "애플에서 제공한 이름", example = "홍길동")
+        String name
+
 ) implements OAuthUserInformation {
 
     @Override
@@ -37,8 +38,8 @@ public record AppleUserInformation(
     }
 
     @Override
-    public String getNickname() {
-        return null;  // Apple 로그인에 닉네임이 없을 경우 null 반환
+    public String getName() {
+        return name;  // Apple 로그인에 닉네임이 없을 경우 null 반환
     }
 
     @Override
