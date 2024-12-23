@@ -65,7 +65,7 @@ public class TravelScheduler {
         });
     }
 
-    @Scheduled(cron = "0 0/10 * * * *")
+    @Scheduled(cron = "0 0/5 * * * *")
     public void unlockTravel() {
         List<Travel> travels = travelRepository.findLockedTravels();
         travels.forEach(Travel::unlock);
