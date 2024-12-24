@@ -94,19 +94,22 @@ public class AppleService {
         return AppleUserInformation.builder()
                 .providerId(jwtClaimsSet.getSubject())
                 .email(jwtClaimsSet.getStringClaim("email"))
-                .name(jwtClaimsSet.getStringClaim("name"))
                 .build();
     }
 
     @Transactional
     public AppleLoginResponseDto login(AppleLoginDto appleLoginDto) {
         String token = appleLoginDto.identityToken();
+        String userName = appleLoginDto.userName();
         OAuthUserInformation userInformation = requestUserInformation(token);
         User user = userRepository.findBySerialId(userInformation.getSerialId())
                 .orElseGet(() -> authService.signUp(userInformation));
 
         JwtTokenDto tokens = jwtUtil.generateTokens(user.getId(), user.getRole());
         user.updateRefreshToken(tokens.refreshToken());
+        if (userName != null) {
+            user.updateName(userName);
+        }
         userRepository.save(user);
 
         return new AppleLoginResponseDto(
