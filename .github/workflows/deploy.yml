@@ -44,12 +44,14 @@ jobs:
           BOLETTO_SECRET_DIR_FILE_NAME: application-secret.yml
           BOLETTO_FIREBASE_SECRET_FILE_NAME: firebase-adminsdk.json
           BOLETTO_OCI_SECRET_FILE_NAME: oci-private-key.pem
+          BOLETTO_APPLE_SECRET_FILE_PATH: ${{ secrets.BOLETTO_APPLE_SECRET_FILE_PATH }}
+          BOLETTO_APPLE_SECRET_FILE: ${{ secrets.BOLETTO_APPLE_SECRET_FILE }}
         run: |
           echo $BOLETTO_SECRET | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_SECRET_DIR_FILE_NAME
           echo $BOLETTO_FIREBASE_SECRET | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_FIREBASE_SECRET_FILE_NAME
           echo $BOLETTO_OCI_SECRET | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_OCI_SECRET_FILE_NAME
-
-
+          echo $BOLETTO_APPLE_SECRET_FILE | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_APPLE_SECRET_FILE_PATH
+          
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
