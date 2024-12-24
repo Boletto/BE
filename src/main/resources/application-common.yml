@@ -71,8 +71,12 @@ springdoc:
     path: /swagger-ui.html
 
 apple:
-  api_url:
-    information: https://appleid.apple.com/auth/keys
+  client-id: ${secret.apple.client-id}
+  team-id: ${secret.apple.team-id}
+  key-id: ${secret.apple.key-id}
+  key-path: ${secret.apple.key-path}
+  token-url: https://appleid.apple.com/auth/token
+  revoke-url: https://appleid.apple.com/auth/revoke
 
 jwt:
   secret-key: ${secret.jwt.secret-key}

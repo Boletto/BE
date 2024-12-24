@@ -10,6 +10,7 @@ import com.demoboletto.repository.*;
 import com.demoboletto.repository.friend.FriendRepository;
 import com.demoboletto.repository.travel.TravelRepository;
 import com.demoboletto.repository.travel.UserTravelRepository;
+import com.demoboletto.type.EProvider;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ public class UserService {
     private final UserAlarmRepository userAlarmRepository;
     private final TravelRepository travelRepository;
     private final FriendCodeRepository friendCodeRepository;
+    private final AppleService appleService;
 
     // 유저의 이름과 닉네임을 조회
     public GetUserInfoDto getUserNameAndNickname(Long userId) {
@@ -131,6 +133,9 @@ public class UserService {
         userFrameRepository.deleteUserFramesByUserId(userId);
 
         userStickerRepository.deleteUserStickersByUserId(userId);
+        if (user.getProvider() == EProvider.APPLE) {
+            appleService.revokeAppleToken(user.getAppleRefreshToken());
+        }
 
         userRepository.delete(user);
     }

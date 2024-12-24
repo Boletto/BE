@@ -1,31 +1,31 @@
 package com.demoboletto.service;
 
-import com.demoboletto.client.AppleFeignClient;
 import com.demoboletto.domain.User;
 import com.demoboletto.dto.oauth.AppleLoginDto;
 import com.demoboletto.dto.oauth.AppleUserInformation;
 import com.demoboletto.dto.oauth.JwtTokenDto;
-import com.demoboletto.dto.oauth.Keys;
+import com.demoboletto.dto.oauth.apple.AppleTokenResponse;
 import com.demoboletto.dto.oauth.common.OAuthUserInformation;
 import com.demoboletto.dto.response.AppleLoginResponseDto;
 import com.demoboletto.exception.CommonException;
 import com.demoboletto.exception.ErrorCode;
 import com.demoboletto.repository.UserRepository;
+import com.demoboletto.utility.AppleTokenUtil;
 import com.demoboletto.utility.JwtUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
-import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
 
 
@@ -33,93 +33,118 @@ import java.text.ParseException;
 @RequiredArgsConstructor
 @Service
 public class AppleService {
-    private final AppleFeignClient appleAuthKeyFeignClient;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final AuthService authService;
+    private final RestTemplate restTemplate;
 
-    public OAuthUserInformation requestUserInformation(String token) {
+    @Value("${apple.client-id}")
+    private String clientId;
+
+    @Value("${apple.team-id}")
+    private String teamId;
+
+    @Value("${apple.key-id}")
+    private String keyId;
+
+    @Value("${apple.key-path}")
+    private String keyPath;
+
+    @Value("${apple.token-url}")
+    private String tokenUrl;
+
+    @Value("${apple.revoke-url}")
+    private String revokeUrl;
+
+    @Transactional
+    public AppleLoginResponseDto login(AppleLoginDto appleLoginDto) {
+        String code = appleLoginDto.code();
+        String name = appleLoginDto.userName();
+
         try {
-            // Apple의 공개 키 가져오기 및 JWT 파싱
-            Keys keys = getApplePublicKeys();
-            SignedJWT signedJWT = SignedJWT.parse(token);
+            AppleTokenResponse tokenResponse = getToken(code);
 
-            // 서명이 유효하면 사용자 정보를 반환
-            if (isVerifiedToken(keys, signedJWT)) {
-                return extractUserInfo(signedJWT);
-            } else {
-                log.warn("[AppleOAuthServiceImpl] requestUserInformation, 유효하지 않은 토큰 : {}", token);
-                throw new CommonException(ErrorCode.INVALID_APPLE_TOKEN);
+            OAuthUserInformation userInfo = extractUserInfo(tokenResponse.getIdToken());
+
+            User user = userRepository.findBySerialId(userInfo.getSerialId())
+                    .orElseGet(() -> authService.signUp(userInfo));
+
+            JwtTokenDto tokens = jwtUtil.generateTokens(user.getId(), user.getRole());
+            if (name != null) {
+                user.updateName(name);
             }
+            user.updateRefreshToken(tokens.refreshToken());
+            user.updateAppleRefreshToken(tokenResponse.getRefreshToken());
+            userRepository.save(user);
 
-        } catch (JsonProcessingException | ParseException | JOSEException e) {
-            log.error("[AppleOAuthServiceImpl] requestUserInformation, Exception: {}", token, e);
+            return new AppleLoginResponseDto(
+                    tokens.accessToken(),
+                    tokens.refreshToken(),
+                    user.getId(),
+                    user.getName(),
+                    user.getNickname(),
+                    user.getUserProfile()
+            );
+        } catch (ParseException e) {
+            log.error("[AppleService] login, Exception: {}", e.getMessage());
+            throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
+        } catch (JOSEException e) {
+            log.error("[AppleService] login, Exception: {}", e.getMessage());
+            throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            log.error("[AppleService] login, Exception: {}", e.getMessage());
             throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // Apple에서 공개 키를 가져오고 JSON을 Keys 객체로 변환
-    private Keys getApplePublicKeys() throws JsonProcessingException {
-        String publicKeys = appleAuthKeyFeignClient.call();
-        return objectMapper.readValue(publicKeys, Keys.class);
+
+    private AppleTokenResponse getToken(String authorizationCode) throws Exception {
+        String clientSecret = AppleTokenUtil.createClientSecret(clientId, teamId, keyId, keyPath);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/x-www-form-urlencoded");
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("client_id", clientId);
+        body.add("client_secret", clientSecret);
+        body.add("code", authorizationCode);
+        body.add("grant_type", "authorization_code");
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+        return restTemplate.postForObject(tokenUrl, request, AppleTokenResponse.class);
     }
 
-    // JWT의 서명을 검증
-    private boolean isVerifiedToken(Keys keys, SignedJWT signedJWT) throws
-            ParseException,
-            JOSEException,
-            JsonProcessingException {
-        return keys.getKeyList().stream()
-                .anyMatch(key -> verifySignature(key, signedJWT));
-    }
+    private OAuthUserInformation extractUserInfo(String idToken) throws ParseException {
+        SignedJWT signedJWT = SignedJWT.parse(idToken);
+        JWTClaimsSet claims = signedJWT.getJWTClaimsSet();
 
-    // 개별 키에 대해 서명을 검증
-    private boolean verifySignature(Keys.Key key, SignedJWT signedJWT) {
-        try {
-            RSAKey rsaKey = (RSAKey) JWK.parse(objectMapper.writeValueAsString(key));
-            RSAPublicKey publicKey = rsaKey.toRSAPublicKey();
-            RSASSAVerifier verifier = new RSASSAVerifier(publicKey);
-
-            return signedJWT.verify(verifier);
-        } catch (Exception e) {
-            log.error("[AppleOAuthServiceImpl] 서명 검증 실패: {}", key.getKid(), e);
-            return false;
-        }
-    }
-
-    // JWT에서 사용자 정보를 추출
-    private OAuthUserInformation extractUserInfo(SignedJWT signedJWT) throws ParseException {
-        JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
-        return AppleUserInformation.builder()
-                .providerId(jwtClaimsSet.getSubject())
-                .email(jwtClaimsSet.getStringClaim("email"))
-                .build();
-    }
-
-    @Transactional
-    public AppleLoginResponseDto login(AppleLoginDto appleLoginDto) {
-        String token = appleLoginDto.identityToken();
-        String userName = appleLoginDto.userName();
-        OAuthUserInformation userInformation = requestUserInformation(token);
-        User user = userRepository.findBySerialId(userInformation.getSerialId())
-                .orElseGet(() -> authService.signUp(userInformation));
-
-        JwtTokenDto tokens = jwtUtil.generateTokens(user.getId(), user.getRole());
-        user.updateRefreshToken(tokens.refreshToken());
-        if (userName != null) {
-            user.updateName(userName);
-        }
-        userRepository.save(user);
-
-        return new AppleLoginResponseDto(
-                tokens.accessToken(),
-                tokens.refreshToken(),
-                user.getId(),
-                user.getName(),
-                user.getNickname(),
-                user.getUserProfile()
+        return new AppleUserInformation(
+                claims.getSubject(), // Unique Apple ID
+                claims.getStringClaim("email")
         );
     }
 
+    public void revokeAppleToken(String appleRefreshToken) {
+        try {
+            String appleClientSecret = AppleTokenUtil.createClientSecret(clientId, teamId, keyId, keyPath);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", "application/x-www-form-urlencoded");
+
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+            map.add("client_id", clientId);
+            map.add("client_secret", appleClientSecret);
+            map.add("token", appleRefreshToken);
+            map.add("token_type_hint", "refresh_token");
+
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+
+            restTemplate.postForLocation(revokeUrl, request);
+        } catch (Exception e) {
+            log.error("[AppleService] revokeAppleToken, Exception: {}", e.getMessage());
+            throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

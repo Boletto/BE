@@ -67,6 +67,8 @@ public class User extends BaseTimeEntity {
     @Column(name = "device_token")
     private String deviceToken;
 
+    @Column(name = "apple_refresh_token")
+    private String appleRefreshToken;
 
     @Builder
     public User(String serialId, String password, String email, String name, String nickname, EProvider provider, ERole role, String userProfile) {
@@ -131,5 +133,9 @@ public class User extends BaseTimeEntity {
 
     public void invalidateDeviceToken() {
         this.deviceToken = null;
+    }
+
+    public void updateAppleRefreshToken(String refreshToken) {
+        this.appleRefreshToken = refreshToken;
     }
 }

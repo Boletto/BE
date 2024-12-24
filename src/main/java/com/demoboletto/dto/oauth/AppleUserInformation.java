@@ -15,10 +15,7 @@ public record AppleUserInformation(
 
         @JsonProperty("email")
         @Schema(description = "애플에서 제공한 이메일", example = "user@example.com")
-        String email,
-
-        @Schema(description = "애플에서 제공한 이름", example = "홍길동")
-        String name
+        String email
 
 ) implements OAuthUserInformation {
 
@@ -39,7 +36,7 @@ public record AppleUserInformation(
 
     @Override
     public String getName() {
-        return name;  // Apple 로그인에 닉네임이 없을 경우 null 반환
+        return null;  // Apple 로그인에 닉네임이 없을 경우 null 반환
     }
 
     @Override

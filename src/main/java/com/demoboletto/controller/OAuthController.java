@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "OAuth", description = "인증 관련 API")
@@ -39,7 +41,7 @@ public class OAuthController {
     @PostMapping("/oauth2/login/apple")
     @Operation(summary = "애플로그인", description = "애플 로그인")
     @Schema(name = "login", description = "애플 로그인")
-    public ResponseDto<AppleLoginResponseDto> login(@RequestBody AppleLoginDto appleLoginDto) {
+    public ResponseDto<AppleLoginResponseDto> login(@RequestBody AppleLoginDto appleLoginDto) throws ParseException {
         return ResponseDto.ok(appleService.login(appleLoginDto));
     }
 
