@@ -18,8 +18,11 @@ public record KakaoUserInformation(
         @JsonProperty("provider") @Schema(description = "프로바이더(소셜로그인 제공자)", example = "KAKAO")
         EProvider provider,
 
-        @JsonProperty("name") @Schema(description = "유저의 닉네임", example = "leedaeun")
-        String name
+        @JsonProperty("nickname") @Schema(description = "유저의 닉네임", example = "leedaeun")
+        String nickname,
+
+        @JsonProperty("email") @Schema(description = "유저의 이메일", example = "example@exam.com")
+        String email
 ) implements OAuthUserInformation {
     @Override
     public EProvider getProvider() {
@@ -38,11 +41,11 @@ public record KakaoUserInformation(
 
     @Override
     public String getName() {
-        return name;
+        return nickname;
     }
 
     @Override
     public String getEmail() {
-        return null;
+        return email;
     }
 }
