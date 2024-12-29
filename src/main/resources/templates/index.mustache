@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="website" property="og:type">
+    <meta content="볼레또에서 친구 초대가 왔어요💌" property="og:title">
+    <meta content="친구와 함께 다양한 추억을 만들어보세요." property="og:description">
+    <meta content="https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axfasyxukuxi/b/boletto_bucket/o/system/metadata/thumbnail.png"
+          property="og:image">
+    <meta content="app-id=6737753864, app-argument={{appScheme}}" name="apple-itunes-app">
+    <title>볼레또</title>
+    <link as="style" crossorigin
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+          rel="stylesheet"/>
+    <style type="text/css">
+        body {
+            font-family: 'Pretendard', sans-serif;
+            height: 100vh;
+        }
+
+        .flex-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .flex-row {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            gap: 3px;
+        }
+
+        .container {
+            padding-top: 50px;
+            padding-bottom: 65px;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .pl-32 {
+            padding-left: 32px;
+        }
+
+        .font-12 {
+            font-size: 12px;
+        }
+
+        .font-32 {
+            font-size: 32px;
+        }
+
+        .font-14 {
+            font-size: 14px;
+        }
+
+        .light {
+            font-weight: 300;
+        }
+
+        .semi-bold {
+            font-weight: 600;
+        }
+
+        .regular {
+            font-weight: 500;
+        }
+
+        .gray1 {
+            color: #555560;
+        }
+
+        .blue {
+            color: #65B1F7;
+        }
+
+        .gray2 {
+            color: #8C8C8C;
+        }
+
+        .space1 {
+            word-spacing: -7px;
+        }
+
+        .space2 {
+            word-spacing: -1px;
+        }
+
+        .button {
+            background-color: #9BD4FA;
+            color: #2F2F32;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .expand {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .p-row-16 {
+            padding: 0 16px;
+        }
+    </style>
+
+    <script>
+        function openAppOrRedirect() {
+            const appUrlScheme = "{{appScheme}}" // 앱 URL Scheme
+            const appStoreUrl = "https://apps.apple.com/app/id6737753864"; // 앱스토어 URL
+            const start = Date.now();
+
+            // 모바일에서 앱 열기 시도
+            window.location.href = appUrlScheme;
+
+            // 일정 시간 후 앱스토어로 리디렉션
+            setTimeout(() => {
+                if (Date.now() - start < 2000) { // 앱 실행이 실패한 것으로 간주
+                    window.location.href = appStoreUrl;
+                }
+            }, 1500); // 1.5초 대기
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="flex-column pl-32">
+        <span class="font-12 light gray1">국내여행을 더욱 특별하게</span>
+        <span class="font-32 semi-bold">여행을 한 번 더</span>
+        <div class="flex-row">
+            <img alt="eye" height="20" src="/images/eye.png" width="33">
+            <span class="font-32 semi-bold blue">볼래, 또?</span>
+        </div>
+        <span class="font-14 regular gray2 space2">지금 바로 볼레또를 다운받아</span>
+        <span class="font-14 regular gray2 space2">여행을 더 특별하게 기록해보세요!</span>
+
+    </div>
+    <div class="expand">
+        <img alt="ticket" src="/images/ticket.png" width="262">
+    </div>
+    <div class="p-row-16">
+        <button class="button" onclick="openAppOrRedirect()">볼레또 다운 받기</button>
+    </div>
+</div>
+</body>
+</html>

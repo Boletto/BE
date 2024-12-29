@@ -108,6 +108,9 @@ dependencies {
     // Quartz
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
 
+    //html template engine
+    implementation 'org.springframework.boot:spring-boot-starter-mustache'
+
 }
 
 test {
