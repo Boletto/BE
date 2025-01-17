@@ -83,7 +83,7 @@ public class User extends BaseTimeEntity {
         this.isFrame = true;
         this.isFriendApply = true;
         this.isLocation = true;
-        this.userProfile = userProfile != null ? userProfile : "default";
+        this.userProfile = userProfile;
     }
 
     // 소셜 로그인
