@@ -9,6 +9,7 @@ jpa:
     ddl-auto: update
   properties:
     hibernate:
+      dialect: org.hibernate.dialect.OracleDialect
       format_sql: false
       show_sql: false
       use_sql_comments: false
@@ -18,8 +19,10 @@ security:
     client:
       registration:
         kakao:
-          #          change redirect-uri to prod domain
-          redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+          redirect-uri: https://boletto.gicheok.store/login/oauth2/code/kakao
+
+server:
+  forward-headers-strategy: framework
 
 logging:
   level:
@@ -27,4 +30,3 @@ logging:
     #    org.springframework.security: debug
     #    org.springframework.web: info
     com.demoboletto: info
-

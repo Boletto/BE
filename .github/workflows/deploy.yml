@@ -1,92 +1,136 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
-name: Java CD with Gradle
+name: Deploy production
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: boletto-production
+  cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
 
-      - name: Gradle Caching
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Copy secrets
+      - name: Restore production secret files
         env:
           BOLETTO_SECRET: ${{ secrets.BOLETTO_SECRET }}
           BOLETTO_FIREBASE_SECRET: ${{ secrets.BOLETTO_FIREBASE_SECRET }}
           BOLETTO_OCI_SECRET: ${{ secrets.BOLETTO_OCI_SECRET }}
-          BOLETTO_SECRET_DIR: src/main/resources
-          BOLETTO_SECRET_DIR_FILE_NAME: application-secret.yml
-          BOLETTO_FIREBASE_SECRET_FILE_NAME: firebase-adminsdk.json
-          BOLETTO_OCI_SECRET_FILE_NAME: oci-private-key.pem
           BOLETTO_APPLE_SECRET_FILE_PATH: ${{ secrets.BOLETTO_APPLE_SECRET_FILE_PATH }}
           BOLETTO_APPLE_SECRET_FILE: ${{ secrets.BOLETTO_APPLE_SECRET_FILE }}
         run: |
-          echo $BOLETTO_SECRET | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_SECRET_DIR_FILE_NAME
-          echo $BOLETTO_FIREBASE_SECRET | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_FIREBASE_SECRET_FILE_NAME
-          echo $BOLETTO_OCI_SECRET | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_OCI_SECRET_FILE_NAME
-          echo $BOLETTO_APPLE_SECRET_FILE | base64 --decode > $BOLETTO_SECRET_DIR/$BOLETTO_APPLE_SECRET_FILE_PATH
-          
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+          set -euo pipefail
+          umask 077
+          resources=src/main/resources
+          mkdir -p "$resources/$(dirname "$BOLETTO_APPLE_SECRET_FILE_PATH")"
+          printf '%s' "$BOLETTO_SECRET" | base64 --decode > "$resources/application-secret.yml"
+          printf '%s' "$BOLETTO_FIREBASE_SECRET" | base64 --decode > "$resources/firebase-adminsdk.json"
+          printf '%s' "$BOLETTO_OCI_SECRET" | base64 --decode > "$resources/oci-private-key.pem"
+          printf '%s' "$BOLETTO_APPLE_SECRET_FILE" | base64 --decode > "$resources/$BOLETTO_APPLE_SECRET_FILE_PATH"
 
-      - name: Build with Gradle Wrapper
-        run: ./gradlew bootJar
+      - name: Build application
+        run: |
+          chmod +x gradlew
+          ./gradlew bootJar
 
-      - name: Setup docker buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Docker login
+      - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Docker build and push
-        uses: docker/build-push-action@v5
+      - name: Build and push multi-architecture image
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/deploy:boletto_server
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/deploy:boletto-${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/deploy:boletto_server
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/amd64,linux/arm64
 
-      - name: Execute remote ssh
-        uses: appleboy/ssh-action@master
+      - name: Deploy with rollback
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.BOLETTO_HOST }}
           username: ${{ secrets.BOLETTO_USERNAME }}
           key: ${{ secrets.BOLETTO_KEY }}
           port: ${{ secrets.BOLETTO_PORT }}
+          command_timeout: 10m
           script: |
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/deploy:boletto_server
-            docker stop boletto
-            docker rm boletto
-            docker run -d --name boletto -p 8080:8080 -v /home/ubuntu/secret/wallet:/secret/wallet ${{ secrets.DOCKERHUB_USERNAME }}/deploy:boletto_server
+            set -eu
+            image='${{ secrets.DOCKERHUB_USERNAME }}/deploy:boletto-${{ github.sha }}'
+            current=boletto
+            previous=boletto_previous
 
+            test -f /home/ubuntu/secret/wallet/tnsnames.ora
+            docker pull "$image"
+            docker rm -f "$previous" >/dev/null 2>&1 || true
+
+            if docker container inspect "$current" >/dev/null 2>&1; then
+              docker stop "$current"
+              docker rename "$current" "$previous"
+            fi
+
+            rollback() {
+              docker rm -f "$current" >/dev/null 2>&1 || true
+              if docker container inspect "$previous" >/dev/null 2>&1; then
+                docker rename "$previous" "$current"
+                docker start "$current"
+              fi
+            }
+
+            if ! docker run -d \
+              --name "$current" \
+              --restart unless-stopped \
+              --log-opt max-size=10m \
+              --log-opt max-file=3 \
+              -p 127.0.0.1:8080:8080 \
+              -v /home/ubuntu/secret/wallet:/secret/wallet:ro \
+              "$image"; then
+              rollback
+              exit 1
+            fi
+
+            healthy=false
+            for attempt in $(seq 1 40); do
+              if ! docker inspect -f '{{.State.Running}}' "$current" 2>/dev/null | grep -q true; then
+                break
+              fi
+              if curl --silent --output /dev/null --connect-timeout 2 http://127.0.0.1:8080/; then
+                healthy=true
+                break
+              fi
+              sleep 3
+            done
+
+            if [ "$healthy" != true ]; then
+              docker logs --tail 200 "$current" || true
+              rollback
+              exit 1
+            fi
+
+            docker rm -f "$previous" >/dev/null 2>&1 || true
+            docker image prune -f >/dev/null
+            docker ps --filter "name=^/${current}$"
