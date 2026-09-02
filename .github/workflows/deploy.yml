@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
@@ -72,15 +72,25 @@ jobs:
 
       - name: Deploy with rollback
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         with:
           host: ${{ secrets.BOLETTO_HOST }}
           username: ${{ secrets.BOLETTO_USERNAME }}
           key: ${{ secrets.BOLETTO_KEY }}
           port: ${{ secrets.BOLETTO_PORT }}
           command_timeout: 10m
+          envs: DOCKERHUB_USERNAME,DOCKERHUB_TOKEN
           script: |
             set -eu
-            image='${{ secrets.DOCKERHUB_USERNAME }}/deploy:boletto-${{ github.sha }}'
+            docker_logout() {
+              docker logout >/dev/null 2>&1 || true
+            }
+            trap docker_logout EXIT
+            printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+
+            image="$DOCKERHUB_USERNAME/deploy:boletto-${{ github.sha }}"
             current=boletto
             previous=boletto_previous
 
