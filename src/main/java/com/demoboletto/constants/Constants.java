@@ -1,8 +1,12 @@
 package com.demoboletto.constants;
 
+import org.springframework.util.AntPathMatcher;
+
 import java.util.List;
 
 public class Constants {
+    private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
+
     public static String CLAIM_USER_ID = "uuid";
     public static String CLAIM_USER_ROLE = "role";
     public static String ACCESS_COOKIE_NAME = "access_token";
@@ -22,8 +26,11 @@ public class Constants {
             "/api-docs.html",
             "/api-docs/**",
             "/swagger-resources/**",
+            "/v3/api-docs",
             "/v3/api-docs/**",
+            "/swagger-ui.html",
             "/swagger-ui/**",
+            "/webjars/**",
             "/app/**",
             "/invite/**",
             "/images/**",
@@ -31,4 +38,9 @@ public class Constants {
 
     public static List<String> USER_URLS = List.of(
             "/api/v1/users/**");
+
+    public static boolean isNoNeedAuthUrl(String requestUri) {
+        return requestUri.startsWith("/guest")
+                || NO_NEED_AUTH_URLS.stream().anyMatch(pattern -> PATH_MATCHER.match(pattern, requestUri));
+    }
 }

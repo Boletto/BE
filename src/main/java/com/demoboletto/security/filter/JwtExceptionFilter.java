@@ -61,7 +61,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return Constants.NO_NEED_AUTH_URLS.contains(request.getRequestURI())
-                || request.getRequestURI().startsWith("/guest");
+        return Constants.isNoNeedAuthUrl(request.getRequestURI());
     }
 }

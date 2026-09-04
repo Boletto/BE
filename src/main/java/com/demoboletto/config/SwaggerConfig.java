@@ -45,16 +45,7 @@ public class SwaggerConfig {
                 .addSecurityItem(new SecurityRequirement().addList(JWT_SCHEMA_NAME))
                 .servers(List.of(
                         new io.swagger.v3.oas.models.servers.Server()
-                                .url("http://localhost:8080")
-                                .description("Local Server"),
-                        new io.swagger.v3.oas.models.servers.Server()
-                                .url("https://boletto.site")
-                                .description("Production Server"),
-                        new io.swagger.v3.oas.models.servers.Server()
-                                .url("http://boletto.site:8081")
-                                .description("Development Server"),
-                        new io.swagger.v3.oas.models.servers.Server()
-                                .url("https://3.37.140.217")
-                                .description("Remote Server")));
+                                .url("https://boletto.gicheok.store")
+                                .description("Production Server")));
     }
 }
